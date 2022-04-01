@@ -2,10 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Test {
-  teste: String!
+type User {
+  name: String!
+  email: String!
+  phoneNumber: String!
 }
 
 type Query {
-  createTest: Test!
+  fetchUser(userId: String!): User!
+}
+
+type Mutation {
+  signUp(name: String!, email: String!, phoneNumber: String!): User!
 }

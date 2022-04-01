@@ -1,42 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
-import {
-	Field,
-	Query,
-	Resolver,
-	ObjectType,
-	GraphQLModule,
-} from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
+import { GraphQLModule } from '@nestjs/graphql';
+import UserModule from './user/user.module';
 import { AppService } from './app.service';
 import { Module } from '@nestjs/common';
 
-@ObjectType()
-class Test {
-	@Field()
-	teste: string;
-}
-
-@Resolver()
-class TestResolver {
-	@Query(() => Test)
-	createTest(): Test {
-		return { teste: 'Hello World' };
-	}
-}
-
-@Module({
-	providers: [TestResolver],
-})
-export default class TestModule {}
-
 @Module({
 	imports: [
+		MongooseModule.forRoot('mongoUriHere'),
 		GraphQLModule.forRoot<ApolloDriverConfig>({
 			driver: ApolloDriver,
 			autoSchemaFile: 'schema.gql',
 		}),
-		TestModule,
+		UserModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

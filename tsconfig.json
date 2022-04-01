@@ -20,5 +20,5 @@
 		"noFallthroughCasesInSwitch": false
 	},
 	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules", ".serverless", ".vscode"]
+	"exclude": ["node_modules"]
 }

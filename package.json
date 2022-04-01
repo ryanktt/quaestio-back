@@ -11,7 +11,7 @@
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start:nest": "nest start",
-		"start:lambda": "sls offline",
+		"start:lambda": "nodemon --exec sls offline --watch src",
 		"start:dev": "nest start --watch",
 		"start:debug": "nest start --debug --watch",
 		"start:prod": "node dist/main",
@@ -27,17 +27,18 @@
 		"@nestjs/common": "8.0.0",
 		"@nestjs/core": "8.0.0",
 		"@nestjs/graphql": "10.0.8",
+		"@nestjs/mongoose": "9.0.3",
 		"@nestjs/platform-express": "8.0.0",
+		"@typegoose/typegoose": "9.7.1",
 		"apollo-server-express": "3.6.6",
 		"aws-lambda": "1.0.7",
 		"aws-serverless-express": "3.4.0",
 		"class-validator": "0.13.2",
 		"graphql": "16.3.0",
+		"mongoose": "6.2.9",
 		"reflect-metadata": "0.1.13",
 		"rimraf": "3.0.2",
-		"rxjs": "7.2.0",
-		"type-graphql": "1.1.1",
-		"typegraphql-nestjs": "0.4.1"
+		"rxjs": "7.2.0"
 	},
 	"devDependencies": {
 		"@nestjs/cli": "8.0.0",
@@ -61,6 +62,7 @@
 		"eslint-plugin-node": "11.1.0",
 		"eslint-plugin-prettier": "4.0.0",
 		"jest": "27.2.5",
+		"nodemon": "2.0.15",
 		"plugin": "0.3.3",
 		"prettier": "2.3.2",
 		"serverless": "3.10.0",
@@ -84,7 +86,7 @@
 		"rootDir": "src",
 		"testRegex": ".*\\.spec\\.ts$",
 		"transform": {
-			"^.+\\.(t|j)s$": "ts-jest"
+			".+\\.(t|j)s$": "ts-jest"
 		},
 		"collectCoverageFrom": [
 			"**/*.(t|j)s"

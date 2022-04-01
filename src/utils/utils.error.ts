@@ -1,22 +1,28 @@
+import { EUserErrorCode } from '../user/user.interface'; //fix this
 import { registerEnumType } from '@nestjs/graphql';
 
-type ErrorCodeEnum = Record<string, unknown>;
-const ErrorCodeEnum = {};
-registerEnumType(ErrorCodeEnum, {
-	description:
-		'Error code structure: [Model]:[Action]:[Type]. Ex: "USER:SIGNUP:INVALID_PARAMS"',
-	name: 'ErrorCode',
-});
+type EErrorCode = EUserErrorCode;
+const EErrorCode = { ...Object.values(EUserErrorCode) };
 
-class Collector {
-	messages: string[] = [];
+registerEnumType(EErrorCode, { name: 'ErrorCode' });
 
-	collect(message: string): void {
-		this.messages.push(message);
+interface IError {
+	message: string;
+	code?: EErrorCode;
+	originalError?: Error;
+}
+
+class ErrorCollector {
+	errors: IError[] = [];
+
+	collect(err: AppError): void {
+		const { code, message, originalError } = err;
+		this.errors.push({ code, message, originalError });
 	}
-	finish({ message, code }: { message: string; code?: ErrorCodeEnum }): void {
-		if (this.messages.length > 0) {
-			throw new AppError({ message, code, messages: this.messages });
+
+	run({ message, code }: { message: string; code?: EErrorCode }): void {
+		if (this.errors.length > 0) {
+			throw new AppError({ message, code, errors: this.errors });
 		}
 	}
 }
@@ -25,26 +31,26 @@ export class AppError extends Error {
 	constructor({
 		message,
 		code,
-		messages,
+		errors,
 		originalError,
 	}: {
 		message: string;
-		code?: ErrorCodeEnum;
+		code?: EErrorCode;
 		originalError?: Error;
-		messages?: string[];
+		errors?: IError[];
 	}) {
 		super(message);
 		this.message = message;
 		this.code = code;
-		this.messages = messages;
+		this.errors = errors;
 		this.originalError = originalError;
 	}
 	message: string;
-	code?: ErrorCodeEnum;
+	code?: EErrorCode;
 	originalError?: Error;
-	messages?: string[];
+	errors?: IError[];
 
-	static collectorInstance(): Collector {
-		return new Collector();
+	static collectorInstance(): ErrorCollector {
+		return new ErrorCollector();
 	}
 }

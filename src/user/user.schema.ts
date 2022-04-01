@@ -5,14 +5,14 @@ import { Field, ObjectType } from '@nestjs/graphql';
 @Schema()
 export class User {
 	@Field()
-	@Prop()
+	@Prop({ required: true })
 	name: string;
 
 	@Field()
-	@Prop()
+	@Prop({ required: true })
 	email: string;
 
-	@Field()
+	@Field({ nullable: true })
 	@Prop()
 	phoneNumber: string;
 }

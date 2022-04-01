@@ -6,17 +6,20 @@ import { User } from './user.schema';
 export class UserResolver {
 	constructor(private readonly userService: UserService) {}
 
-	@Query(() => User)
-	async fetchUser(@Args('userId') userId: string): Promise<User> {
-		return this.userService.fetchUserById(userId);
+	@Query(() => User, { nullable: true })
+	async fetchUser(
+		@Args('userId', { nullable: true }) userId: string,
+		@Args('email', { nullable: true }) email: string,
+	): Promise<User | null> {
+		return this.userService.fetch({ userId, email });
 	}
 
 	@Mutation(() => User)
-	async signUp(
-		@Args('name') name: string,
-		@Args('email') email: string,
+	async signUpUser(
 		@Args('phoneNumber') phoneNumber: string,
+		@Args('email') email: string,
+		@Args('name') name: string,
 	): Promise<User> {
-		return this.userService.createUser(name, email, phoneNumber);
+		return this.userService.signUp({ name, email, phoneNumber });
 	}
 }

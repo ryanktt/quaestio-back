@@ -1,5 +1,5 @@
 import { IUserSignUp, EUserErrorCode } from './user.interface';
-import { AppError } from '../utils/utils.error'; // TODO fix this
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { UserHelper } from './user.helper';
 import { User } from './user.schema';
@@ -37,7 +37,7 @@ export class UserService {
 
 		if (await this.userHelper.fetchByEmail(email)) {
 			throw new AppError({
-				message: 'user already registered with given email',
+				message: 'an user is already registered with given email',
 				code: EUserErrorCode.USER_ALREADY_EXISTS,
 			});
 		}

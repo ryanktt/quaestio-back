@@ -1,6 +1,6 @@
 import { ICreateUser, EUserErrorCode } from './user.interface';
 import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
-import { AppError } from '../utils/utils.error'; // TODO fix this
+import { AppError } from '@utils/utils.error';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { User } from './user.schema';

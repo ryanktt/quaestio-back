@@ -13,12 +13,16 @@
 		"baseUrl": "./",
 		"skipLibCheck": true,
 		"strictNullChecks": true,
-		"noImplicitAny": false,
+		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"strictBindCallApply": false,
-		"forceConsistentCasingInFileNames": false,
+		"forceConsistentCasingInFileNames": true,
 		"lib": ["es2018", "esnext.asynciterable"],
-		"noFallthroughCasesInSwitch": false
+		"noFallthroughCasesInSwitch": false,
+		"paths": {
+			"@modules/*": ["src/module/*"],
+			"@utils/*": ["src/utils/*"]
+		}
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules"]

@@ -1,4 +1,4 @@
-import { EUserErrorCode } from '../user/user.interface'; //fix this
+import { EUserErrorCode } from '@modules/user'; 
 import { registerEnumType } from '@nestjs/graphql';
 
 type EErrorCode = EUserErrorCode;

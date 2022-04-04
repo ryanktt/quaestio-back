@@ -16,10 +16,11 @@ export class UserResolver {
 
 	@Mutation(() => User)
 	async signUpUser(
-		@Args('phoneNumber') phoneNumber: string,
+		@Args('phoneNumber', { nullable: true }) phoneNumber: string,
+		@Args('password') password: string,
 		@Args('email') email: string,
 		@Args('name') name: string,
 	): Promise<User> {
-		return this.userService.signUp({ name, email, phoneNumber });
+		return this.userService.signUp({ name, email, phoneNumber, password });
 	}
 }

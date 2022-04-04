@@ -1,8 +1,9 @@
-import { ICreateUser, EUserErrorCode } from './user.interface';
 import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
-import { AppError } from '@utils/utils.error';
+import { ICreateUser, EUserErrorCode } from './user.interface';
 import { InjectModel } from '@nestjs/mongoose';
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
+import { compare, hash } from 'bcryptjs';
 import { User } from './user.schema';
 import { Promise } from 'bluebird';
 import validator from 'validator';
@@ -41,6 +42,26 @@ export class UserHelper {
 				code: EUserErrorCode.CREATE_USER_ERROR,
 				message: 'fail to create user',
 				originalError: err,
+			});
+		});
+	}
+
+	async getPasswordHash(password: string): Promise<string> {
+		return hash(password, 12).catch((err) => {
+			throw new AppError({
+				originalError: err instanceof Error ? err : undefined,
+				code: EUserErrorCode.PASSWORD_HASH_ERROR,
+				message: 'fail to hash password',
+			});
+		});
+	}
+
+	async comparePassword({ password, hash }: { password: string; hash: string }): Promise<boolean> {
+		return compare(password, hash).catch((err: Error) => {
+			throw new AppError({
+				originalError: err instanceof Error ? err : undefined,
+				code: EUserErrorCode.PASSWORD_HASH_ERROR,
+				message: 'fail to compare password hash',
 			});
 		});
 	}

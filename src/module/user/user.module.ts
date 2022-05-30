@@ -9,4 +9,4 @@ import { Module } from '@nestjs/common';
 	imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])],
 	providers: [UserResolver, UserService, UserHelper],
 })
-export default class UserModule {}
+export class UserModule {}

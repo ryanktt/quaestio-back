@@ -14,16 +14,18 @@ export class UserService {
 		return null;
 	}
 
-	async signUp({ name, email, password, phoneNumber }: IUserSignUp): Promise<User> {
+	async signUp({ name, email, password }: IUserSignUp): Promise<User> {
 		const errCollector = AppError.collectorInstance();
 
 		const normalizedEmail = this.userHelper.normalizeEmail(email);
-		await this.userHelper.validatePhoneNumber(phoneNumber).catch((err: Error) => {
+		await this.userHelper.validatePasswordStrength(password).catch((err: Error) => {
 			return errCollector.collect(err);
 		});
+
 		await this.userHelper.validateEmail(normalizedEmail).catch((err: Error) => {
 			return errCollector.collect(err);
 		});
+
 		await this.userHelper.validateName(name).catch((err: Error) => {
 			return errCollector.collect(err);
 		});
@@ -33,7 +35,6 @@ export class UserService {
 			code: EUserErrorCode.USER_SIGNUP_INVALID_PARAMS,
 		});
 
-		const normalizePhoneNumber = this.userHelper.normalizePhoneNumber(phoneNumber);
 		const hashedPassword = await this.userHelper.getPasswordHash(password);
 
 		if (await this.userHelper.fetchByEmail(email)) {
@@ -43,28 +44,23 @@ export class UserService {
 			});
 		}
 
-		return this.userHelper.create({
-			phoneNumber: normalizePhoneNumber,
-			password: hashedPassword,
-			email: normalizedEmail,
-			name,
-		});
+		return this.userHelper.create({ hashedPassword, email: normalizedEmail, name });
 	}
 
-	async signIn({ email, password }: IUserSignUp): Promise<User> {
-		const user = await this.userHelper.fetchByEmail(email);
-		if (!user) {
-			throw new AppError({
-				code: EUserErrorCode.USER_NOT_FOUND,
-				message: 'no user was not found with given email',
-			});
-		}
+	// async signIn({ email, password }: IUserSignUp): Promise<User> {
+	// 	const user = await this.userHelper.fetchByEmail(email);
+	// 	if (!user) {
+	// 		throw new AppError({
+	// 			code: EUserErrorCode.USER_NOT_FOUND,
+	// 			message: 'no user was not found with given email',
+	// 		});
+	// 	}
 
-		if (!(await this.userHelper.comparePassword({ password, hash: user.password }))) {
-			throw new AppError({
-				code: EUserErrorCode.INVALID_CREDENTIALS,
-				message: 'invalid credentials to sign in',
-			});
-		}
-	}
+	// 	if (!(await this.userHelper.comparePassword({ password, hash: user.password }))) {
+	// 		throw new AppError({
+	// 			code: EUserErrorCode.INVALID_CREDENTIALS,
+	// 			message: 'invalid credentials to sign in',
+	// 		});
+	// 	}
+	// }
 }

@@ -1,5 +1,5 @@
-import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
 import { ICreateUser, EUserErrorCode } from './user.interface';
+import PasswordValidator from 'password-validator';
 import { InjectModel } from '@nestjs/mongoose';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
@@ -15,6 +15,9 @@ export class UserHelper {
 		@InjectModel('User')
 		private readonly userSchema: Model<User>,
 	) {}
+	async fetchUsers(): Promise<User[]> {
+		return this.userSchema.find({});
+	}
 
 	async fetchById(userId: string): Promise<User | null> {
 		return this.userSchema.findById(userId).catch((err: Error) => {
@@ -36,8 +39,8 @@ export class UserHelper {
 		});
 	}
 
-	async create({ name, email, phoneNumber }: ICreateUser): Promise<User> {
-		return this.userSchema.create({ phoneNumber, email, name }).catch((err: Error) => {
+	async create({ name, email, hashedPassword }: ICreateUser): Promise<User> {
+		return this.userSchema.create({ password: hashedPassword, email, name }).catch((err: Error) => {
 			throw new AppError({
 				code: EUserErrorCode.CREATE_USER_ERROR,
 				message: 'fail to create user',
@@ -66,42 +69,39 @@ export class UserHelper {
 		});
 	}
 
+	async validatePasswordStrength(password: string): Promise<void> {
+		await new Promise((resolve): void => {
+			const schema = new PasswordValidator();
+			schema.is().min(4).is().max(100).has().uppercase();
+			const passwordValid = schema.validate(password, { details: true });
+			if (Array.isArray(passwordValid) && passwordValid.length > 0) {
+				throw new AppError({
+					code: EUserErrorCode.INVALID_PASSWORD,
+					message: 'password is invalid',
+					payload: passwordValid,
+				});
+			}
+			resolve();
+		});
+	}
+
 	normalizeEmail(email: string): string {
 		return (validator.normalizeEmail(email) as string).trim();
 	}
 
-	normalizePhoneNumber(phoneNumber?: string): string | undefined {
-		if (!phoneNumber) return;
-		return parsePhoneNumber(phoneNumber).number;
-	}
-
 	async validateName(name: string): Promise<void> {
-		await new Promise((): void => {
+		await new Promise((resolve): void => {
 			const code = EUserErrorCode.INVALID_NAME;
 			if (name.length < 3) throw new AppError({ message: 'invalid name, min character length: 3', code });
 			if (name.length > 255) throw new AppError({ message: 'invalid name, max character length: 255', code });
+			resolve();
 		});
 	}
 	async validateEmail(email: string): Promise<void> {
-		await new Promise((): void => {
-			if (!validator.isEmail(email)) {
-				throw new AppError({
-					code: EUserErrorCode.INVALID_EMAIL,
-					message: 'invalid email',
-				});
-			}
-		});
-	}
-
-	async validatePhoneNumber(phoneNumber?: string): Promise<void> {
-		if (!phoneNumber) return;
-		await new Promise((): void => {
-			if (!isValidPhoneNumber(phoneNumber)) {
-				throw new AppError({
-					code: EUserErrorCode.INVALID_PHONE_NUMBER,
-					message: 'invalid phone number',
-				});
-			}
+		await new Promise((resolve): void => {
+			if (!validator.isEmail(email))
+				throw new AppError({ code: EUserErrorCode.INVALID_EMAIL, message: 'invalid email' });
+			resolve();
 		});
 	}
 }

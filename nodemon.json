@@ -1,5 +1,5 @@
 {
 	"watch": ["src"],
 	"ext": "ts",
-	"exec": "sls offline"
+	"exec": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix && sls offline"
 }

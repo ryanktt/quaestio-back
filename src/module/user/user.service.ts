@@ -47,20 +47,22 @@ export class UserService {
 		return this.userHelper.create({ hashedPassword, email: normalizedEmail, name });
 	}
 
-	// async signIn({ email, password }: IUserSignUp): Promise<User> {
-	// 	const user = await this.userHelper.fetchByEmail(email);
-	// 	if (!user) {
-	// 		throw new AppError({
-	// 			code: EUserErrorCode.USER_NOT_FOUND,
-	// 			message: 'no user was not found with given email',
-	// 		});
-	// 	}
+	async signIn({ email, password }: IUserSignUp): Promise<User> {
+		const user = await this.userHelper.fetchByEmail(email);
+		if (!user) {
+			throw new AppError({
+				code: EUserErrorCode.USER_NOT_FOUND,
+				message: 'no user was found with given email',
+			});
+		}
 
-	// 	if (!(await this.userHelper.comparePassword({ password, hash: user.password }))) {
-	// 		throw new AppError({
-	// 			code: EUserErrorCode.INVALID_CREDENTIALS,
-	// 			message: 'invalid credentials to sign in',
-	// 		});
-	// 	}
-	// }
+		if (!(await this.userHelper.comparePassword({ password, hash: user.password }))) {
+			throw new AppError({
+				code: EUserErrorCode.INVALID_CREDENTIALS,
+				message: 'invalid credentials to sign in',
+			});
+		}
+
+		return user;
+	}
 }

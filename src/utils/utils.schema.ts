@@ -1,17 +1,17 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import mongoose from 'mongoose';
+import mongoose, { Types, HydratedDocument } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 mongoose.plugin((schema: mongoose.Schema) => {
 	schema.set('timestamps', true);
 });
 
-export type Ref<T> = T | string | ObjectId;
+export type Ref<T> = T | string | Types.ObjectId;
 
 @ObjectType({ isAbstract: true })
 export class SchemaBase {
-	@Field()
-	readonly _id: string;
+	@Field(() => Types.ObjectId)
+	readonly _id: ObjectId;
 
 	@Field()
 	createdAt: Date;
@@ -19,3 +19,5 @@ export class SchemaBase {
 	@Field()
 	updatedAt: Date;
 }
+
+export type DocumentType<T> = { id: string } & Omit<HydratedDocument<T>, 'id'>;

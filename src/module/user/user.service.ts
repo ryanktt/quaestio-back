@@ -1,8 +1,6 @@
-import { IUserSignUpParams, EUserErrorCode, IUserSignInResponse } from './user.interface';
+import { UserHelper, User, EUserErrorCode, IUserSignUpParams, IUserSignInResponse } from '@modules/user';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
-import { UserHelper } from './user.helper';
-import { User } from './user.schema';
 
 @Injectable()
 export class UserService {
@@ -65,7 +63,7 @@ export class UserService {
 			});
 		}
 
-		const authToken = this.userHelper.signJwtToken({ userId: user._id });
+		const authToken = this.userHelper.signJwtToken({ userId: user.id });
 
 		return { user, authToken };
 	}

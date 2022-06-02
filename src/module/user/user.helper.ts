@@ -1,4 +1,4 @@
-import { ICreateUserParams, EUserErrorCode } from './user.interface';
+import { ICreateUserParams, EUserErrorCode, User, UserDocument } from '@modules/user';
 import PasswordValidator from 'password-validator';
 import { IJwtPayload } from '@utils/utils.auth';
 import { InjectModel } from '@nestjs/mongoose';
@@ -6,7 +6,6 @@ import { UtilsDate } from '@utils/utils.date';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
-import { User } from './user.schema';
 import { Promise } from 'bluebird';
 import validator from 'validator';
 import { Model } from 'mongoose';
@@ -24,34 +23,34 @@ export class UserHelper {
 		return this.userSchema.find({});
 	}
 
-	async fetchById(userId: string): Promise<User | null> {
+	async fetchById(userId: string): Promise<UserDocument | null> {
 		return this.userSchema.findById(userId).catch((err: Error) => {
 			throw new AppError({
 				code: EUserErrorCode.FETCH_USER_ERROR,
 				message: 'fail to fetch user',
 				originalError: err,
 			});
-		});
+		}) as Promise<UserDocument | null>;
 	}
 
-	async fetchByEmail(email: string): Promise<User | null> {
+	async fetchByEmail(email: string): Promise<UserDocument | null> {
 		return this.userSchema.findOne({ email }).catch((err: Error) => {
 			throw new AppError({
 				code: EUserErrorCode.FETCH_USER_ERROR,
 				message: 'fail to fetch user',
 				originalError: err,
 			});
-		});
+		}) as Promise<UserDocument | null>;
 	}
 
-	async create({ name, email, hashedPassword }: ICreateUserParams): Promise<User> {
+	async create({ name, email, hashedPassword }: ICreateUserParams): Promise<UserDocument> {
 		return this.userSchema.create({ password: hashedPassword, email, name }).catch((err: Error) => {
 			throw new AppError({
 				code: EUserErrorCode.CREATE_USER_ERROR,
 				message: 'fail to create user',
 				originalError: err,
 			});
-		});
+		}) as Promise<UserDocument>;
 	}
 
 	async getPasswordHash(password: string): Promise<string> {

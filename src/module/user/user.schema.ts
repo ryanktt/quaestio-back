@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { SchemaBase, DocumentType } from '@utils/utils.schema';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { SchemaBase } from '@utils/utils.schema';
 
 @ObjectType()
 @Schema()
@@ -18,3 +18,4 @@ export class User extends SchemaBase {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+export type UserDocument = DocumentType<User>;

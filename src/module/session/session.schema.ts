@@ -1,7 +1,8 @@
+import { DocumentType, Ref, SchemaBase } from '@utils/utils.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Ref, SchemaBase } from '@utils/utils.schema';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from '@modules/user';
+import { Model } from 'mongoose';
 
 @ObjectType()
 @Schema()
@@ -18,8 +19,8 @@ export class Session extends SchemaBase {
 	@Prop({ required: true })
 	userAgent: string;
 
-	@Field()
-	@Prop({ required: true })
+	@Field({ defaultValue: true })
+	@Prop({ default: true, required: true })
 	active: boolean;
 
 	@Field()
@@ -28,3 +29,5 @@ export class Session extends SchemaBase {
 }
 
 export const SessionSchema = SchemaFactory.createForClass(Session);
+export type SessionDocument = DocumentType<Session>;
+export type SessionModel = Model<Session>;

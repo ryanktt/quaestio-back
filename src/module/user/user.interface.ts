@@ -1,5 +1,5 @@
 import { registerEnumType } from '@nestjs/graphql';
-import { User } from './user.schema';
+import { UserDocument } from './user.schema';
 
 export enum EUserErrorCode {
 	USER_SIGNUP_INVALID_PARAMS = 'USER_SIGNUP_INVALID_PARAMS',
@@ -29,6 +29,6 @@ export interface ICreateUserParams {
 }
 
 export interface IUserSignInResponse {
+	user: UserDocument;
 	authToken: string;
-	user: User;
 }

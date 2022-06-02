@@ -1,4 +1,5 @@
 import { registerEnumType } from '@nestjs/graphql';
+import { User } from './user.schema';
 
 export enum EUserErrorCode {
 	USER_SIGNUP_INVALID_PARAMS = 'USER_SIGNUP_INVALID_PARAMS',
@@ -15,14 +16,19 @@ export enum EUserErrorCode {
 
 registerEnumType(EUserErrorCode, { name: 'UserErrorCode' });
 
-export interface IUserSignUp {
+export interface IUserSignUpParams {
 	password: string;
 	email: string;
 	name: string;
 }
 
-export interface ICreateUser {
+export interface ICreateUserParams {
 	hashedPassword: string;
 	email: string;
 	name: string;
+}
+
+export interface IUserSignInResponse {
+	authToken: string;
+	user: User;
 }

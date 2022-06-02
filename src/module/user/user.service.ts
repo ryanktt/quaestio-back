@@ -1,4 +1,4 @@
-import { IUserSignUp, EUserErrorCode } from './user.interface';
+import { IUserSignUpParams, EUserErrorCode, IUserSignInResponse } from './user.interface';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { UserHelper } from './user.helper';
@@ -14,7 +14,7 @@ export class UserService {
 		return null;
 	}
 
-	async signUp({ name, email, password }: IUserSignUp): Promise<User> {
+	async signUp({ name, email, password }: IUserSignUpParams): Promise<User> {
 		const errCollector = AppError.collectorInstance();
 
 		const normalizedEmail = this.userHelper.normalizeEmail(email);
@@ -47,7 +47,9 @@ export class UserService {
 		return this.userHelper.create({ hashedPassword, email: normalizedEmail, name });
 	}
 
-	async signIn({ email, password }: IUserSignUp): Promise<User> {
+	async signIn({ email, password }: IUserSignUpParams): Promise<IUserSignInResponse> {
+		email = this.userHelper.normalizeEmail(email);
+
 		const user = await this.userHelper.fetchByEmail(email);
 		if (!user) {
 			throw new AppError({
@@ -63,6 +65,8 @@ export class UserService {
 			});
 		}
 
-		return user;
+		const authToken = this.userHelper.signJwtToken({ userId: user._id });
+
+		return { user, authToken };
 	}
 }

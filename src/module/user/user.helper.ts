@@ -1,6 +1,8 @@
-import { ICreateUser, EUserErrorCode } from './user.interface';
+import { ICreateUserParams, EUserErrorCode } from './user.interface';
 import PasswordValidator from 'password-validator';
+import { IJwtPayload } from '@utils/utils.auth';
 import { InjectModel } from '@nestjs/mongoose';
+import { UtilsDate } from '@utils/utils.date';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
@@ -8,13 +10,16 @@ import { User } from './user.schema';
 import { Promise } from 'bluebird';
 import validator from 'validator';
 import { Model } from 'mongoose';
+import jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserHelper {
 	constructor(
 		@InjectModel('User')
 		private readonly userSchema: Model<User>,
+		private readonly utilsDate: UtilsDate,
 	) {}
+
 	async fetchUsers(): Promise<User[]> {
 		return this.userSchema.find({});
 	}
@@ -39,7 +44,7 @@ export class UserHelper {
 		});
 	}
 
-	async create({ name, email, hashedPassword }: ICreateUser): Promise<User> {
+	async create({ name, email, hashedPassword }: ICreateUserParams): Promise<User> {
 		return this.userSchema.create({ password: hashedPassword, email, name }).catch((err: Error) => {
 			throw new AppError({
 				code: EUserErrorCode.CREATE_USER_ERROR,
@@ -103,5 +108,10 @@ export class UserHelper {
 				throw new AppError({ code: EUserErrorCode.INVALID_EMAIL, message: 'invalid email' });
 			resolve();
 		});
+	}
+
+	signJwtToken(payload: IJwtPayload): string {
+		const twoDaysFromNow = this.utilsDate.addTimeToDate(new Date(), 'days', 2);
+		return jwt.sign(payload, 'JWT Secret', { expiresIn: this.utilsDate.getDateInMs(twoDaysFromNow) });
 	}
 }

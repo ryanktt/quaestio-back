@@ -1,10 +1,8 @@
-import { EUserErrorCode } from '@modules/user';
+import { ESessionErrorCode } from '@modules/session';
 import { registerEnumType } from '@nestjs/graphql';
+import { EUserErrorCode } from '@modules/user';
 
-type EErrorCode = EUserErrorCode;
-const EErrorCode = { ...Object.values(EUserErrorCode) };
-
-registerEnumType(EErrorCode, { name: 'ErrorCode' });
+type EErrorCode = EUserErrorCode | ESessionErrorCode;
 
 interface IError {
 	message: string;

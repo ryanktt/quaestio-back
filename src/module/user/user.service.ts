@@ -1,10 +1,12 @@
 import { UserHelper, User, EUserErrorCode, IUserSignUpParams, IUserSignInResponse } from '@modules/user';
+import { IUserSignInParams } from './user.interface';
+import { SessionHelper } from '@modules/session';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
-	constructor(private readonly userHelper: UserHelper) {}
+	constructor(private readonly userHelper: UserHelper, private readonly sessionHelper: SessionHelper) {}
 
 	async fetch({ userId, email }: { userId?: string; email?: string }): Promise<User | null> {
 		if (userId) return this.userHelper.fetchById(userId);
@@ -45,7 +47,7 @@ export class UserService {
 		return this.userHelper.create({ hashedPassword, email: normalizedEmail, name });
 	}
 
-	async signIn({ email, password }: IUserSignUpParams): Promise<IUserSignInResponse> {
+	async signIn({ email, password, ip, userAgent }: IUserSignInParams): Promise<IUserSignInResponse> {
 		email = this.userHelper.normalizeEmail(email);
 
 		const user = await this.userHelper.fetchByEmail(email);
@@ -63,7 +65,18 @@ export class UserService {
 			});
 		}
 
-		const authToken = this.userHelper.signJwtToken({ userId: user.id });
+		const sessionExpDate = this.sessionHelper.getSessionExpirationDate();
+		const session = await this.sessionHelper.createSession({
+			expiresAt: sessionExpDate,
+			userId: user.id,
+			userAgent,
+			ip,
+		});
+
+		const authToken = this.userHelper.signJwtToken(
+			{ userId: user.id, sessionId: session.id },
+			sessionExpDate,
+		);
 
 		return { user, authToken };
 	}

@@ -1,13 +1,15 @@
 import { SessionModel, ICreateSession, SessionDocument, ESessionErrorCode } from '@modules/session';
 import { InjectModel } from '@nestjs/mongoose';
-import { Injectable } from '@nestjs/common';
 import { AppError } from '@utils/utils.error';
+import { UtilsDate } from '@utils/utils.date';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SessionHelper {
 	constructor(
 		@InjectModel('Session')
 		private readonly sessionSchema: SessionModel,
+		private readonly utilsDate: UtilsDate,
 	) {}
 
 	async createSession(params: ICreateSession): Promise<SessionDocument> {
@@ -18,5 +20,9 @@ export class SessionHelper {
 				originalError: err,
 			});
 		}) as Promise<SessionDocument>;
+	}
+
+	getSessionExpirationDate(): Date {
+		return this.utilsDate.addTimeToDate(new Date(), 'days', 2);
 	}
 }

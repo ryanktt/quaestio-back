@@ -22,6 +22,13 @@ export interface IUserSignUpParams {
 	name: string;
 }
 
+export interface IUserSignInParams {
+	userAgent: string;
+	password: string;
+	email: string;
+	ip: string;
+}
+
 export interface ICreateUserParams {
 	hashedPassword: string;
 	email: string;

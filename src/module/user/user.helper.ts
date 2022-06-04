@@ -1,5 +1,6 @@
 import { ICreateUserParams, EUserErrorCode, User, UserDocument } from '@modules/user';
 import PasswordValidator from 'password-validator';
+import { SessionHelper } from '@modules/session';
 import { IJwtPayload } from '@utils/utils.auth';
 import { InjectModel } from '@nestjs/mongoose';
 import { UtilsDate } from '@utils/utils.date';
@@ -15,6 +16,7 @@ import jwt from 'jsonwebtoken';
 export class UserHelper {
 	constructor(
 		@InjectModel('User')
+		private readonly sessionHelper: SessionHelper,
 		private readonly userSchema: Model<User>,
 		private readonly utilsDate: UtilsDate,
 	) {}
@@ -109,8 +111,7 @@ export class UserHelper {
 		});
 	}
 
-	signJwtToken(payload: IJwtPayload): string {
-		const twoDaysFromNow = this.utilsDate.addTimeToDate(new Date(), 'days', 2);
-		return jwt.sign(payload, 'JWT Secret', { expiresIn: this.utilsDate.getDateInMs(twoDaysFromNow) });
+	signJwtToken(payload: IJwtPayload, expiresAt: Date): string {
+		return jwt.sign(payload, 'JWT Secret', { expiresIn: this.utilsDate.getDateInMs(expiresAt) });
 	}
 }

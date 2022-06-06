@@ -1,14 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { SessionService } from './session.service';
 
 @Injectable()
 export class SessionGuard implements CanActivate {
-	canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-		const req = context.getArgByIndex(2);
-		const userAgent = req.req.headers['user-agent'];
-		const clientIp = req.req.clientIp;
+	constructor(private readonly sessionService: SessionService) {}
+
+	async canActivate(context: ExecutionContext): Promise<boolean> {
+		const gqlContext = GqlExecutionContext.create(context);
+		console.log(gqlContext);
+		const req = context.getArgByIndex(2).req;
+
+		const authenticationToken = req.headers.auth as string;
+		const userAgent = req.headers['user-agent'];
+		// const clientIp = req.clientIp;
+
+		const { user, session } = await this.sessionService.authenticateUser(authenticationToken);
+
+		req.authenticationToken = authenticationToken;
+		req.userAgent = userAgent;
+		req.session = session;
+		req.user = user;
+
 		return true;
 	}
 }

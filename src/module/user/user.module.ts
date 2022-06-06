@@ -3,12 +3,17 @@ import { UserService } from './user.service';
 import { UserSchema } from './user.schema';
 import { UserHelper } from './user.helper';
 
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SharedModule } from 'src/shared.module';
-import { Module } from '@nestjs/common';
+import { SessionModule } from '@modules/session';
+import { UtilsPromise } from '@utils/*';
 
 @Module({
-	imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), SharedModule],
-	providers: [UserService, UserResolver, UserHelper],
+	imports: [
+		MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+		forwardRef(() => SessionModule),
+	],
+	providers: [UserService, UserResolver, UserHelper, UtilsPromise],
+	exports: [UserHelper],
 })
 export class UserModule {}

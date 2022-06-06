@@ -3,7 +3,7 @@ import { User } from './user.schema';
 
 import {
 	GqlExecutionContext,
-	InputType,
+	ObjectType,
 	Resolver,
 	Mutation,
 	Context,
@@ -11,8 +11,7 @@ import {
 	Field,
 	Args,
 } from '@nestjs/graphql';
-
-@InputType()
+@ObjectType()
 class SignInResponse {
 	@Field(() => User)
 	user: User;
@@ -25,6 +24,7 @@ class SignInResponse {
 export class UserResolver {
 	constructor(private readonly userService: UserService) {}
 
+	// @UseGuards(SessionGuard)
 	@Query(() => User, { nullable: true })
 	async fetchUser(
 		@Args('userId', { nullable: true }) userId?: string,

@@ -6,7 +6,6 @@ import { SessionModule } from '@modules/session';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from '@modules/user';
 import { Module } from '@nestjs/common';
-import { SharedModule } from './shared.module';
 
 @Module({
 	imports: [
@@ -17,7 +16,6 @@ import { SharedModule } from './shared.module';
 			driver: ApolloDriver,
 			autoSchemaFile: 'schema.gql',
 		}),
-		SharedModule,
 		SessionModule,
 		UserModule,
 	],

@@ -2,13 +2,16 @@ import { EUserErrorCode, IUserSignInParams, IUserSignInResponse, IUserSignUpPara
 import { UserHelper } from './user.helper';
 import { User } from './user.schema';
 
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError } from 'src/utils/utils.error';
-import { SessionShared } from '@modules/session';
-import { Injectable } from '@nestjs/common';
+import { SessionHelper } from '@modules/session';
 
 @Injectable()
 export class UserService {
-	constructor(private readonly sessionShared: SessionShared, private readonly userHelper: UserHelper) {}
+	constructor(
+		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
+		private readonly userHelper: UserHelper,
+	) {}
 
 	async fetch({ userId, email }: { userId?: string; email?: string }): Promise<User | null> {
 		if (userId) return this.userHelper.fetchById(userId);
@@ -67,15 +70,15 @@ export class UserService {
 			});
 		}
 
-		const sessionExpDate = this.sessionShared.getExpirationDate();
-		const session = await this.sessionShared.create({
+		const sessionExpDate = this.sessionHelper.getExpirationDate();
+		const session = await this.sessionHelper.create({
 			expiresAt: sessionExpDate,
 			userId: user.id,
 			userAgent,
 			ip,
 		});
 
-		const authToken = this.sessionShared.signJwtToken(
+		const authToken = this.sessionHelper.signJwtToken(
 			{ userId: user.id, sessionId: session.id },
 			sessionExpDate,
 		);

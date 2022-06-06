@@ -1,16 +1,15 @@
-import { ESessionErrorCode, ICreateSession, IJwtPayload, IUpdateSession } from './session.interface';
+import { ESessionErrorCode, ICreateSession, IJwtPayload } from './session.interface';
 import { SessionDocument, SessionModel } from './session.schema';
 
-import { AppError, UtilsDate, UtilsPromise } from '@utils/*';
+import { AppError, UtilsDate } from '@utils/*';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import jwt from 'jsonwebtoken';
 
 @Injectable()
-export class SessionHelper {
+export class SessionShared {
 	constructor(
 		@InjectModel('Session') private readonly sessionSchema: SessionModel,
-		private readonly utilsPromise: UtilsPromise,
 		private readonly utilsDate: UtilsDate,
 	) {}
 
@@ -32,23 +31,6 @@ export class SessionHelper {
 				originalError: err,
 			});
 		}) as Promise<SessionDocument>;
-	}
-
-	async update({ active, session }: IUpdateSession): Promise<SessionDocument> {
-		if (active === session.active) return session;
-		session.active = active;
-
-		return session.save().catch((err: Error) => {
-			throw new AppError({
-				code: ESessionErrorCode.UPDATE_SESSION_ERROR,
-				message: 'fail to update session',
-				originalError: err,
-			});
-		}) as Promise<SessionDocument>;
-	}
-
-	async validateAndGetJwtPayload(token: string): Promise<IJwtPayload> {
-		return this.utilsPromise.promisify(() => jwt.verify(token, 'JWT Secret') as IJwtPayload);
 	}
 
 	signJwtToken(payload: IJwtPayload, expiresAt: Date): string {

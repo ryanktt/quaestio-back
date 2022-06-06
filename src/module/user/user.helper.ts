@@ -1,24 +1,18 @@
-import { ICreateUserParams, EUserErrorCode, User, UserDocument } from '@modules/user';
+import { EUserErrorCode, ICreateUserParams } from './user.interface';
+import { User, UserDocument, UserModel } from './user.schema';
+
 import PasswordValidator from 'password-validator';
-import { SessionHelper } from '@modules/session';
-import { IJwtPayload } from '@utils/utils.auth';
+import { AppError, UtilsPromise } from '@utils/*';
 import { InjectModel } from '@nestjs/mongoose';
-import { UtilsDate } from '@utils/utils.date';
-import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
-import { Promise } from 'bluebird';
 import validator from 'validator';
-import { Model } from 'mongoose';
-import jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserHelper {
 	constructor(
-		@InjectModel('User')
-		private readonly sessionHelper: SessionHelper,
-		private readonly userSchema: Model<User>,
-		private readonly utilsDate: UtilsDate,
+		@InjectModel('User') private readonly userSchema: UserModel,
+		private readonly utilsPromise: UtilsPromise,
 	) {}
 
 	async fetchUsers(): Promise<User[]> {
@@ -76,7 +70,7 @@ export class UserHelper {
 	}
 
 	async validatePasswordStrength(password: string): Promise<void> {
-		await new Promise((resolve): void => {
+		return this.utilsPromise.promisify(() => {
 			const schema = new PasswordValidator();
 			schema.is().min(4).is().max(100).has().uppercase();
 			const passwordValid = schema.validate(password, { details: true });
@@ -87,7 +81,6 @@ export class UserHelper {
 					payload: passwordValid,
 				});
 			}
-			resolve();
 		});
 	}
 
@@ -96,22 +89,16 @@ export class UserHelper {
 	}
 
 	async validateName(name: string): Promise<void> {
-		await new Promise((resolve): void => {
+		return this.utilsPromise.promisify(() => {
 			const code = EUserErrorCode.INVALID_NAME;
 			if (name.length < 3) throw new AppError({ message: 'invalid name, min character length: 3', code });
 			if (name.length > 255) throw new AppError({ message: 'invalid name, max character length: 255', code });
-			resolve();
 		});
 	}
 	async validateEmail(email: string): Promise<void> {
-		await new Promise((resolve): void => {
+		return this.utilsPromise.promisify(() => {
 			if (!validator.isEmail(email))
 				throw new AppError({ code: EUserErrorCode.INVALID_EMAIL, message: 'invalid email' });
-			resolve();
 		});
-	}
-
-	signJwtToken(payload: IJwtPayload, expiresAt: Date): string {
-		return jwt.sign(payload, 'JWT Secret', { expiresIn: this.utilsDate.getDateInMs(expiresAt) });
 	}
 }

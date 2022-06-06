@@ -1,5 +1,4 @@
 import { ESessionErrorCode } from '@modules/session';
-import { registerEnumType } from '@nestjs/graphql';
 import { EUserErrorCode } from '@modules/user';
 
 type EErrorCode = EUserErrorCode | ESessionErrorCode;

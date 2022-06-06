@@ -4,3 +4,4 @@ export * from './user.service';
 export * from './user.helper';
 export * from './user.module';
 export * from './user.schema';
+export * from './user.shared';

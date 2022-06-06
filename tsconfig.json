@@ -20,8 +20,9 @@
 		"lib": ["es2018", "esnext.asynciterable"],
 		"noFallthroughCasesInSwitch": false,
 		"paths": {
+			"@utils/*": ["src/utils"],
 			"@modules/*": ["src/module/*"],
-			"@utils/*": ["src/utils/*"]
+			"@shared/*": ["src/shared/*"]
 		}
 	},
 	"include": ["src/**/*.ts"],

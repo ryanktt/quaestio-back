@@ -2,11 +2,11 @@
 import 'reflect-metadata';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
+import { SessionModule } from '@modules/session';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from '@modules/user';
-import { AppService } from './app.service';
 import { Module } from '@nestjs/common';
+import { SharedModule } from './shared.module';
 
 @Module({
 	imports: [
@@ -17,9 +17,9 @@ import { Module } from '@nestjs/common';
 			driver: ApolloDriver,
 			autoSchemaFile: 'schema.gql',
 		}),
+		SharedModule,
+		SessionModule,
 		UserModule,
 	],
-	controllers: [AppController],
-	providers: [AppService],
 })
 export class AppModule {}

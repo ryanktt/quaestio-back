@@ -1,16 +1,16 @@
+import { UserService } from './user.service';
+import { User } from './user.schema';
+
 import {
-	Args,
-	Field,
-	Query,
-	Context,
+	GqlExecutionContext,
+	InputType,
 	Resolver,
 	Mutation,
-	InputType,
-	GqlExecutionContext,
+	Context,
+	Query,
+	Field,
+	Args,
 } from '@nestjs/graphql';
-import { UserService, UserHelper, User } from '@modules/user';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@modules/auth';
 
 @InputType()
 class SignInResponse {
@@ -23,9 +23,8 @@ class SignInResponse {
 
 @Resolver()
 export class UserResolver {
-	constructor(private readonly userService: UserService, private readonly userHelper: UserHelper) {}
+	constructor(private readonly userService: UserService) {}
 
-	@UseGuards(new AuthGuard())
 	@Query(() => User, { nullable: true })
 	async fetchUser(
 		@Args('userId', { nullable: true }) userId?: string,

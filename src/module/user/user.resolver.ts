@@ -11,6 +11,9 @@ import {
 	Field,
 	Args,
 } from '@nestjs/graphql';
+import { IPublicContext } from '@modules/session';
+import { ERole, Role } from '@utils/*';
+
 @ObjectType()
 class SignInResponse {
 	@Field(() => User)
@@ -24,12 +27,14 @@ class SignInResponse {
 export class UserResolver {
 	constructor(private readonly userService: UserService) {}
 
-	// @UseGuards(SessionGuard)
+	@Role(ERole.ADMIN)
 	@Query(() => User, { nullable: true })
 	async fetchUser(
+		@Context() ctx: GqlExecutionContext,
 		@Args('userId', { nullable: true }) userId?: string,
 		@Args('email', { nullable: true }) email?: string,
 	): Promise<User | null> {
+		console.log(ctx);
 		return this.userService.fetch({ userId, email });
 	}
 
@@ -44,10 +49,10 @@ export class UserResolver {
 
 	@Mutation(() => SignInResponse)
 	async signIn(
-		@Context() ctx: GqlExecutionContext,
+		@Context('req') { clientIp, userAgent }: IPublicContext,
 		@Args('password') password: string,
 		@Args('email') email: string,
 	): Promise<SignInResponse> {
-		return this.userService.signIn({ email, password, ip: '', userAgent: '' });
+		return this.userService.signIn({ email, password, ip: clientIp, userAgent });
 	}
 }

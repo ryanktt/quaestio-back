@@ -13,6 +13,6 @@ import { UserModule } from '@modules/user';
 		forwardRef(() => UserModule),
 	],
 	providers: [SessionHelper, SessionService, UtilsPromise, UtilsDate],
-	exports: [SessionHelper],
+	exports: [SessionHelper, SessionService],
 })
 export class SessionModule {}

@@ -35,6 +35,7 @@ export class SessionService {
 		if (!(session.expiresAt.valueOf() > Date.now())) {
 			throw new AppError({ code: ESessionErrorCode.SESSION_EXPIRED, message: 'session expired' });
 		}
+
 		return { user, session };
 	}
 }

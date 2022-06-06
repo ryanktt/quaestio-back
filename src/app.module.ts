@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { SessionGuard, SessionModule } from '@modules/session';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SessionModule } from '@modules/session';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from '@modules/user';
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
 	imports: [
@@ -18,6 +19,12 @@ import { Module } from '@nestjs/common';
 		}),
 		SessionModule,
 		UserModule,
+	],
+	providers: [
+		{
+			useClass: SessionGuard,
+			provide: APP_GUARD,
+		},
 	],
 })
 export class AppModule {}

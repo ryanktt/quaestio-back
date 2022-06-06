@@ -10,7 +10,7 @@ async function bootstrap(): Promise<void> {
 		rateLimit({
 			message: 'Too many requests, please try again later.',
 			windowMs: 5 * 60 * 1000,
-			max: 100,
+			max: 300,
 		}),
 	);
 	app.use(requestIp.mw());

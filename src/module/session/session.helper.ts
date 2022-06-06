@@ -25,13 +25,16 @@ export class SessionHelper {
 	}
 
 	async create(params: ICreateSession): Promise<SessionDocument> {
-		return this.sessionSchema.create(params).catch((err: Error) => {
-			throw new AppError({
-				code: ESessionErrorCode.CREATE_SESSION_ERROR,
-				message: 'fail to create new session',
-				originalError: err,
-			});
-		}) as Promise<SessionDocument>;
+		const { expiresAt, ip, userId, userAgent, active } = params;
+		return this.sessionSchema
+			.create({ expiresAt, ip, user: userId, userAgent, active })
+			.catch((err: Error) => {
+				throw new AppError({
+					code: ESessionErrorCode.CREATE_SESSION_ERROR,
+					message: 'fail to create new session',
+					originalError: err,
+				});
+			}) as Promise<SessionDocument>;
 	}
 
 	async update({ active, session }: IUpdateSession): Promise<SessionDocument> {

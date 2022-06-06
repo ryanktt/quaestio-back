@@ -1,14 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { DocumentType, SchemaBase } from '@utils/*';
+import { DocumentType, Ref, SchemaBase } from '@utils/*';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { User } from '@modules/user';
+import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 
 @ObjectType()
 @Schema()
 export class Session extends SchemaBase {
-	// @Field(() => User)
-	// @Prop({ type: () => User, ref: 'User', required: true })
-	// user: Ref<User>;
+	@Field(() => User)
+	@Prop({ type: ObjectId, ref: 'User', required: true })
+	user: Ref<User>;
 
 	@Field()
 	@Prop({ required: true })

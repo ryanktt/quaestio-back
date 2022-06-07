@@ -3,8 +3,8 @@ import { UserHelper } from './user.helper';
 import { User } from './user.schema';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AppError } from 'src/utils/utils.error';
 import { SessionHelper } from '@modules/session';
+import { AppError } from '@utils/*';
 
 @Injectable()
 export class UserService {
@@ -83,6 +83,6 @@ export class UserService {
 			sessionExpDate,
 		);
 
-		return { user, authToken };
+		return { user, session, authToken };
 	}
 }

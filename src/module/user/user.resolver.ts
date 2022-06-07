@@ -1,21 +1,16 @@
 import { UserService } from './user.service';
 import { User } from './user.schema';
 
-import {
-	GqlExecutionContext,
-	ObjectType,
-	Resolver,
-	Mutation,
-	Context,
-	Query,
-	Field,
-	Args,
-} from '@nestjs/graphql';
-import { IPublicContext } from '@modules/session';
+import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
+import { IAdminContext, IPublicContext, Session, SessionService } from '@modules/session';
+import { forwardRef, Inject } from '@nestjs/common';
 import { ERole, Role } from '@utils/*';
 
 @ObjectType()
 class SignInResponse {
+	@Field(() => Session)
+	session: Session;
+
 	@Field(() => User)
 	user: User;
 
@@ -23,18 +18,28 @@ class SignInResponse {
 	authToken: string;
 }
 
+@ObjectType()
+class LogOutResponse {
+	@Field(() => Session)
+	session: Session;
+
+	@Field(() => User)
+	user: User;
+}
+
 @Resolver()
 export class UserResolver {
-	constructor(private readonly userService: UserService) {}
+	constructor(
+		@Inject(forwardRef(() => SessionService)) private readonly sessionService: SessionService,
+		private readonly userService: UserService,
+	) {}
 
 	@Role(ERole.ADMIN)
 	@Query(() => User, { nullable: true })
 	async fetchUser(
-		@Context() ctx: GqlExecutionContext,
 		@Args('userId', { nullable: true }) userId?: string,
 		@Args('email', { nullable: true }) email?: string,
 	): Promise<User | null> {
-		console.log(ctx);
 		return this.userService.fetch({ userId, email });
 	}
 
@@ -54,5 +59,12 @@ export class UserResolver {
 		@Args('email') email: string,
 	): Promise<SignInResponse> {
 		return this.userService.signIn({ email, password, ip: clientIp, userAgent });
+	}
+
+	@Role(ERole.ADMIN)
+	@Mutation(() => LogOutResponse)
+	async logOut(@Context('req') { user, session }: IAdminContext): Promise<LogOutResponse> {
+		await this.sessionService.deactivateSession(session);
+		return { session, user };
 	}
 }

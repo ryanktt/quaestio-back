@@ -1,6 +1,7 @@
 import { UserDocument } from './user.schema';
 
 import { registerEnumType } from '@nestjs/graphql';
+import { SessionDocument } from '@modules/session';
 
 export enum EUserErrorCode {
 	USER_SIGNUP_INVALID_PARAMS = 'USER_SIGNUP_INVALID_PARAMS',
@@ -37,6 +38,7 @@ export interface ICreateUserParams {
 }
 
 export interface IUserSignInResponse {
+	session: SessionDocument;
 	user: UserDocument;
 	authToken: string;
 }

@@ -27,7 +27,7 @@ class LogOutResponse {
 	user: User;
 }
 
-@Resolver()
+@Resolver(() => User)
 export class UserResolver {
 	constructor(
 		@Inject(forwardRef(() => SessionService)) private readonly sessionService: SessionService,

@@ -19,17 +19,14 @@ export class UserHelper {
 		return this.userSchema.find({});
 	}
 
-	async fetchByIds(userIds: string[]): Promise<User[]> {
-		return this.userSchema
-			.find({ _id: { $in: userIds } })
-			.lean()
-			.catch((err: Error) => {
-				throw new AppError({
-					code: EUserErrorCode.FETCH_USERS_ERROR,
-					message: 'fail to fetch users by ids',
-					originalError: err,
-				});
-			}) as Promise<User[]>;
+	async fetchByIds(userIds: string[]): Promise<UserDocument[]> {
+		return this.userSchema.find({ _id: { $in: userIds } }).catch((err: Error) => {
+			throw new AppError({
+				code: EUserErrorCode.FETCH_USERS_ERROR,
+				message: 'fail to fetch users by ids',
+				originalError: err,
+			});
+		}) as Promise<UserDocument[]>;
 	}
 
 	async fetchById(userId: string): Promise<UserDocument | null> {

@@ -1,3 +1,4 @@
+import { SessionResolver } from './session.resolver';
 import { SessionService } from './session.service';
 import { SessionSchema } from './session.schema';
 import { SessionHelper } from './session.helper';
@@ -12,7 +13,7 @@ import { UserModule } from '@modules/user';
 		MongooseModule.forFeature([{ name: 'Session', schema: SessionSchema }]),
 		forwardRef(() => UserModule),
 	],
-	providers: [SessionHelper, SessionService, UtilsPromise, UtilsDate],
+	providers: [SessionResolver, SessionHelper, SessionService, UtilsPromise, UtilsDate],
 	exports: [SessionHelper, SessionService],
 })
 export class SessionModule {}

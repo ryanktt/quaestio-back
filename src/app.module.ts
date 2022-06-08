@@ -2,6 +2,7 @@
 import 'reflect-metadata';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { SessionGuard, SessionModule } from '@modules/session';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserHelper, UserModule } from '@modules/user';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UtilsArray, UtilsModule } from './utils';
@@ -10,11 +11,19 @@ import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { loaders } from './app.loaders';
 
+interface IEnvirolmentVariables {
+	MONGO_URI: string;
+}
+
 @Module({
 	imports: [
-		MongooseModule.forRoot(
-			'mongodb+srv://ryanktt:3301@cluster0.njo09.mongodb.net/questionnaireDatabase?authSource=admin&replicaSet=atlas-bay2b7-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true',
-		),
+		MongooseModule.forRootAsync({
+			useFactory: (configService: ConfigService<IEnvirolmentVariables>) => ({
+				uri: configService.get('MONGO_URI', { infer: true }),
+			}),
+			imports: [ConfigModule],
+			inject: [ConfigService],
+		}),
 		GraphQLModule.forRootAsync<ApolloDriverConfig>({
 			driver: ApolloDriver,
 			useFactory: (utilsArray: UtilsArray, userHelper: UserHelper) => ({
@@ -26,6 +35,7 @@ import { loaders } from './app.loaders';
 			imports: [UserModule, UtilsModule],
 			inject: [UtilsArray, UserHelper],
 		}),
+		ConfigModule.forRoot(),
 		SessionModule,
 		UtilsModule,
 		UserModule,

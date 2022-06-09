@@ -2,7 +2,7 @@ import { ESessionErrorCode } from './session.interface';
 import { SessionDocument } from './session.schema';
 import { SessionHelper } from './session.helper';
 
-import { EUserErrorCode, UserDocument, UserHelper } from '@modules/user';
+import { EUserErrorCode, UserDocument, UserHelper } from 'src/user';
 import { AppError } from 'src/utils/utils.error';
 import { Injectable } from '@nestjs/common';
 

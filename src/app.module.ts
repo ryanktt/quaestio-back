@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { SessionGuard, SessionModule } from '@modules/session';
+import { SessionGuard, SessionModule } from 'src/session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserHelper, UserModule } from '@modules/user';
+import { UserHelper, UserModule } from 'src/user';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UtilsArray, UtilsModule } from './utils';
 import { GraphQLModule } from '@nestjs/graphql';

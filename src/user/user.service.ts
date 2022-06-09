@@ -3,7 +3,7 @@ import { UserHelper } from './user.helper';
 import { User } from './user.schema';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { SessionHelper } from '@modules/session';
+import { SessionHelper } from 'src/session';
 import { AppError } from '@utils/*';
 
 @Injectable()

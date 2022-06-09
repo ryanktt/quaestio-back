@@ -2,7 +2,7 @@ import { UserService } from './user.service';
 import { User } from './user.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
-import { IAdminContext, IPublicContext, Session, SessionService } from '@modules/session';
+import { IAdminContext, IPublicContext, Session, SessionService } from 'src/session';
 import { forwardRef, Inject } from '@nestjs/common';
 import { ERole, Role } from '@utils/*';
 

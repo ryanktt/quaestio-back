@@ -1,7 +1,7 @@
 import { SessionDocument } from './session.schema';
 
 import { registerEnumType } from '@nestjs/graphql';
-import { UserDocument } from '@modules/user';
+import { UserDocument } from 'src/user';
 
 export enum ESessionErrorCode {
 	SESSION_IS_NOT_ACTIVE = 'SESSION_IS_NOT_ACTIVE',

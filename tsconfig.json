@@ -21,7 +21,6 @@
 		"noFallthroughCasesInSwitch": false,
 		"paths": {
 			"@utils/*": ["src/utils"],
-			"@modules/*": ["src/module/*"],
 			"@shared/*": ["src/shared/*"]
 		}
 	},

@@ -2,6 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Location {
+  country: String!
+  state: String!
+  city: String!
+  timezone: String!
+}
+
 type User {
   _id: String!
   createdAt: DateTime!

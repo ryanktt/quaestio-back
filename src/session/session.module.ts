@@ -6,7 +6,7 @@ import { SessionHelper } from './session.helper';
 import { UtilsDate, UtilsPromise } from '@utils/*';
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from '@modules/user';
+import { UserModule } from 'src/user';
 
 @Module({
 	imports: [

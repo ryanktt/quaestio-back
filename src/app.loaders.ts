@@ -1,4 +1,4 @@
-import { UserHelper, userLoader } from '@modules/user';
+import { UserHelper, userLoader } from 'src/user';
 import { UtilsArray } from './utils';
 
 export interface ILoaders {

@@ -1,6 +1,6 @@
-import { ERespondentErrorCode } from '@modules/respondent';
-import { ESessionErrorCode } from '@modules/session';
-import { EUserErrorCode } from '@modules/user';
+import { ERespondentErrorCode } from 'src/respondent';
+import { ESessionErrorCode } from 'src/session';
+import { EUserErrorCode } from 'src/user';
 
 type EErrorCode = EUserErrorCode | ESessionErrorCode | ERespondentErrorCode;
 

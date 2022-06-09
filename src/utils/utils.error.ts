@@ -1,7 +1,8 @@
+import { ERespondentErrorCode } from '@modules/respondent';
 import { ESessionErrorCode } from '@modules/session';
 import { EUserErrorCode } from '@modules/user';
 
-type EErrorCode = EUserErrorCode | ESessionErrorCode;
+type EErrorCode = EUserErrorCode | ESessionErrorCode | ERespondentErrorCode;
 
 interface IError {
 	message: string;

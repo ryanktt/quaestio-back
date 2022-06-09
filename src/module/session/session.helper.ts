@@ -15,13 +15,16 @@ export class SessionHelper {
 	) {}
 
 	async fetchById(sessionId: string): Promise<SessionDocument | null> {
-		return this.sessionSchema.findById(sessionId).catch((err: Error) => {
-			throw new AppError({
-				code: ESessionErrorCode.FETCH_SESSION_ERROR,
-				message: 'fail to fetch session',
-				originalError: err,
-			});
-		}) as Promise<SessionDocument | null>;
+		return this.sessionSchema
+			.findById(sessionId)
+			.exec()
+			.catch((err: Error) => {
+				throw new AppError({
+					code: ESessionErrorCode.FETCH_SESSION_ERROR,
+					message: 'fail to fetch session',
+					originalError: err,
+				});
+			}) as Promise<SessionDocument | null>;
 	}
 
 	async create(params: ICreateSession): Promise<SessionDocument> {

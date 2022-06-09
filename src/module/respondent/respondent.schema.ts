@@ -4,6 +4,25 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Model } from 'mongoose';
 
 @ObjectType()
+export class Location {
+	@Field()
+	@Prop({ required: true })
+	country: string;
+
+	@Field()
+	@Prop({ required: true })
+	state: string;
+
+	@Field()
+	@Prop({ required: true })
+	city: string;
+
+	@Field()
+	@Prop({ required: true })
+	timezone: string;
+}
+
+@ObjectType()
 @Schema()
 export class Respondent extends SchemaBase {
 	@Field()
@@ -22,8 +41,11 @@ export class Respondent extends SchemaBase {
 	@Prop({ required: true })
 	userAgent: string;
 
+	@Field(() => Location)
+	@Prop({ type: Location, required: true })
+	location: Location;
+
 	// quiz
-	//_gqlLocation
 }
 
 export const RespondentSchema = SchemaFactory.createForClass(Respondent);

@@ -1,3 +1,4 @@
+import { UserRepository } from './user.repository';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 import { UserSchema } from './user.schema';
@@ -13,7 +14,7 @@ import { SessionModule } from 'src/session';
 		MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
 		forwardRef(() => SessionModule),
 	],
-	providers: [UserService, UserResolver, UserHelper, UtilsPromise, UtilsArray],
-	exports: [UserHelper, UserService],
+	providers: [UserService, UserResolver, UserHelper, UserRepository, UtilsPromise, UtilsArray],
+	exports: [UserHelper, UserService, UserRepository],
 })
 export class UserModule {}

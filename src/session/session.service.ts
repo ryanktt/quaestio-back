@@ -3,7 +3,7 @@ import { ESessionErrorCode } from './session.interface';
 import { SessionDocument } from './session.schema';
 import { SessionHelper } from './session.helper';
 
-import { EUserErrorCode, UserDocument, UserHelper } from 'src/user';
+import { EUserErrorCode, UserDocument, UserRepository } from 'src/user';
 import { AppError } from 'src/utils/utils.error';
 import { Injectable } from '@nestjs/common';
 
@@ -11,8 +11,8 @@ import { Injectable } from '@nestjs/common';
 export class SessionService {
 	constructor(
 		private readonly sessionRepository: SessionRepository,
+		private readonly userRepository: UserRepository,
 		private readonly sessionHelper: SessionHelper,
-		private readonly userHelper: UserHelper,
 	) {}
 
 	async authenticateUser(token: string): Promise<{ session: SessionDocument; user: UserDocument }> {
@@ -28,7 +28,7 @@ export class SessionService {
 
 		const [session, user] = await Promise.all([
 			this.sessionRepository.fetchById(sessionId),
-			this.userHelper.fetchById(userId),
+			this.userRepository.fetchById(userId),
 		]);
 
 		if (!session) {

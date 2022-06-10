@@ -1,69 +1,14 @@
-import { EUserErrorCode, ICreateUserParams } from './user.interface';
-import { UserDocument, UserModel } from './user.schema';
+import { EUserErrorCode } from './user.interface';
 
 import PasswordValidator from 'password-validator';
 import { AppError, UtilsPromise } from '@utils/*';
-import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
 import validator from 'validator';
 
 @Injectable()
 export class UserHelper {
-	constructor(
-		@InjectModel('User') private readonly userSchema: UserModel,
-		private readonly utilsPromise: UtilsPromise,
-	) {}
-
-	async fetchByIds(userIds: string[]): Promise<UserDocument[]> {
-		return this.userSchema
-			.find({ _id: { $in: userIds } })
-			.exec()
-			.catch((err: Error) => {
-				throw new AppError({
-					code: EUserErrorCode.FETCH_USERS_ERROR,
-					message: 'fail to fetch users by ids',
-					originalError: err,
-				});
-			}) as Promise<UserDocument[]>;
-	}
-
-	async fetchById(userId: string): Promise<UserDocument | null> {
-		return this.userSchema
-			.findById(userId)
-			.exec()
-			.catch((err: Error) => {
-				throw new AppError({
-					code: EUserErrorCode.FETCH_USER_ERROR,
-					message: 'fail to fetch user',
-					originalError: err,
-				});
-			}) as Promise<UserDocument | null>;
-	}
-
-	async fetchByEmail(email: string): Promise<UserDocument | null> {
-		return this.userSchema
-			.findOne({ email })
-			.exec()
-			.catch((err: Error) => {
-				throw new AppError({
-					code: EUserErrorCode.FETCH_USER_ERROR,
-					message: 'fail to fetch user',
-					originalError: err,
-				});
-			}) as Promise<UserDocument | null>;
-	}
-
-	async create({ name, email, hashedPassword }: ICreateUserParams): Promise<UserDocument> {
-		return this.userSchema.create({ password: hashedPassword, email, name }).catch((err: Error) => {
-			throw new AppError({
-				code: EUserErrorCode.CREATE_USER_ERROR,
-				message: 'fail to create user',
-				originalError: err,
-			});
-		}) as Promise<UserDocument>;
-	}
-
+	constructor(private readonly utilsPromise: UtilsPromise) {}
 	async getPasswordHash(password: string): Promise<string> {
 		return hash(password, 12).catch((err) => {
 			throw new AppError({

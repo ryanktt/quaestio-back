@@ -1,4 +1,5 @@
 import { EUserErrorCode, IUserSignInParams, IUserSignInResponse, IUserSignUpParams } from './user.interface';
+import { UserRepository } from './user.repository';
 import { UserHelper } from './user.helper';
 import { User } from './user.schema';
 
@@ -11,12 +12,13 @@ export class UserService {
 	constructor(
 		@Inject(forwardRef(() => SessionRepository)) private readonly sessionRepository: SessionRepository,
 		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
+		private readonly userRepository: UserRepository,
 		private readonly userHelper: UserHelper,
 	) {}
 
 	async fetch({ userId, email }: { userId?: string; email?: string }): Promise<User | null> {
-		if (userId) return this.userHelper.fetchById(userId);
-		if (email) return this.userHelper.fetchByEmail(email);
+		if (userId) return this.userRepository.fetchById(userId);
+		if (email) return this.userRepository.fetchByEmail(email);
 		return null;
 	}
 
@@ -43,20 +45,20 @@ export class UserService {
 
 		const hashedPassword = await this.userHelper.getPasswordHash(password);
 
-		if (await this.userHelper.fetchByEmail(email)) {
+		if (await this.userRepository.fetchByEmail(email)) {
 			throw new AppError({
 				message: 'an user is already registered with given email',
 				code: EUserErrorCode.USER_ALREADY_EXISTS,
 			});
 		}
 
-		return this.userHelper.create({ hashedPassword, email: normalizedEmail, name });
+		return this.userRepository.create({ hashedPassword, email: normalizedEmail, name });
 	}
 
 	async signIn({ email, password, ip, userAgent }: IUserSignInParams): Promise<IUserSignInResponse> {
 		email = this.userHelper.normalizeEmail(email);
 
-		const user = await this.userHelper.fetchByEmail(email);
+		const user = await this.userRepository.fetchByEmail(email);
 		if (!user) {
 			throw new AppError({
 				code: EUserErrorCode.USER_NOT_FOUND,

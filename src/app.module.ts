@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { SessionGuard, SessionModule } from 'src/session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserHelper, UserModule } from 'src/user';
+import { UserRepository, UserModule } from 'src/user';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UtilsArray, UtilsModule } from './utils';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -26,14 +26,14 @@ interface IEnvirolmentVariables {
 		}),
 		GraphQLModule.forRootAsync<ApolloDriverConfig>({
 			driver: ApolloDriver,
-			useFactory: (utilsArray: UtilsArray, userHelper: UserHelper) => ({
+			useFactory: (utilsArray: UtilsArray, userRepository: UserRepository) => ({
 				autoSchemaFile: 'schema.gql',
 				context: {
-					loaders: loaders(userHelper, utilsArray),
+					loaders: loaders(userRepository, utilsArray),
 				},
 			}),
 			imports: [UserModule, UtilsModule],
-			inject: [UtilsArray, UserHelper],
+			inject: [UtilsArray, UserRepository],
 		}),
 		ConfigModule.forRoot(),
 		SessionModule,

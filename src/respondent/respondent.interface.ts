@@ -15,8 +15,15 @@ export interface IRespondentLocation {
 	city: string;
 }
 
-export interface ICreateRespondent {
+export interface ICreateRespondentParams {
 	location: IRespondentLocation;
+	userAgent: string;
+	email: string;
+	name: string;
+	ip: string;
+}
+
+export interface ISignInRespondentParams {
 	userAgent: string;
 	email: string;
 	name: string;

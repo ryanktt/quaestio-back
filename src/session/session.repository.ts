@@ -1,4 +1,4 @@
-import { ESessionErrorCode, ICreateSession, IUpdateSession } from './session.interface';
+import { ESessionErrorCode, ICreateSessionParams, IUpdateSessionParams } from './session.interface';
 import { SessionDocument, SessionModel } from './session.schema';
 
 import { AppError, UtilsPromise } from '@utils/*';
@@ -25,7 +25,7 @@ export class SessionRepository {
 			}) as Promise<SessionDocument | null>;
 	}
 
-	async create(params: ICreateSession): Promise<SessionDocument> {
+	async create(params: ICreateSessionParams): Promise<SessionDocument> {
 		const { expiresAt, ip, userId, userAgent, active } = params;
 		return this.sessionSchema
 			.create({ expiresAt, ip, user: userId, userAgent, active })
@@ -38,7 +38,7 @@ export class SessionRepository {
 			}) as Promise<SessionDocument>;
 	}
 
-	async update({ active, session }: IUpdateSession): Promise<SessionDocument> {
+	async update({ active, session }: IUpdateSessionParams): Promise<SessionDocument> {
 		if (active === session.active) return session;
 		session.active = active;
 

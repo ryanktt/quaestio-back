@@ -15,7 +15,7 @@ export enum ESessionErrorCode {
 
 registerEnumType(ESessionErrorCode, { name: 'SessionErrorCode' });
 
-export interface ICreateSession {
+export interface ICreateSessionParams {
 	userAgent: string;
 	expiresAt: Date;
 	userId: string;
@@ -23,7 +23,7 @@ export interface ICreateSession {
 	active?: boolean;
 }
 
-export interface IUpdateSession {
+export interface IUpdateSessionParams {
 	session: SessionDocument;
 	active: boolean;
 }

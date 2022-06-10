@@ -1,4 +1,4 @@
-import { ERespondentErrorCode, ICreateRespondent } from './respondent.interface';
+import { ERespondentErrorCode, ICreateRespondentParams } from './respondent.interface';
 import { RespondentDocument, RespondentModel } from './respondent.schema';
 
 import { InjectModel } from '@nestjs/mongoose';
@@ -22,7 +22,7 @@ export class RespondentRepository {
 			}) as Promise<RespondentDocument | null>;
 	}
 
-	async create(params: ICreateRespondent): Promise<RespondentDocument> {
+	async create(params: ICreateRespondentParams): Promise<RespondentDocument> {
 		const { userAgent, location, name, email, ip } = params;
 		return this.respondentSchema.create({ userAgent, location, name, email, ip }).catch((err: Error) => {
 			throw new AppError({

@@ -16,10 +16,10 @@ export class UserService {
 		private readonly userHelper: UserHelper,
 	) {}
 
-	async fetch({ userId, email }: { userId?: string; email?: string }): Promise<User | null> {
+	async fetch({ userId, email }: { userId?: string; email?: string }): Promise<User | undefined> {
 		if (userId) return this.userRepository.fetchById(userId);
 		if (email) return this.userRepository.fetchByEmail(email);
-		return null;
+		return undefined;
 	}
 
 	async signUp({ name, email, password }: IUserSignUpParams): Promise<User> {

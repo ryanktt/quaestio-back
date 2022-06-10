@@ -39,7 +39,7 @@ export class UserResolver {
 	async fetchUser(
 		@Args('userId', { nullable: true }) userId?: string,
 		@Args('email', { nullable: true }) email?: string,
-	): Promise<User | null> {
+	): Promise<User | undefined> {
 		return this.userService.fetch({ userId, email });
 	}
 

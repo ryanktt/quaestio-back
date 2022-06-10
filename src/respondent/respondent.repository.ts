@@ -9,8 +9,8 @@ import { AppError } from '@utils/*';
 export class RespondentRepository {
 	constructor(@InjectModel('Respondent') private readonly respondentSchema: RespondentModel) {}
 
-	async fetchById(respondentId: string): Promise<RespondentDocument | null> {
-		return this.respondentSchema
+	async fetchById(respondentId: string): Promise<RespondentDocument | undefined> {
+		const respondent = (await this.respondentSchema
 			.findById(respondentId)
 			.exec()
 			.catch((err: Error) => {
@@ -19,7 +19,8 @@ export class RespondentRepository {
 					message: 'fail to fetch respondent',
 					originalError: err,
 				});
-			}) as Promise<RespondentDocument | null>;
+			})) as RespondentDocument | null;
+		return respondent ? respondent : undefined;
 	}
 
 	async create(params: ICreateRespondentParams): Promise<RespondentDocument> {

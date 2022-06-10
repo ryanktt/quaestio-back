@@ -22,8 +22,8 @@ export class UserRepository {
 			}) as Promise<UserDocument[]>;
 	}
 
-	async fetchById(userId: string): Promise<UserDocument | null> {
-		return this.userSchema
+	async fetchById(userId: string): Promise<UserDocument | undefined> {
+		const user = (await this.userSchema
 			.findById(userId)
 			.exec()
 			.catch((err: Error) => {
@@ -32,11 +32,12 @@ export class UserRepository {
 					message: 'fail to fetch user',
 					originalError: err,
 				});
-			}) as Promise<UserDocument | null>;
+			})) as UserDocument | null;
+		return user ? user : undefined;
 	}
 
-	async fetchByEmail(email: string): Promise<UserDocument | null> {
-		return this.userSchema
+	async fetchByEmail(email: string): Promise<UserDocument | undefined> {
+		const user = (await this.userSchema
 			.findOne({ email })
 			.exec()
 			.catch((err: Error) => {
@@ -45,7 +46,8 @@ export class UserRepository {
 					message: 'fail to fetch user',
 					originalError: err,
 				});
-			}) as Promise<UserDocument | null>;
+			})) as UserDocument | null;
+		return user ? user : undefined;
 	}
 
 	async create({ name, email, hashedPassword }: ICreateUserParams): Promise<UserDocument> {

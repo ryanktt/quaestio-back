@@ -12,8 +12,8 @@ export class SessionRepository {
 		private readonly utilsPromise: UtilsPromise,
 	) {}
 
-	async fetchById(sessionId: string): Promise<SessionDocument | null> {
-		return this.sessionSchema
+	async fetchById(sessionId: string): Promise<SessionDocument | undefined> {
+		const session = (await this.sessionSchema
 			.findById(sessionId)
 			.exec()
 			.catch((err: Error) => {
@@ -22,7 +22,8 @@ export class SessionRepository {
 					message: 'fail to fetch session',
 					originalError: err,
 				});
-			}) as Promise<SessionDocument | null>;
+			})) as SessionDocument | null;
+		return session ? session : undefined;
 	}
 
 	async create(params: ICreateSessionParams): Promise<SessionDocument> {

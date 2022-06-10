@@ -1,3 +1,4 @@
+import { SessionRepository } from './session.repository';
 import { ESessionErrorCode } from './session.interface';
 import { SessionDocument } from './session.schema';
 import { SessionHelper } from './session.helper';
@@ -8,7 +9,11 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SessionService {
-	constructor(private readonly sessionHelper: SessionHelper, private readonly userHelper: UserHelper) {}
+	constructor(
+		private readonly sessionRepository: SessionRepository,
+		private readonly sessionHelper: SessionHelper,
+		private readonly userHelper: UserHelper,
+	) {}
 
 	async authenticateUser(token: string): Promise<{ session: SessionDocument; user: UserDocument }> {
 		const { userId, sessionId } = await this.sessionHelper
@@ -22,7 +27,7 @@ export class SessionService {
 			});
 
 		const [session, user] = await Promise.all([
-			this.sessionHelper.fetchById(sessionId),
+			this.sessionRepository.fetchById(sessionId),
 			this.userHelper.fetchById(userId),
 		]);
 
@@ -44,6 +49,6 @@ export class SessionService {
 	}
 
 	async deactivateSession(session: SessionDocument): Promise<SessionDocument> {
-		return this.sessionHelper.update({ session, active: false });
+		return this.sessionRepository.update({ session, active: false });
 	}
 }

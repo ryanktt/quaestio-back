@@ -3,12 +3,13 @@ import { UserHelper } from './user.helper';
 import { User } from './user.schema';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { SessionHelper } from 'src/session';
+import { SessionHelper, SessionRepository } from 'src/session';
 import { AppError } from '@utils/*';
 
 @Injectable()
 export class UserService {
 	constructor(
+		@Inject(forwardRef(() => SessionRepository)) private readonly sessionRepository: SessionRepository,
 		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
 		private readonly userHelper: UserHelper,
 	) {}
@@ -71,7 +72,7 @@ export class UserService {
 		}
 
 		const sessionExpDate = this.sessionHelper.getExpirationDate();
-		const session = await this.sessionHelper.create({
+		const session = await this.sessionRepository.create({
 			expiresAt: sessionExpDate,
 			userId: user.id,
 			userAgent,

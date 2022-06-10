@@ -1,3 +1,4 @@
+export * from './session.repository';
 export * from './session.interface';
 export * from './session.service';
 export * from './session.schema';

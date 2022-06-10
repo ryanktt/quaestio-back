@@ -7,13 +7,14 @@ import { UtilsDate, UtilsPromise } from '@utils/*';
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from 'src/user';
+import { SessionRepository } from './session.repository';
 
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: 'Session', schema: SessionSchema }]),
 		forwardRef(() => UserModule),
 	],
-	providers: [SessionResolver, SessionHelper, SessionService, UtilsPromise, UtilsDate],
-	exports: [SessionHelper, SessionService],
+	providers: [SessionResolver, SessionHelper, SessionService, SessionRepository, UtilsPromise, UtilsDate],
+	exports: [SessionHelper, SessionService, SessionRepository],
 })
 export class SessionModule {}

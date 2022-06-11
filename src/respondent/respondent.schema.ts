@@ -41,9 +41,9 @@ export class Respondent extends SchemaBase {
 	@Prop({ required: true })
 	userAgent: string;
 
-	@Field(() => Location)
-	@Prop({ type: Location, required: true })
-	location: Location;
+	@Field(() => Location, { nullable: true })
+	@Prop({ type: Location })
+	location?: Location;
 
 	// quiz
 }

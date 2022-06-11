@@ -1,7 +1,7 @@
 import { SessionDocument } from './session.schema';
 
 import { registerEnumType } from '@nestjs/graphql';
-import { UserDocument } from 'src/user';
+import { AdminDocument } from 'src/user/admin';
 
 export enum ESessionErrorCode {
 	SESSION_IS_NOT_ACTIVE = 'SESSION_IS_NOT_ACTIVE',
@@ -41,5 +41,5 @@ export interface IPublicContext {
 
 export interface IAdminContext extends IPublicContext {
 	session: SessionDocument;
-	user: UserDocument;
+	user: AdminDocument;
 }

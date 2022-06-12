@@ -1,10 +1,10 @@
-import { adminLoader, AdminRepository } from 'src/user';
+import { userLoader, UserRepository } from 'src/user';
 import { UtilsArray } from './utils';
 
 export interface ILoaders {
-	adminLoader: ReturnType<typeof adminLoader>;
+	userLoader: ReturnType<typeof userLoader>;
 }
 
-export function loaders(adminRepository: AdminRepository, utilsArray: UtilsArray): ILoaders {
-	return { adminLoader: adminLoader(adminRepository, utilsArray) };
+export function loaders(userRepository: UserRepository, utilsArray: UtilsArray): ILoaders {
+	return { userLoader: userLoader(userRepository, utilsArray) };
 }

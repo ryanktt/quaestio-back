@@ -9,23 +9,15 @@ type Location {
   timezone: String!
 }
 
-type User {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  name: String!
-  email: String!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type SignInResponse {
   session: Session!
   user: User!
   authToken: String!
+}
+
+interface User {
+  name: String!
+  email: String!
 }
 
 type LogOutResponse {
@@ -43,6 +35,11 @@ type Session {
   active: Boolean!
   expiresAt: DateTime!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   fetchUser(userId: String, email: String): User

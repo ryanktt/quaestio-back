@@ -1,29 +1,29 @@
-import { IAdminSignInParams, IAdminSignInResponse, IAdminSignUpParams } from './admin.interface';
-import { AdminRepository } from './admin.repository';
-import { Admin } from './admin.schema';
-import { EUserErrorCode } from '../user.interface';
-import { UserHelper } from '../user.helper';
+import { IUserSignInParams, IUserSignInResponse, IUserSignUpParams } from './user.interface';
+import { EUserErrorCode } from './user.interface';
+import { UserRepository } from './user.repository';
+import { UserHelper } from './user.helper';
+import { User } from './user.schema';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { SessionHelper, SessionRepository } from 'src/session';
 import { AppError } from '@utils/*';
 
 @Injectable()
-export class AdminService {
+export class UserService {
 	constructor(
 		@Inject(forwardRef(() => SessionRepository)) private readonly sessionRepository: SessionRepository,
 		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
-		private readonly userRepository: AdminRepository,
+		private readonly userRepository: UserRepository,
 		private readonly userHelper: UserHelper,
 	) {}
 
-	async fetch({ userId, email }: { userId?: string; email?: string }): Promise<Admin | undefined> {
+	async fetch({ userId, email }: { userId?: string; email?: string }): Promise<User | undefined> {
 		if (userId) return this.userRepository.fetchById(userId);
 		if (email) return this.userRepository.fetchByEmail(email);
 		return undefined;
 	}
 
-	async signUp({ name, email, password }: IAdminSignUpParams): Promise<Admin> {
+	async signUp({ name, email, password }: IUserSignUpParams): Promise<User> {
 		const errCollector = AppError.collectorInstance();
 
 		const normalizedEmail = this.userHelper.normalizeEmail(email);
@@ -56,7 +56,7 @@ export class AdminService {
 		return this.userRepository.create({ hashedPassword, email: normalizedEmail, name });
 	}
 
-	async signIn({ email, password, ip, userAgent }: IAdminSignInParams): Promise<IAdminSignInResponse> {
+	async signIn({ email, password, ip, userAgent }: IUserSignInParams): Promise<IUserSignInResponse> {
 		email = this.userHelper.normalizeEmail(email);
 
 		const user = await this.userRepository.fetchByEmail(email);

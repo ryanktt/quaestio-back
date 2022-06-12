@@ -1,16 +1,13 @@
 import { ESessionErrorCode, ICreateSessionParams, IUpdateSessionParams } from './session.interface';
 import { SessionDocument, SessionModel } from './session.schema';
 
-import { AppError, UtilsPromise } from '@utils/*';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
+import { AppError } from '@utils/*';
 
 @Injectable()
 export class SessionRepository {
-	constructor(
-		@InjectModel('Session') private readonly sessionSchema: SessionModel,
-		private readonly utilsPromise: UtilsPromise,
-	) {}
+	constructor(@InjectModel('Session') private readonly sessionSchema: SessionModel) {}
 
 	async fetchById(sessionId: string): Promise<SessionDocument | undefined> {
 		const session = (await this.sessionSchema

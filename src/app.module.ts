@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SessionGuard, SessionModule } from 'src/session';
-import { AdminRepository, UserModule } from 'src/user';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserRepository, UserModule } from 'src/user';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UtilsArray, UtilsModule } from './utils';
-import { RespondentModule } from './respondent';
 import { GraphQLModule } from '@nestjs/graphql';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
@@ -27,17 +26,16 @@ interface IEnvirolmentVariables {
 		}),
 		GraphQLModule.forRootAsync<ApolloDriverConfig>({
 			driver: ApolloDriver,
-			useFactory: (utilsArray: UtilsArray, adminRepository: AdminRepository) => ({
+			useFactory: (utilsArray: UtilsArray, userRepository: UserRepository) => ({
 				autoSchemaFile: 'schema.gql',
 				context: {
-					loaders: loaders(adminRepository, utilsArray),
+					loaders: loaders(userRepository, utilsArray),
 				},
 			}),
 			imports: [UserModule, UtilsModule],
-			inject: [UtilsArray, AdminRepository],
+			inject: [UtilsArray, UserRepository],
 		}),
 		ConfigModule.forRoot(),
-		// RespondentModule,
 		SessionModule,
 		UtilsModule,
 		UserModule,

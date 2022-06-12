@@ -1,5 +1,5 @@
-import { AdminService } from './admin.service';
-import { Admin } from './admin.schema';
+import { UserService } from './user.service';
+import { User } from './user.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
 import { IAdminContext, IPublicContext, Session, SessionService } from 'src/session';
@@ -11,8 +11,8 @@ class SignInResponse {
 	@Field(() => Session)
 	session: Session;
 
-	@Field(() => Admin)
-	user: Admin;
+	@Field(() => User)
+	user: User;
 
 	@Field()
 	authToken: string;
@@ -23,33 +23,33 @@ class LogOutResponse {
 	@Field(() => Session)
 	session: Session;
 
-	@Field(() => Admin)
-	user: Admin;
+	@Field(() => User)
+	user: User;
 }
 
-@Resolver(() => Admin)
-export class AdminResolver {
+@Resolver(() => User)
+export class UserResolver {
 	constructor(
 		@Inject(forwardRef(() => SessionService)) private readonly sessionService: SessionService,
-		private readonly adminService: AdminService,
+		private readonly userService: UserService,
 	) {}
 
 	@Role(ERole.ADMIN)
-	@Query(() => Admin, { nullable: true })
-	async fetchAdmin(
+	@Query(() => User, { nullable: true })
+	async fetchUser(
 		@Args('userId', { nullable: true }) userId?: string,
 		@Args('email', { nullable: true }) email?: string,
-	): Promise<Admin | undefined> {
-		return this.adminService.fetch({ userId, email });
+	): Promise<User | undefined> {
+		return this.userService.fetch({ userId, email });
 	}
 
-	@Mutation(() => Admin)
+	@Mutation(() => User)
 	async signUp(
 		@Args('password') password: string,
 		@Args('email') email: string,
 		@Args('name') name: string,
-	): Promise<Admin> {
-		return this.adminService.signUp({ name, email, password });
+	): Promise<User> {
+		return this.userService.signUp({ name, email, password });
 	}
 
 	@Mutation(() => SignInResponse)
@@ -58,7 +58,7 @@ export class AdminResolver {
 		@Args('password') password: string,
 		@Args('email') email: string,
 	): Promise<SignInResponse> {
-		return this.adminService.signIn({ email, password, ip: clientIp, userAgent });
+		return this.userService.signIn({ email, password, ip: clientIp, userAgent });
 	}
 
 	@Role(ERole.ADMIN)

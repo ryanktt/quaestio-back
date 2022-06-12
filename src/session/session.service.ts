@@ -3,15 +3,15 @@ import { ESessionErrorCode } from './session.interface';
 import { SessionDocument } from './session.schema';
 import { SessionHelper } from './session.helper';
 
-import { EUserErrorCode, UserDocument, AdminRepository } from 'src/user';
+import { EUserErrorCode, UserDocument, UserRepository } from 'src/user';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError } from 'src/utils/utils.error';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SessionService {
 	constructor(
+		@Inject(forwardRef(() => UserRepository)) private readonly userRepository: UserRepository,
 		private readonly sessionRepository: SessionRepository,
-		private readonly adminRepository: AdminRepository,
 		private readonly sessionHelper: SessionHelper,
 	) {}
 
@@ -28,7 +28,7 @@ export class SessionService {
 
 		const [session, user] = await Promise.all([
 			this.sessionRepository.fetchById(sessionId),
-			this.adminRepository.fetchById(userId),
+			this.userRepository.fetchById(userId),
 		]);
 
 		if (!session) {

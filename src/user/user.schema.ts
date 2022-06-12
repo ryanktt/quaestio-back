@@ -10,7 +10,7 @@ import { Admin } from './admin';
 	implements: [Admin],
 	resolveType: (user: User) => {
 		const map: Record<EUserType, string> = {
-			[EUserType.ADMIN]: Admin.name,
+			[EUserType.ADMIN]: 'Admin',
 		};
 		return map[user.type];
 	},

@@ -37,7 +37,7 @@ interface IEnvirolmentVariables {
 			inject: [UtilsArray, AdminRepository],
 		}),
 		ConfigModule.forRoot(),
-		RespondentModule,
+		// RespondentModule,
 		SessionModule,
 		UtilsModule,
 		UserModule,

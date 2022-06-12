@@ -16,8 +16,12 @@ export enum EUserErrorCode {
 	INVALID_EMAIL = 'INVALID_EMAIL',
 	INVALID_NAME = 'INVALID_NAME',
 }
+export enum EUserType {
+	ADMIN = 'ADMIN',
+}
 
 registerEnumType(EUserErrorCode, { name: 'UserErrorCode' });
+registerEnumType(EUserType, { name: 'UserType' });
 
 export interface IUserSignUpParams {
 	password: string;

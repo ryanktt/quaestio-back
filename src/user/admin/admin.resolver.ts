@@ -31,7 +31,7 @@ class LogOutResponse {
 export class AdminResolver {
 	constructor(
 		@Inject(forwardRef(() => SessionService)) private readonly sessionService: SessionService,
-		private readonly userService: AdminService,
+		private readonly adminService: AdminService,
 	) {}
 
 	@Role(ERole.ADMIN)
@@ -40,7 +40,7 @@ export class AdminResolver {
 		@Args('userId', { nullable: true }) userId?: string,
 		@Args('email', { nullable: true }) email?: string,
 	): Promise<Admin | undefined> {
-		return this.userService.fetch({ userId, email });
+		return this.adminService.fetch({ userId, email });
 	}
 
 	@Mutation(() => Admin)
@@ -49,7 +49,7 @@ export class AdminResolver {
 		@Args('email') email: string,
 		@Args('name') name: string,
 	): Promise<Admin> {
-		return this.userService.signUp({ name, email, password });
+		return this.adminService.signUp({ name, email, password });
 	}
 
 	@Mutation(() => SignInResponse)
@@ -58,7 +58,7 @@ export class AdminResolver {
 		@Args('password') password: string,
 		@Args('email') email: string,
 	): Promise<SignInResponse> {
-		return this.userService.signIn({ email, password, ip: clientIp, userAgent });
+		return this.adminService.signIn({ email, password, ip: clientIp, userAgent });
 	}
 
 	@Role(ERole.ADMIN)

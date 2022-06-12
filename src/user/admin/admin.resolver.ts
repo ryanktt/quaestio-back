@@ -1,5 +1,5 @@
-import { UserService } from './user.service';
-import { User } from './user.schema';
+import { AdminService } from './admin.service';
+import { Admin } from './admin.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
 import { IAdminContext, IPublicContext, Session, SessionService } from 'src/session';
@@ -11,8 +11,8 @@ class SignInResponse {
 	@Field(() => Session)
 	session: Session;
 
-	@Field(() => User)
-	user: User;
+	@Field(() => Admin)
+	user: Admin;
 
 	@Field()
 	authToken: string;
@@ -23,32 +23,32 @@ class LogOutResponse {
 	@Field(() => Session)
 	session: Session;
 
-	@Field(() => User)
-	user: User;
+	@Field(() => Admin)
+	user: Admin;
 }
 
-@Resolver(() => User)
-export class UserResolver {
+@Resolver(() => Admin)
+export class AdminResolver {
 	constructor(
 		@Inject(forwardRef(() => SessionService)) private readonly sessionService: SessionService,
-		private readonly userService: UserService,
+		private readonly userService: AdminService,
 	) {}
 
 	@Role(ERole.ADMIN)
-	@Query(() => User, { nullable: true })
-	async fetchUser(
+	@Query(() => Admin, { nullable: true })
+	async fetchAdmin(
 		@Args('userId', { nullable: true }) userId?: string,
 		@Args('email', { nullable: true }) email?: string,
-	): Promise<User | undefined> {
+	): Promise<Admin | undefined> {
 		return this.userService.fetch({ userId, email });
 	}
 
-	@Mutation(() => User)
+	@Mutation(() => Admin)
 	async signUp(
 		@Args('password') password: string,
 		@Args('email') email: string,
 		@Args('name') name: string,
-	): Promise<User> {
+	): Promise<Admin> {
 		return this.userService.signUp({ name, email, password });
 	}
 

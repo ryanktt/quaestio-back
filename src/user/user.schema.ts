@@ -1,13 +1,23 @@
+import { EUserRole } from './user.interface';
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { DocumentType, SchemaBaseInterface } from '@utils/*';
 import { Field, InterfaceType } from '@nestjs/graphql';
-import { SchemaBase, DocumentType } from '@utils/*';
 import { Model } from 'mongoose';
 
 @InterfaceType({
 	isAbstract: true,
+	resolveType: (user: User) => {
+		if (user.role === EUserRole.Admin) return 'Admin';
+		return undefined;
+	},
 })
-@Schema()
-export class User extends SchemaBase {
+@Schema({ discriminatorKey: 'role' })
+export class User extends SchemaBaseInterface {
+	@Field(() => EUserRole)
+	@Prop({ enum: EUserRole, required: true })
+	role: EUserRole;
+
 	@Field()
 	@Prop({ required: true })
 	name: string;
@@ -15,9 +25,6 @@ export class User extends SchemaBase {
 	@Field()
 	@Prop({ required: true })
 	email: string;
-
-	@Prop({ required: true })
-	password: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

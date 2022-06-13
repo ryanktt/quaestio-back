@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { IAdminContext } from './session.interface';
+import { ESessionErrorCode, IAdminContext } from './session.interface';
 import { SessionService } from './session.service';
 
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { AdminDocument } from 'src/user/admin';
 import { Reflector } from '@nestjs/core';
-import { ERole } from '@utils/*';
+import { EUserRole } from 'src/user';
+import { AppError } from '@utils/*';
 
 @Injectable()
 export class SessionGuard implements CanActivate {
@@ -20,12 +22,17 @@ export class SessionGuard implements CanActivate {
 		req.userAgent = userAgent;
 		req.authToken = authToken;
 
-		const role = this.reflector.get<ERole>('role', context.getHandler());
-		if (role === ERole.ADMIN) {
-			const adminRequest = req as IAdminContext;
+		const role = this.reflector.get<EUserRole>('role', context.getHandler());
+		if (role) {
 			const { user, session } = await this.sessionService.authenticateUser(authToken);
-			adminRequest.session = session;
-			adminRequest.user = user;
+			if (role === EUserRole.Admin) {
+				if (user.role !== EUserRole.Admin) {
+					throw new AppError({ code: ESessionErrorCode.INVALID_SESSION, message: 'invalid session' });
+				}
+				const adminRequest = req as IAdminContext;
+				adminRequest.user = user as AdminDocument;
+				adminRequest.session = session;
+			}
 		}
 
 		return true;

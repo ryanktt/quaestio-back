@@ -1,7 +1,8 @@
 import { SessionDocument } from './session.schema';
 
+import { CustomDecorator, SetMetadata } from '@nestjs/common';
+import { AdminDocument, EUserRole } from 'src/user';
 import { registerEnumType } from '@nestjs/graphql';
-import { UserDocument } from 'src/user';
 
 export enum ESessionErrorCode {
 	SESSION_IS_NOT_ACTIVE = 'SESSION_IS_NOT_ACTIVE',
@@ -14,6 +15,8 @@ export enum ESessionErrorCode {
 }
 
 registerEnumType(ESessionErrorCode, { name: 'SessionErrorCode' });
+
+export const Role = (role: EUserRole): CustomDecorator<string> => SetMetadata('role', role);
 
 export interface ICreateSessionParams {
 	userAgent: string;
@@ -41,5 +44,5 @@ export interface IPublicContext {
 
 export interface IAdminContext extends IPublicContext {
 	session: SessionDocument;
-	user: UserDocument;
+	user: AdminDocument;
 }

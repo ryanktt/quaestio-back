@@ -41,7 +41,7 @@ export class SessionService {
 			throw new AppError({ code: ESessionErrorCode.SESSION_IS_NOT_ACTIVE, message: 'session is unactive' });
 		}
 
-		if (!(session.expiresAt.valueOf() > Date.now())) {
+		if (session.expiresAt.valueOf() < Date.now()) {
 			throw new AppError({ code: ESessionErrorCode.SESSION_EXPIRED, message: 'session expired' });
 		}
 

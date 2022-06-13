@@ -1,7 +1,4 @@
 import { CustomDecorator, SetMetadata } from '@nestjs/common';
+import { EUserRole } from 'src/user';
 
-export enum ERole {
-	ADMIN = 'ADMIN',
-}
-
-export const Role = (role: ERole): CustomDecorator<string> => SetMetadata('role', role);
+export const Role = (role: EUserRole): CustomDecorator<string> => SetMetadata('role', role);

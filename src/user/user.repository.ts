@@ -1,5 +1,5 @@
-import { EUserErrorCode, ICreateUserParams } from './user.interface';
 import { UserModel, UserDocument } from './user.schema';
+import { EUserErrorCode } from './user.interface';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
@@ -48,15 +48,5 @@ export class UserRepository {
 				});
 			})) as UserDocument | null;
 		return user ? user : undefined;
-	}
-
-	async create({ name, email, hashedPassword }: ICreateUserParams): Promise<UserDocument> {
-		return this.userSchema.create({ password: hashedPassword, email, name }).catch((err: Error) => {
-			throw new AppError({
-				code: EUserErrorCode.CREATE_USER_ERROR,
-				message: 'fail to create user',
-				originalError: err,
-			});
-		}) as Promise<UserDocument>;
 	}
 }

@@ -1,7 +1,4 @@
-import { UserDocument } from './user.schema';
-
 import { registerEnumType } from '@nestjs/graphql';
-import { SessionDocument } from 'src/session';
 
 export enum EUserErrorCode {
 	USER_SIGNUP_INVALID_PARAMS = 'USER_SIGNUP_INVALID_PARAMS',
@@ -16,34 +13,9 @@ export enum EUserErrorCode {
 	INVALID_EMAIL = 'INVALID_EMAIL',
 	INVALID_NAME = 'INVALID_NAME',
 }
-export enum EUserType {
-	ADMIN = 'ADMIN',
+export enum EUserRole {
+	Admin = 'Admin',
 }
 
 registerEnumType(EUserErrorCode, { name: 'UserErrorCode' });
-registerEnumType(EUserType, { name: 'UserType' });
-
-export interface IUserSignUpParams {
-	password: string;
-	email: string;
-	name: string;
-}
-
-export interface IUserSignInParams {
-	userAgent: string;
-	password: string;
-	email: string;
-	ip: string;
-}
-
-export interface ICreateUserParams {
-	hashedPassword: string;
-	email: string;
-	name: string;
-}
-
-export interface IUserSignInResponse {
-	session: SessionDocument;
-	user: UserDocument;
-	authToken: string;
-}
+registerEnumType(EUserRole, { name: 'UserType' });

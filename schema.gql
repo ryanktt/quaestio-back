@@ -9,20 +9,42 @@ type Location {
   timezone: String!
 }
 
-type SignInResponse {
-  session: Session!
-  user: User!
-  authToken: String!
-}
-
-interface User {
+type Admin implements User {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: UserType!
   name: String!
   email: String!
 }
 
+interface User {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: UserType!
+  name: String!
+  email: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum UserType {
+  Admin
+}
+
+type SignInResponse {
+  session: Session!
+  user: Admin!
+  authToken: String!
+}
+
 type LogOutResponse {
   session: Session!
-  user: User!
+  user: Admin!
 }
 
 type Session {
@@ -36,17 +58,12 @@ type Session {
   expiresAt: DateTime!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type Query {
-  fetchUser(userId: String, email: String): User
+  fetchAdmin(userId: String, email: String): Admin
 }
 
 type Mutation {
-  signUp(password: String!, email: String!, name: String!): User!
+  signUp(password: String!, email: String!, name: String!): Admin!
   signIn(password: String!, email: String!): SignInResponse!
   logOut: LogOutResponse!
 }

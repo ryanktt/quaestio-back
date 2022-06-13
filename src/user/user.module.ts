@@ -1,6 +1,6 @@
 import { AdminSchema, AdminRepository, AdminService, AdminResolver } from './admin';
+import { RespondentRepository, RespondentSchema } from './respondent';
 import { UserRepository } from './user.repository';
-import { RespondentSchema } from './respondent';
 import { UserSchema } from './user.schema';
 import { UserHelper } from './user.helper';
 
@@ -25,13 +25,14 @@ import { SessionModule } from 'src/session';
 	],
 	providers: [
 		UserRepository,
+		UserHelper,
 		AdminRepository,
 		AdminResolver,
 		AdminService,
-		UserHelper,
+		RespondentRepository,
 		UtilsPromise,
 		UtilsArray,
 	],
-	exports: [UserRepository, UserHelper, AdminRepository, AdminService, AdminResolver],
+	exports: [UserRepository, UserHelper, AdminRepository, AdminService, AdminResolver, RespondentRepository],
 })
 export class UserModule {}

@@ -1,7 +1,8 @@
+import { AdminSchema, AdminRepository, AdminService, AdminResolver } from './admin';
 import { UserRepository } from './user.repository';
+import { RespondentSchema } from './respondent';
 import { UserSchema } from './user.schema';
 import { UserHelper } from './user.helper';
-import { AdminSchema, AdminRepository, AdminService, AdminResolver } from './admin';
 
 import { forwardRef, Module } from '@nestjs/common';
 import { UtilsArray, UtilsPromise } from '@utils/*';
@@ -11,7 +12,14 @@ import { SessionModule } from 'src/session';
 @Module({
 	imports: [
 		MongooseModule.forFeature([
-			{ name: 'User', schema: UserSchema, discriminators: [{ name: 'Admin', schema: AdminSchema }] },
+			{
+				name: 'User',
+				schema: UserSchema,
+				discriminators: [
+					{ name: 'Respondent', schema: RespondentSchema },
+					{ name: 'Admin', schema: AdminSchema },
+				],
+			},
 		]),
 		forwardRef(() => SessionModule),
 	],

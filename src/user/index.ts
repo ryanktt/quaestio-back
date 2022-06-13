@@ -5,4 +5,5 @@ export * from './user.module';
 export * from './user.schema';
 export * from './user.loader';
 export * from './user.loader';
+export * from './respondent';
 export * from './admin';

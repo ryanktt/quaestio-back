@@ -1,5 +1,5 @@
+import { RespondentRepository, RespondentSchema, RespondentHelper } from './respondent';
 import { AdminSchema, AdminRepository, AdminService, AdminResolver } from './admin';
-import { RespondentRepository, RespondentSchema } from './respondent';
 import { UserRepository } from './user.repository';
 import { UserSchema } from './user.schema';
 import { UserHelper } from './user.helper';
@@ -26,13 +26,22 @@ import { SessionModule } from 'src/session';
 	providers: [
 		UserRepository,
 		UserHelper,
+		RespondentRepository,
+		RespondentHelper,
 		AdminRepository,
 		AdminResolver,
 		AdminService,
-		RespondentRepository,
 		UtilsPromise,
 		UtilsArray,
 	],
-	exports: [UserRepository, UserHelper, AdminRepository, AdminService, AdminResolver, RespondentRepository],
+	exports: [
+		UserRepository,
+		UserHelper,
+		RespondentRepository,
+		RespondentHelper,
+		AdminRepository,
+		AdminResolver,
+		AdminService,
+	],
 })
 export class UserModule {}

@@ -2,13 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Admin implements User {
+type Location {
+  country: String!
+  state: String!
+  city: String!
+  timezone: String!
+}
+
+type Respondent implements User {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   role: UserType!
   name: String!
   email: String!
+  location: Location
 }
 
 interface User {
@@ -30,6 +38,15 @@ enum UserType {
   Respondent
 }
 
+type Admin implements User {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: UserType!
+  name: String!
+  email: String!
+}
+
 type SignInResponse {
   session: Session!
   user: Admin!
@@ -39,23 +56,6 @@ type SignInResponse {
 type LogOutResponse {
   session: Session!
   user: Admin!
-}
-
-type Location {
-  country: String!
-  state: String!
-  city: String!
-  timezone: String!
-}
-
-type Respondent implements User {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  role: UserType!
-  name: String!
-  email: String!
-  location: Location
 }
 
 type Session {

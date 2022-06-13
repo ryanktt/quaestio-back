@@ -15,6 +15,7 @@ export enum EUserErrorCode {
 }
 export enum EUserRole {
 	Admin = 'Admin',
+	Respondent = 'Respondent',
 }
 
 registerEnumType(EUserErrorCode, { name: 'UserErrorCode' });

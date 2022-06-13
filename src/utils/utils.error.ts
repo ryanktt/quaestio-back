@@ -1,6 +1,5 @@
-import { ERespondentErrorCode } from 'src/respondent';
+import { EUserErrorCode, ERespondentErrorCode } from 'src/user';
 import { ESessionErrorCode } from 'src/session';
-import { EUserErrorCode } from 'src/user';
 
 type EErrorCode = EUserErrorCode | ESessionErrorCode | ERespondentErrorCode;
 

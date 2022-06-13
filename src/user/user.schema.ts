@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 	isAbstract: true,
 	resolveType: (user: User) => {
 		if (user.role === EUserRole.Admin) return 'Admin';
+		if (user.role === EUserRole.Respondent) return 'Respondent';
 		return undefined;
 	},
 })

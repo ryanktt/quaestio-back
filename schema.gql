@@ -94,7 +94,7 @@ type QuestionSingleChoice implements Question {
   options: [Option!]!
   randomizeOptions: Boolean!
   wrongAnswerFeedback: String
-  correctAnswerFeedback: String
+  rightAnswerFeedback: String
 }
 
 interface Question {

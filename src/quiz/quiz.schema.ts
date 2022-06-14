@@ -1,8 +1,8 @@
 import { EQuestionType, EQuizType } from './quiz.interface';
 
+import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { DocumentType, SchemaBaseInterface } from '@utils/*';
 import { Admin } from 'src/user';
 import { Model } from 'mongoose';
 
@@ -35,41 +35,41 @@ export class Option {
 export class Question extends SchemaBaseInterface {
 	@Field(() => EQuestionType)
 	@Prop({ required: true, enum: EQuestionType })
-	type?: EQuestionType;
+	type: EQuestionType;
 
 	@Field()
 	@Prop({ required: true })
-	title?: string;
+	title: string;
 
 	@Field({ nullable: true })
 	@Prop()
 	weight?: number;
 
-	@Field()
+	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
-	required?: boolean;
+	required: boolean;
 
 	@Field({ nullable: true })
 	@Prop()
 	description?: string;
 
-	@Field()
+	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
-	showCorrectAnswer?: boolean;
+	showCorrectAnswer: boolean;
 }
 
 @ObjectType({ implements: Question })
 export class QuestionSingleChoice extends Question {
 	@Field(() => EQuestionType)
-	type?: EQuestionType.SINGLE_CHOICE;
+	type: EQuestionType.SINGLE_CHOICE;
 
 	@Field(() => [Option])
 	@Prop({ required: true, type: () => [Option] })
-	options?: Option[];
+	options: Option[];
 
 	@Field()
 	@Prop({ required: true, default: false })
-	randomizeOptions?: boolean;
+	randomizeOptions: boolean;
 
 	@Field({ nullable: true })
 	@Prop()
@@ -77,21 +77,21 @@ export class QuestionSingleChoice extends Question {
 
 	@Field({ nullable: true })
 	@Prop()
-	correctAnswerFeedback?: string;
+	rightAnswerFeedback?: string;
 }
 
 @ObjectType({ implements: Question })
 export class QuestionMultipleChoice extends Question {
 	@Field(() => EQuestionType)
-	type?: EQuestionType.MULTIPLE_CHOICE;
+	type: EQuestionType.MULTIPLE_CHOICE;
 
 	@Field(() => [Option])
 	@Prop({ required: true, type: () => [Option] })
-	options?: Option[];
+	options: Option[];
 
-	@Field()
+	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
-	randomizeOptions?: boolean;
+	randomizeOptions: boolean;
 
 	@Field({ nullable: true })
 	@Prop()
@@ -105,11 +105,11 @@ export class QuestionMultipleChoice extends Question {
 @ObjectType({ implements: Question })
 export class QuestionTrueOrFalse extends Question {
 	@Field(() => EQuestionType)
-	type?: EQuestionType.TRUE_OR_FALSE;
+	type: EQuestionType.TRUE_OR_FALSE;
 
 	@Field(() => [Option])
 	@Prop({ required: true, type: () => [Option] })
-	options?: Option[];
+	options: Option[];
 
 	@Field({ nullable: true })
 	@Prop()
@@ -123,7 +123,7 @@ export class QuestionTrueOrFalse extends Question {
 @ObjectType({ implements: Question })
 export class QuestionText extends Question {
 	@Field(() => EQuestionType)
-	type?: EQuestionType.TEXT;
+	type: EQuestionType.TEXT;
 
 	@Field({ nullable: true })
 	@Prop()
@@ -135,7 +135,7 @@ export class QuestionText extends Question {
 export class Quiz extends SchemaBaseInterface {
 	@Field(() => EQuizType)
 	@Prop({ enum: EQuizType, required: true })
-	type?: EQuizType.EXAM;
+	type?: EQuizType;
 
 	@Field(() => Admin)
 	@Prop({ type: String, ref: 'User', required: true })
@@ -164,9 +164,9 @@ export class Quiz extends SchemaBaseInterface {
 }
 
 @ObjectType({ implements: [Quiz, SchemaBaseInterface] })
-export class QuizExam extends SchemaBaseInterface implements Quiz {
+export class QuizExam extends SchemaBase implements Quiz {
 	@Field(() => EQuizType)
-	type?: EQuizType.EXAM;
+	readonly type?: EQuizType.EXAM;
 
 	@Field(() => Admin)
 	user: string;
@@ -192,11 +192,37 @@ export class QuizExam extends SchemaBaseInterface implements Quiz {
 	@Prop()
 	maxRetryAmount?: number;
 
-	@Field()
+	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
-	randomizeQuestions?: boolean;
+	randomizeQuestions: boolean;
+}
+
+@ObjectType({ implements: [Quiz, SchemaBaseInterface] })
+export class QuizSurvey extends SchemaBase implements Quiz {
+	@Field(() => EQuizType)
+	readonly type: EQuizType.SURVEY;
+
+	@Field(() => Admin)
+	user: string;
+
+	@Field()
+	title: string;
+
+	@Field()
+	sharedId: string;
+
+	@Field(() => [Question])
+	questions: Question[];
 }
 
 export const QuizSchema = SchemaFactory.createForClass(Quiz);
 export type QuizDocument = DocumentType<Quiz>;
 export type QuizModel = Model<Quiz>;
+
+export const QuizExamSchema = SchemaFactory.createForClass(QuizExam);
+export type QuizExamDocument = DocumentType<QuizExam>;
+export type QuizExamModel = Model<QuizExam>;
+
+export const QuizSurveySchema = SchemaFactory.createForClass(QuizSurvey);
+export type QuizSurveyDocument = DocumentType<QuizSurvey>;
+export type QuizSurveyModel = Model<QuizSurvey>;

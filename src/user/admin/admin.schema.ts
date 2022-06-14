@@ -1,12 +1,12 @@
 import { EUserRole } from '../user.interface';
 import { User } from '../user.schema';
 
+import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { DocumentType, SchemaBase } from '@utils/*';
 import { Model } from 'mongoose';
 
-@ObjectType({ implements: [User] })
+@ObjectType({ implements: [User, SchemaBaseInterface] })
 @Schema()
 export class Admin extends SchemaBase implements User {
 	@Field(() => EUserRole)

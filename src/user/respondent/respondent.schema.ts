@@ -1,5 +1,5 @@
+import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { DocumentType, SchemaBase } from '@utils/*';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { EUserRole } from '../user.interface';
 import { User } from '../user.schema';
@@ -24,7 +24,7 @@ export class Location {
 	timezone: string;
 }
 
-@ObjectType({ implements: [User] })
+@ObjectType({ implements: [User, SchemaBaseInterface] })
 @Schema()
 export class Respondent extends SchemaBase implements User {
 	@Field(() => EUserRole)

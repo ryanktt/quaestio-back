@@ -69,6 +69,91 @@ type Session {
   expiresAt: DateTime!
 }
 
+type Option {
+  title: String!
+  correct: Boolean
+  feedbackAfterSubmit: String
+}
+
+type QuestionSingleChoice implements Question {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean!
+  description: String
+  showCorrectAnswer: Boolean!
+  options: [Option!]!
+  randomizeOptions: Boolean!
+  wrongAnswerFeedback: String
+  correctAnswerFeedback: String
+}
+
+interface Question {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean!
+  description: String
+  showCorrectAnswer: Boolean!
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
+  TRUE_OR_FALSE
+  TEXT
+}
+
+type QuestionMultipleChoice implements Question {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean!
+  description: String
+  showCorrectAnswer: Boolean!
+  options: [Option!]!
+  randomizeOptions: Boolean!
+  wrongAnswerFeedback: String
+  correctAnswerFeedback: String
+}
+
+type QuestionTrueOrFalse implements Question {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean!
+  description: String
+  showCorrectAnswer: Boolean!
+  options: [Option!]!
+  wrongAnswerFeedback: String
+  correctAnswerFeedback: String
+}
+
+type QuestionText implements Question {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean!
+  description: String
+  showCorrectAnswer: Boolean!
+  feedbackAfterSubmit: String
+}
+
 type Query {
   fetchAdmin(userId: String, email: String): Admin
 }

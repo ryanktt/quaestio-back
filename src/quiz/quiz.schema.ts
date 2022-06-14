@@ -1,3 +1,5 @@
+import { EQuestionType } from './quiz.interface';
+
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { DocumentType, SchemaBaseInterface } from '@utils/*';
@@ -16,7 +18,118 @@ export class Option {
 
 	@Field({ nullable: true })
 	@Prop()
-	feedback?: string;
+	feedbackAfterSubmit?: string;
+}
+
+@InterfaceType({
+	isAbstract: true,
+	resolveType: (value: { type: EQuestionType }): string | undefined => {
+		if (value.type === EQuestionType.MULTIPLE_CHOICE) return 'QuestionMultipleChoice';
+		if (value.type === EQuestionType.TRUE_OR_FALSE) return 'QuestionTrueOrFalse';
+		if (value.type === EQuestionType.SINGLE_CHOICE) return 'QuestionSingleChoice';
+		if (value.type === EQuestionType.TEXT) return 'QuestionText';
+		return undefined;
+	},
+})
+@Schema({
+	discriminatorKey: 'type',
+})
+export class Question extends SchemaBaseInterface {
+	@Field(() => EQuestionType)
+	@Prop({ required: true, enum: EQuestionType })
+	type?: EQuestionType;
+
+	@Field()
+	@Prop({ required: true })
+	title?: string;
+
+	@Field({ nullable: true })
+	@Prop()
+	weight?: number;
+
+	@Field()
+	@Prop({ required: true, default: false })
+	required?: boolean;
+
+	@Field({ nullable: true })
+	@Prop()
+	description?: string;
+
+	@Field()
+	@Prop({ required: true, default: false })
+	showCorrectAnswer?: boolean;
+}
+
+@ObjectType({ implements: Question })
+export class QuestionSingleChoice extends Question {
+	@Field(() => EQuestionType)
+	type?: EQuestionType.SINGLE_CHOICE;
+
+	@Field(() => [Option])
+	@Prop({ required: true, type: () => [Option] })
+	options?: Option[];
+
+	@Field()
+	@Prop({ required: true, default: false })
+	randomizeOptions?: boolean;
+
+	@Field({ nullable: true })
+	@Prop()
+	wrongAnswerFeedback?: string;
+
+	@Field({ nullable: true })
+	@Prop()
+	correctAnswerFeedback?: string;
+}
+
+@ObjectType({ implements: Question })
+export class QuestionMultipleChoice extends Question {
+	@Field(() => EQuestionType)
+	type?: EQuestionType.MULTIPLE_CHOICE;
+
+	@Field(() => [Option])
+	@Prop({ required: true, type: () => [Option] })
+	options?: Option[];
+
+	@Field()
+	@Prop({ required: true, default: false })
+	randomizeOptions?: boolean;
+
+	@Field({ nullable: true })
+	@Prop()
+	wrongAnswerFeedback?: string;
+
+	@Field({ nullable: true })
+	@Prop()
+	correctAnswerFeedback?: string;
+}
+
+@ObjectType({ implements: Question })
+export class QuestionTrueOrFalse extends Question {
+	@Field(() => EQuestionType)
+	type?: EQuestionType.TRUE_OR_FALSE;
+
+	@Field(() => [Option])
+	@Prop({ required: true, type: () => [Option] })
+	options?: Option[];
+
+	@Field({ nullable: true })
+	@Prop()
+	wrongAnswerFeedback?: string;
+
+	@Field({ nullable: true })
+	@Prop()
+	correctAnswerFeedback?: string;
+}
+
+@ObjectType({ implements: Question })
+export class QuestionText extends Question {
+	@Field(() => EQuestionType)
+	type?: EQuestionType.TEXT;
+
+	@Field({ nullable: true })
+	@Prop()
+	feedbackAfterSubmit?: string;
 }
 
 @InterfaceType()
@@ -30,13 +143,22 @@ export class Quiz extends SchemaBaseInterface {
 	@Prop({ required: true })
 	title: string;
 
-	// @Field(() => [Questions])
-	// @Prop({discriminators: ..., required: true })
-	// questions: Question[]
-
 	@Field()
 	@Prop({ required: true })
 	sharedId: string;
+
+	@Field(() => [Question])
+	@Prop({
+		type: () => Question,
+		required: true,
+		discriminators: () => [
+			{ type: QuestionMultipleChoice, value: EQuestionType.MULTIPLE_CHOICE },
+			{ type: QuestionSingleChoice, value: EQuestionType.SINGLE_CHOICE },
+			{ type: QuestionTrueOrFalse, value: EQuestionType.TRUE_OR_FALSE },
+			{ type: QuestionText, value: EQuestionType.TEXT },
+		],
+	})
+	questions: Question[];
 }
 
 export const QuizSchema = SchemaFactory.createForClass(Quiz);

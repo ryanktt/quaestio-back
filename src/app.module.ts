@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { SessionGuard, SessionModule } from 'src/session';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserRepository, UserModule } from 'src/user';
-import { MongooseModule } from '@nestjs/mongoose';
+import { SessionGuard, SessionModule } from './session';
+import { UserRepository, UserModule } from './user';
 import { UtilsArray, UtilsModule } from './utils';
+import { loaders } from './app.loaders';
+import { QuizModule } from './quiz';
+
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
-import { loaders } from './app.loaders';
 
 interface IEnvirolmentVariables {
 	MONGO_URI: string;
@@ -38,6 +40,7 @@ interface IEnvirolmentVariables {
 		ConfigModule.forRoot(),
 		SessionModule,
 		UtilsModule,
+		QuizModule,
 		UserModule,
 	],
 	providers: [

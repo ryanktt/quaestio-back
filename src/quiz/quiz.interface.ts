@@ -12,8 +12,13 @@ export enum EQuestionType {
 	TRUE_OR_FALSE = 'TRUE_OR_FALSE',
 	TEXT = 'TEXT',
 }
+export enum EQuizType {
+	SURVEY = 'SURVEY',
+	EXAM = 'EXAM',
+}
 
 registerEnumType(EQuestionType, { name: 'QuestionType' });
+registerEnumType(EQuizType, { name: 'QuizType' });
 
 export type IQuestionTypes =
 	| QuestionSingleChoice

@@ -1,4 +1,4 @@
-import { EQuestionType } from './quiz.interface';
+import { EQuestionType, EQuizType } from './quiz.interface';
 
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -31,9 +31,7 @@ export class Option {
 		return undefined;
 	},
 })
-@Schema({
-	discriminatorKey: 'type',
-})
+@Schema({ discriminatorKey: 'type' })
 export class Question extends SchemaBaseInterface {
 	@Field(() => EQuestionType)
 	@Prop({ required: true, enum: EQuestionType })
@@ -135,6 +133,10 @@ export class QuestionText extends Question {
 @InterfaceType()
 @Schema({ discriminatorKey: 'type' })
 export class Quiz extends SchemaBaseInterface {
+	@Field(() => EQuizType)
+	@Prop({ enum: EQuizType, required: true })
+	type?: EQuizType.EXAM;
+
 	@Field(() => Admin)
 	@Prop({ type: String, ref: 'User', required: true })
 	user: string;
@@ -159,6 +161,40 @@ export class Quiz extends SchemaBaseInterface {
 		],
 	})
 	questions: Question[];
+}
+
+@ObjectType({ implements: [Quiz, SchemaBaseInterface] })
+export class QuizExam extends SchemaBaseInterface implements Quiz {
+	@Field(() => EQuizType)
+	type?: EQuizType.EXAM;
+
+	@Field(() => Admin)
+	user: string;
+
+	@Field()
+	title: string;
+
+	@Field()
+	sharedId: string;
+
+	@Field(() => [Question])
+	questions: Question[];
+
+	@Field({ nullable: true })
+	@Prop()
+	timeLimit?: number;
+
+	@Field({ nullable: true })
+	@Prop({ max: 1 })
+	passingGradePercent?: number;
+
+	@Field({ nullable: true })
+	@Prop()
+	maxRetryAmount?: number;
+
+	@Field()
+	@Prop({ required: true, default: false })
+	randomizeQuestions?: boolean;
 }
 
 export const QuizSchema = SchemaFactory.createForClass(Quiz);

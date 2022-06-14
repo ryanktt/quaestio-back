@@ -9,7 +9,7 @@ type Location {
   timezone: String!
 }
 
-type Respondent implements User {
+type Respondent implements User & SchemaBaseInterface {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -38,7 +38,13 @@ enum UserType {
   Respondent
 }
 
-type Admin implements User {
+interface SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Admin implements User & SchemaBaseInterface {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!

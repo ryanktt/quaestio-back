@@ -1,4 +1,10 @@
-import { QuizDocument, QuizExamDocument, QuizExamModel } from './quiz.schema';
+import {
+	QuizDocument,
+	QuizExamModel,
+	QuizSurveyModel,
+	QuizExamDocument,
+	QuizSurveyDocument,
+} from './quiz.schema';
 import { EQuizErrorCode } from './quiz.interface';
 
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,7 +13,10 @@ import { AppError } from '@utils/*';
 
 @Injectable()
 export class QuizRepository {
-	constructor(@InjectModel('QuizExam') private readonly examSchema: QuizExamModel) {}
+	constructor(
+		@InjectModel('QuizExam') private readonly examSchema: QuizExamModel,
+		@InjectModel('QuizSurvey') private readonly surveySchema: QuizSurveyModel,
+	) {}
 
 	async fetchExamsByIds(examIds: string[]): Promise<QuizDocument[]> {
 		return this.examSchema
@@ -20,5 +29,18 @@ export class QuizRepository {
 					originalError: err,
 				});
 			}) as Promise<QuizExamDocument[]>;
+	}
+
+	async fetchSurveysByIds(surveyIds: string[]): Promise<QuizSurveyDocument[]> {
+		return this.surveySchema
+			.find({ _id: { $in: surveyIds } })
+			.exec()
+			.catch((err: Error) => {
+				throw new AppError({
+					code: EQuizErrorCode.FETCH_QUIZZES_ERROR,
+					message: 'fail to fetch quiz surveys by ids',
+					originalError: err,
+				});
+			}) as Promise<QuizSurveyDocument[]>;
 	}
 }

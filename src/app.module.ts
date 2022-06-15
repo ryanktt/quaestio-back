@@ -42,9 +42,9 @@ interface IEnvirolmentVariables {
 			imports: [UtilsModule, UserModule, QuestionnaireModule],
 		}),
 		ConfigModule.forRoot(),
+		QuestionnaireModule,
 		SessionModule,
 		UtilsModule,
-		QuestionnaireModule,
 		UserModule,
 	],
 	providers: [

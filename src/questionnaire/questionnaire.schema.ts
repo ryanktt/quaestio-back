@@ -130,12 +130,19 @@ export class QuestionText extends Question {
 	feedbackAfterSubmit?: string;
 }
 
-@InterfaceType()
+@InterfaceType({
+	isAbstract: true,
+	resolveType: (questionnaire: Questionnaire) => {
+		if (questionnaire.type === EQuestionnaireType.EXAM) return 'QuestionnaireExam';
+		if (questionnaire.type === EQuestionnaireType.SURVEY) return 'QuestionnaireSurvey';
+		return;
+	},
+})
 @Schema({ discriminatorKey: 'type' })
 export class Questionnaire extends SchemaBaseInterface {
 	@Field(() => EQuestionnaireType)
 	@Prop({ enum: EQuestionnaireType, required: true })
-	type?: EQuestionnaireType;
+	readonly type: EQuestionnaireType;
 
 	@Field(() => Admin)
 	@Prop({ type: String, ref: 'User', required: true })
@@ -164,9 +171,10 @@ export class Questionnaire extends SchemaBaseInterface {
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
+@Schema()
 export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
-	readonly type?: EQuestionnaireType.EXAM;
+	readonly type: EQuestionnaireType.EXAM;
 
 	@Field(() => Admin)
 	user: string;
@@ -198,6 +206,7 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
+@Schema()
 export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
 	readonly type: EQuestionnaireType.SURVEY;

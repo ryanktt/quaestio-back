@@ -1,7 +1,8 @@
 import { EUserErrorCode, ERespondentErrorCode } from 'src/user';
 import { ESessionErrorCode } from 'src/session';
+import { EQuizErrorCode } from 'src/quiz';
 
-type EErrorCode = EUserErrorCode | ESessionErrorCode | ERespondentErrorCode;
+type EErrorCode = EUserErrorCode | ESessionErrorCode | ERespondentErrorCode | EQuizErrorCode;
 
 interface IError {
 	message: string;

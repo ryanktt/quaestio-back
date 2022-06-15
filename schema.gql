@@ -2,79 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Location {
-  country: String!
-  state: String!
-  city: String!
-  timezone: String!
-}
-
-type Respondent implements User & SchemaBaseInterface {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  role: UserType!
-  name: String!
-  email: String!
-  location: Location
-}
-
-interface User {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  role: UserType!
-  name: String!
-  email: String!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-enum UserType {
-  Admin
-  Respondent
-}
-
-interface SchemaBaseInterface {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type Admin implements User & SchemaBaseInterface {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  role: UserType!
-  name: String!
-  email: String!
-}
-
-type SignInResponse {
-  session: Session!
-  user: Admin!
-  authToken: String!
-}
-
-type LogOutResponse {
-  session: Session!
-  user: Admin!
-}
-
-type Session {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  user: User!
-  ip: String!
-  userAgent: String!
-  active: Boolean!
-  expiresAt: DateTime!
-}
-
 type Option {
   title: String!
   correct: Boolean
@@ -108,6 +35,11 @@ interface Question {
   description: String
   showCorrectAnswer: Boolean!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 enum QuestionType {
   MULTIPLE_CHOICE
@@ -158,6 +90,74 @@ type QuestionText implements Question {
   description: String
   showCorrectAnswer: Boolean!
   feedbackAfterSubmit: String
+}
+
+type Location {
+  country: String!
+  state: String!
+  city: String!
+  timezone: String!
+}
+
+type Respondent implements User & SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: UserType!
+  name: String!
+  email: String!
+  location: Location
+}
+
+interface User {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: UserType!
+  name: String!
+  email: String!
+}
+
+enum UserType {
+  Admin
+  Respondent
+}
+
+interface SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Admin implements User & SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: UserType!
+  name: String!
+  email: String!
+}
+
+type SignInResponse {
+  session: Session!
+  user: Admin!
+  authToken: String!
+}
+
+type LogOutResponse {
+  session: Session!
+  user: Admin!
+}
+
+type Session {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+  ip: String!
+  userAgent: String!
+  active: Boolean!
+  expiresAt: DateTime!
 }
 
 type Query {

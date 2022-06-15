@@ -1,4 +1,5 @@
 import {
+	QuizModel,
 	QuizDocument,
 	QuizExamModel,
 	QuizSurveyModel,
@@ -14,8 +15,9 @@ import { AppError } from '@utils/*';
 @Injectable()
 export class QuizRepository {
 	constructor(
-		@InjectModel('QuizExam') private readonly examSchema: QuizExamModel,
 		@InjectModel('QuizSurvey') private readonly surveySchema: QuizSurveyModel,
+		@InjectModel('QuizExam') private readonly examSchema: QuizExamModel,
+		@InjectModel('Quiz') private readonly quizSchema: QuizModel,
 	) {}
 
 	async fetchExamsByIds(examIds: string[]): Promise<QuizDocument[]> {
@@ -42,5 +44,18 @@ export class QuizRepository {
 					originalError: err,
 				});
 			}) as Promise<QuizSurveyDocument[]>;
+	}
+
+	async fetchByIds(quizIds: string[]): Promise<QuizDocument[]> {
+		return this.quizSchema
+			.find({ _id: { $in: quizIds } })
+			.exec()
+			.catch((err: Error) => {
+				throw new AppError({
+					code: EQuizErrorCode.FETCH_QUIZZES_ERROR,
+					message: 'fail to fetch quizzes by ids',
+					originalError: err,
+				});
+			}) as Promise<QuizDocument[]>;
 	}
 }

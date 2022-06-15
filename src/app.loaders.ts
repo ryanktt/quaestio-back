@@ -1,10 +1,19 @@
+import { quizLoader, QuizRepository } from './quiz';
 import { userLoader, UserRepository } from 'src/user';
 import { UtilsArray } from './utils';
 
 export interface ILoaders {
+	quizLoader: ReturnType<typeof quizLoader>;
 	userLoader: ReturnType<typeof userLoader>;
 }
 
-export function loaders(userRepository: UserRepository, utilsArray: UtilsArray): ILoaders {
-	return { userLoader: userLoader(userRepository, utilsArray) };
+export function loaders(
+	utilsArray: UtilsArray,
+	userRepository: UserRepository,
+	quizRepository: QuizRepository,
+): ILoaders {
+	return {
+		quizLoader: quizLoader(quizRepository, utilsArray),
+		userLoader: userLoader(userRepository, utilsArray),
+	};
 }

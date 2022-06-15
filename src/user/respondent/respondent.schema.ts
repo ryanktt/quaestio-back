@@ -1,6 +1,7 @@
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Questionnaire } from 'src/questionnaire';
 import { EUserRole } from '../user.interface';
 import { User } from '../user.schema';
 import { Model } from 'mongoose';
@@ -40,7 +41,8 @@ export class Respondent extends SchemaBase implements User {
 	@Prop({ type: Location })
 	location?: Location;
 
-	// questionnaire
+	@Prop()
+	password?: string;
 }
 
 export const RespondentSchema = SchemaFactory.createForClass(Respondent);

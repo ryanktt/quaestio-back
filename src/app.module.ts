@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
 import { SessionGuard, SessionModule } from './session';
-import { QuizModule, QuizRepository } from './quiz';
+import { QuestionnaireModule, QuestionnaireRepository } from './questionnaire';
 import { UserRepository, UserModule } from './user';
 import { UtilsArray, UtilsModule } from './utils';
 import { loaders } from './app.loaders';
@@ -31,20 +31,20 @@ interface IEnvirolmentVariables {
 			useFactory: (
 				utilsArray: UtilsArray,
 				userRepository: UserRepository,
-				quizRepository: QuizRepository,
+				questionnaireRepository: QuestionnaireRepository,
 			) => ({
 				autoSchemaFile: 'schema.gql',
 				context: {
-					loaders: loaders(utilsArray, userRepository, quizRepository),
+					loaders: loaders(utilsArray, userRepository, questionnaireRepository),
 				},
 			}),
-			inject: [UtilsArray, UserRepository, QuizRepository],
-			imports: [UtilsModule, UserModule, QuizModule],
+			inject: [UtilsArray, UserRepository, QuestionnaireRepository],
+			imports: [UtilsModule, UserModule, QuestionnaireModule],
 		}),
 		ConfigModule.forRoot(),
 		SessionModule,
 		UtilsModule,
-		QuizModule,
+		QuestionnaireModule,
 		UserModule,
 	],
 	providers: [

@@ -1,5 +1,6 @@
+import { EQuestionType } from './questionnaire.interface';
+
 import { Field, InputType } from '@nestjs/graphql';
-import { EQuestionType } from './quiz.interface';
 
 @InputType()
 export class OptionInput {

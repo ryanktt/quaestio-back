@@ -3,10 +3,10 @@ import {
 	QuestionTrueOrFalse,
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
-} from './quiz.schema';
+} from './questionnaire.schema';
 import { registerEnumType } from '@nestjs/graphql';
 
-export enum EQuizErrorCode {
+export enum EQuestionnaireErrorCode {
 	CREATE_QUIZ_EXAM_ERROR = 'CREATE_QUIZ_EXAM_ERROR',
 	CREATE_QUIZ_SURVEY_ERROR = 'CREATE_QUIZ_SURVEY_ERROR',
 	UPDATE_QUIZ_EXAM_ERROR = 'UPDATE_QUIZ_EXAM_ERROR',
@@ -22,13 +22,13 @@ export enum EQuestionType {
 	TRUE_OR_FALSE = 'TRUE_OR_FALSE',
 	TEXT = 'TEXT',
 }
-export enum EQuizType {
+export enum EQuestionnaireType {
 	SURVEY = 'SURVEY',
 	EXAM = 'EXAM',
 }
-registerEnumType(EQuizErrorCode, { name: 'QuizErrorCode' });
+registerEnumType(EQuestionnaireErrorCode, { name: 'QuestionnaireErrorCode' });
+registerEnumType(EQuestionnaireType, { name: 'QuestionnaireType' });
 registerEnumType(EQuestionType, { name: 'QuestionType' });
-registerEnumType(EQuizType, { name: 'QuizType' });
 
 export type IQuestionTypes =
 	| QuestionSingleChoice

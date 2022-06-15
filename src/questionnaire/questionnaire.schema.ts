@@ -1,4 +1,4 @@
-import { EQuestionType, EQuizType } from './quiz.interface';
+import { EQuestionType, EQuestionnaireType } from './questionnaire.interface';
 
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
@@ -132,10 +132,10 @@ export class QuestionText extends Question {
 
 @InterfaceType()
 @Schema({ discriminatorKey: 'type' })
-export class Quiz extends SchemaBaseInterface {
-	@Field(() => EQuizType)
-	@Prop({ enum: EQuizType, required: true })
-	type?: EQuizType;
+export class Questionnaire extends SchemaBaseInterface {
+	@Field(() => EQuestionnaireType)
+	@Prop({ enum: EQuestionnaireType, required: true })
+	type?: EQuestionnaireType;
 
 	@Field(() => Admin)
 	@Prop({ type: String, ref: 'User', required: true })
@@ -163,10 +163,10 @@ export class Quiz extends SchemaBaseInterface {
 	questions: Question[];
 }
 
-@ObjectType({ implements: [Quiz, SchemaBaseInterface] })
-export class QuizExam extends SchemaBase implements Quiz {
-	@Field(() => EQuizType)
-	readonly type?: EQuizType.EXAM;
+@ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
+export class QuestionnaireExam extends SchemaBase implements Questionnaire {
+	@Field(() => EQuestionnaireType)
+	readonly type?: EQuestionnaireType.EXAM;
 
 	@Field(() => Admin)
 	user: string;
@@ -197,10 +197,10 @@ export class QuizExam extends SchemaBase implements Quiz {
 	randomizeQuestions: boolean;
 }
 
-@ObjectType({ implements: [Quiz, SchemaBaseInterface] })
-export class QuizSurvey extends SchemaBase implements Quiz {
-	@Field(() => EQuizType)
-	readonly type: EQuizType.SURVEY;
+@ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
+export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
+	@Field(() => EQuestionnaireType)
+	readonly type: EQuestionnaireType.SURVEY;
 
 	@Field(() => Admin)
 	user: string;
@@ -215,14 +215,14 @@ export class QuizSurvey extends SchemaBase implements Quiz {
 	questions: Question[];
 }
 
-export const QuizSchema = SchemaFactory.createForClass(Quiz);
-export type QuizDocument = DocumentType<Quiz>;
-export type QuizModel = Model<Quiz>;
+export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);
+export type QuestionnaireDocument = DocumentType<Questionnaire>;
+export type QuestionnaireModel = Model<Questionnaire>;
 
-export const QuizExamSchema = SchemaFactory.createForClass(QuizExam);
-export type QuizExamDocument = DocumentType<QuizExam>;
-export type QuizExamModel = Model<QuizExam>;
+export const QuestionnaireExamSchema = SchemaFactory.createForClass(QuestionnaireExam);
+export type QuestionnaireExamDocument = DocumentType<QuestionnaireExam>;
+export type QuestionnaireExamModel = Model<QuestionnaireExam>;
 
-export const QuizSurveySchema = SchemaFactory.createForClass(QuizSurvey);
-export type QuizSurveyDocument = DocumentType<QuizSurvey>;
-export type QuizSurveyModel = Model<QuizSurvey>;
+export const QuestionnaireSurveySchema = SchemaFactory.createForClass(QuestionnaireSurvey);
+export type QuestionnaireSurveyDocument = DocumentType<QuestionnaireSurvey>;
+export type QuestionnaireSurveyModel = Model<QuestionnaireSurvey>;

@@ -14,7 +14,7 @@ export class Option {
 
 	@Field({ nullable: true })
 	@Prop()
-	correct: boolean;
+	correct?: boolean;
 
 	@Field({ nullable: true })
 	@Prop()

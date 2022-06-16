@@ -23,7 +23,7 @@ export class QuestionnaireRepository {
 			.exec()
 			.catch((err: Error) => {
 				throw new AppError({
-					code: EQuestionnaireErrorCode.FETCH_QUIZZES_ERROR,
+					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
 					message: 'fail to fetch questionnaires by ids',
 					originalError: err,
 				});
@@ -33,7 +33,7 @@ export class QuestionnaireRepository {
 	async createQuiz(params: ICreateQuestionnareParams): Promise<QuestionnaireQuizDocument> {
 		return this.questionnaireQuizSchema.create(params).catch((err: Error) => {
 			throw new AppError({
-				code: EQuestionnaireErrorCode.CREATE_QUIZ_QUIZ_ERROR,
+				code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_QUIZ_ERROR,
 				message: 'fail to create questionnaire quiz',
 				originalError: err,
 			});

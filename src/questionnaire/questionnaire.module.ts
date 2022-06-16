@@ -10,6 +10,7 @@ import { QuestionnaireHelper } from './questionnaire.helper';
 
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UtilsModule } from '@utils/*';
 import { UserModule } from 'src/user';
 
 @Module({
@@ -26,6 +27,7 @@ import { UserModule } from 'src/user';
 			},
 		]),
 		forwardRef(() => UserModule),
+		UtilsModule
 	],
 	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper],
 	exports: [QuestionnaireRepository],

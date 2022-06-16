@@ -3,11 +3,12 @@ import {
 	QuestionTrueOrFalse,
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
+	Question,
 } from './questionnaire.schema';
 
-import { QuestionDiscriminatorInput, QuestionInput } from './questionnaire.input';
+import { QuestionDiscriminatorInput } from './questionnaire.input';
 import { registerEnumType } from '@nestjs/graphql';
-import { Admin } from 'src/user';
+import { AdminDocument } from 'src/user';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',
@@ -19,7 +20,7 @@ export enum EQuestionnaireErrorCode {
 	FETCH_QUESTIONNAIRES_ERROR = 'FETCH_QUESTIONNAIRES_ERROR',
 	FETCH_QUESTIONNAIRE_ERROR = 'FETCH_QUESTIONNAIRE_ERROR',
 	QUESTIONNAIRE_NOT_FOUND = 'QUESTIONNAIRE_NOT_FOUND',
-	QUESTION_REQUIRED = 'QUESTION_REQUIRED',
+	INVALID_QUESTION = 'INVALID_QUESTION',
 	INVALID_TITLE = 'INVALID_TITLE',
 }
 
@@ -45,13 +46,13 @@ export type IQuestionTypes =
 	| QuestionText;
 
 export interface IRepositoryCreateQuestionnareParams {
-	questions: QuestionInput[];
+	questions: Question[];
 	userId: string;
 	title: string;
 }
 
 export interface ICreateQuestionnaireQuizParams {
 	questions: QuestionDiscriminatorInput[];
+	user: AdminDocument;
 	title: string;
-	user: Admin;
 }

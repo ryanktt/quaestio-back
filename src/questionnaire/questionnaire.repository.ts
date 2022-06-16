@@ -4,7 +4,7 @@ import {
 	QuestionnaireQuizModel,
 	QuestionnaireQuizDocument,
 } from './questionnaire.schema';
-import { EQuestionnaireErrorCode, ICreateQuestionnareParams } from './questionnaire.interface';
+import { EQuestionnaireErrorCode, IRepositoryCreateQuestionnareParams } from './questionnaire.interface';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
@@ -30,8 +30,12 @@ export class QuestionnaireRepository {
 			}) as Promise<QuestionnaireDocument[]>;
 	}
 
-	async createQuiz(params: ICreateQuestionnareParams): Promise<QuestionnaireQuizDocument> {
-		return this.questionnaireQuizSchema.create(params).catch((err: Error) => {
+	async createQuiz({
+		questions,
+		userId,
+		title,
+	}: IRepositoryCreateQuestionnareParams): Promise<QuestionnaireQuizDocument> {
+		return this.questionnaireQuizSchema.create({ title, questions, user: userId }).catch((err: Error) => {
 			throw new AppError({
 				code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_QUIZ_ERROR,
 				message: 'fail to create questionnaire quiz',

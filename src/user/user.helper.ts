@@ -55,6 +55,7 @@ export class UserHelper {
 			if (name.length > 255) throw new AppError({ message: 'invalid name, max character length: 255', code });
 		});
 	}
+
 	async validateEmail(email: string): Promise<void> {
 		return this.utilsPromise.promisify(() => {
 			if (!validator.isEmail(email))

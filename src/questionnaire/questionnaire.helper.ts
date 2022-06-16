@@ -16,4 +16,17 @@ export class QuestionnaireHelper {
 			if (name.length < 3) throw new AppError({ message: 'invalid name, min character length: 3', code });
 		});
 	}
+
+	getQuestionFromQuestionDiscriminatorInput(
+		questionDiscriminatorInput: QuestionDiscriminatorInput,
+	): Question | undefined {
+		const map: Record<EQuestionType, QuestionInput> = {
+			[EQuestionType.MULTIPLE_CHOICE]: questionDiscriminatorInput.questionMultipleChoice,
+			[EQuestionType.SINGLE_CHOICE]: questionDiscriminatorInput.questionSingleChoice,
+			[EQuestionType.TRUE_OR_FALSE]: questionDiscriminatorInput.questionTrueOrFalse,
+			[EQuestionType.TEXT]: questionDiscriminatorInput.questionText,
+		};
+
+		return map[questionDiscriminatorInput.type] as Question | undefined;
+	}
 }

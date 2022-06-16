@@ -4,11 +4,15 @@ import {
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
 } from './questionnaire.schema';
+
+import { QuestionInput } from './questionnaire.input';
 import { registerEnumType } from '@nestjs/graphql';
+import { Admin } from 'src/user';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUIZ_EXAM_ERROR = 'CREATE_QUIZ_EXAM_ERROR',
 	CREATE_QUIZ_SURVEY_ERROR = 'CREATE_QUIZ_SURVEY_ERROR',
+	CREATE_QUIZ_QUIZ_ERROR = 'CREATE_QUIZ_QUIZ_ERROR',
 	UPDATE_QUIZ_EXAM_ERROR = 'UPDATE_QUIZ_EXAM_ERROR',
 	UPDATE_QUIZ_SURVEY_ERROR = 'UPDATE_QUIZ_SURVEY_ERROR',
 	FETCH_QUIZZES_ERROR = 'FETCH_QUIZZES_ERROR',
@@ -36,3 +40,9 @@ export type IQuestionTypes =
 	| QuestionMultipleChoice
 	| QuestionTrueOrFalse
 	| QuestionText;
+
+export interface ICreateQuestionnareParams {
+	questions: QuestionInput[];
+	title: string;
+	user: Admin;
+}

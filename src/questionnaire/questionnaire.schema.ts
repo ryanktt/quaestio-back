@@ -3,6 +3,7 @@ import { EQuestionType, EQuestionnaireType } from './questionnaire.interface';
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { v4 as uuidv4 } from 'uuid';
 import { Admin } from 'src/user';
 import { Model } from 'mongoose';
 
@@ -154,7 +155,7 @@ export class Questionnaire extends SchemaBaseInterface {
 	title: string;
 
 	@Field()
-	@Prop({ required: true })
+	@Prop({ default: uuidv4(), required: true })
 	sharedId: string;
 
 	@Field(() => [Question])

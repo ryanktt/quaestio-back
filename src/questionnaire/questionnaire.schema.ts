@@ -224,6 +224,25 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	questions: Question[];
 }
 
+@ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
+@Schema()
+export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
+	@Field(() => EQuestionnaireType)
+	readonly type: EQuestionnaireType.SURVEY;
+
+	@Field(() => Admin)
+	user: string;
+
+	@Field()
+	title: string;
+
+	@Field()
+	sharedId: string;
+
+	@Field(() => [Question])
+	questions: Question[];
+}
+
 export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);
 export type QuestionnaireDocument = DocumentType<Questionnaire>;
 export type QuestionnaireModel = Model<Questionnaire>;
@@ -235,3 +254,7 @@ export type QuestionnaireExamModel = Model<QuestionnaireExam>;
 export const QuestionnaireSurveySchema = SchemaFactory.createForClass(QuestionnaireSurvey);
 export type QuestionnaireSurveyDocument = DocumentType<QuestionnaireSurvey>;
 export type QuestionnaireSurveyModel = Model<QuestionnaireSurvey>;
+
+export const QuestionnaireQuizSchema = SchemaFactory.createForClass(QuestionnaireQuiz);
+export type QuestionnaireQuizDocument = DocumentType<QuestionnaireQuiz>;
+export type QuestionnaireQuizModel = Model<QuestionnaireQuiz>;

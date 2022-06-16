@@ -1,6 +1,7 @@
 import {
 	QuestionnaireSchema,
 	QuestionnaireExamSchema,
+	QuestionnaireQuizSchema,
 	QuestionnaireSurveySchema,
 } from './questionnaire.schema';
 import { QuestionnaireRepository } from './questionnaire.repository';
@@ -19,6 +20,7 @@ import { UserModule } from 'src/user';
 				discriminators: [
 					{ name: 'QuestionnaireSurvey', schema: QuestionnaireSurveySchema },
 					{ name: 'QuestionnaireExam', schema: QuestionnaireExamSchema },
+					{ name: 'QuestionnaireQuiz', schema: QuestionnaireQuizSchema },
 				],
 			},
 		]),

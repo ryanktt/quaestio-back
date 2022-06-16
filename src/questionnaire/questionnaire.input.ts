@@ -94,3 +94,21 @@ export class QuestionTextInput extends QuestionInput {
 	@Field({ nullable: true })
 	feedbackAfterSubmit?: string;
 }
+
+@InputType()
+export class QuestionDiscriminatorInput {
+	@Field(() => EQuestionType)
+	type: EQuestionType;
+
+	@Field(() => QuestionMultipleChoiceInput, { nullable: true })
+	questionMultipleChoice: QuestionMultipleChoiceInput;
+
+	@Field(() => QuestionSingleChoiceInput, { nullable: true })
+	questionSingleChoice: QuestionSingleChoiceInput;
+
+	@Field(() => QuestionTrueOrFalseInput, { nullable: true })
+	questionTrueOrFalse: QuestionTrueOrFalseInput;
+
+	@Field(() => QuestionTextInput, { nullable: true })
+	questionText: QuestionTextInput;
+}

@@ -9,7 +9,7 @@ export function questionnaireLoader(
 	utilsArray: UtilsArray,
 ): DataLoader<string, QuestionnaireDocument, string> {
 	return new DataLoader<string, QuestionnaireDocument>(async (ids: string[]) => {
-		const questionnairezes = await questionnaireRepository.fetchByIds(ids);
-		return utilsArray.getObjectsSortedByIds(questionnairezes, 'id', ids);
+		const questionnaires = await questionnaireRepository.fetchByIds(ids);
+		return utilsArray.getObjectsSortedByIds(questionnaires, 'id', ids);
 	});
 }

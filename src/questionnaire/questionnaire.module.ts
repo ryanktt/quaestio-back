@@ -6,6 +6,7 @@ import {
 } from './questionnaire.schema';
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { QuestionnaireResolver } from './questionnaire.resolver';
+import { QuestionnaireService } from './questionnaire.service';
 import { QuestionnaireHelper } from './questionnaire.helper';
 
 import { forwardRef, Module } from '@nestjs/common';
@@ -27,9 +28,9 @@ import { UserModule } from 'src/user';
 			},
 		]),
 		forwardRef(() => UserModule),
-		UtilsModule
+		UtilsModule,
 	],
-	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper],
-	exports: [QuestionnaireRepository],
+	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
+	exports: [QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 })
 export class QuestionnaireModule {}

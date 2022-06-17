@@ -35,7 +35,7 @@ export class AdminResolver {
 		private readonly adminService: AdminService,
 	) {}
 
-	@Role(EUserRole.Admin)
+	@Role('Admin')
 	@Query(() => Admin, { nullable: true })
 	async fetchAdmin(
 		@Args('userId', { nullable: true }) userId?: string,

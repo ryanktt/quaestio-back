@@ -2,7 +2,16 @@ import { EUserErrorCode, ERespondentErrorCode } from 'src/user';
 import { EQuestionnaireErrorCode } from 'src/questionnaire';
 import { ESessionErrorCode } from 'src/session';
 
-type EErrorCode = EUserErrorCode | ESessionErrorCode | ERespondentErrorCode | EQuestionnaireErrorCode;
+export enum EGeneralErrorCode {
+	ACCESS_DENIED = 'ACCESS_DENIED',
+}
+
+type EErrorCode =
+	| EGeneralErrorCode
+	| EQuestionnaireErrorCode
+	| ERespondentErrorCode
+	| ESessionErrorCode
+	| EUserErrorCode;
 
 interface IError {
 	message: string;

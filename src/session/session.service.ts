@@ -6,6 +6,7 @@ import { SessionHelper } from './session.helper';
 import { EUserErrorCode, UserDocument, UserRepository } from 'src/user';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError } from 'src/utils/utils.error';
+import moment from 'moment';
 
 @Injectable()
 export class SessionService {
@@ -41,7 +42,7 @@ export class SessionService {
 			throw new AppError({ code: ESessionErrorCode.SESSION_IS_NOT_ACTIVE, message: 'session is unactive' });
 		}
 
-		if (session.expiresAt.valueOf() < Date.now()) {
+		if (moment(new Date()).isAfter(session.expiresAt)) {
 			throw new AppError({ code: ESessionErrorCode.SESSION_EXPIRED, message: 'session expired' });
 		}
 

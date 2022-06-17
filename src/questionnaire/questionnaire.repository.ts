@@ -30,6 +30,32 @@ export class QuestionnaireRepository {
 			}) as Promise<QuestionnaireDocument[]>;
 	}
 
+	async fetchById(questionnaireId: string): Promise<QuestionnaireDocument> {
+		return this.questionnaireSchema
+			.findById(questionnaireId)
+			.exec()
+			.catch((err: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_ERROR,
+					message: 'fail to fetch questionnaire by id',
+					originalError: err,
+				});
+			}) as Promise<QuestionnaireDocument>;
+	}
+
+	async fetchBySharedId(questionnaireSharedId: string): Promise<QuestionnaireDocument> {
+		return this.questionnaireSchema
+			.findOne({ sharedId: questionnaireSharedId })
+			.exec()
+			.catch((err: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_ERROR,
+					message: 'fail to fetch questionnaire by shared id',
+					originalError: err,
+				});
+			}) as Promise<QuestionnaireDocument>;
+	}
+
 	async createQuiz({
 		questions,
 		userId,

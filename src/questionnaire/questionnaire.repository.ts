@@ -30,8 +30,8 @@ export class QuestionnaireRepository {
 			}) as Promise<QuestionnaireDocument[]>;
 	}
 
-	async fetchById(questionnaireId: string): Promise<QuestionnaireDocument> {
-		return this.questionnaireSchema
+	async fetchById(questionnaireId: string): Promise<QuestionnaireDocument | undefined> {
+		const questionnaire = (await this.questionnaireSchema
 			.findById(questionnaireId)
 			.exec()
 			.catch((err: Error) => {
@@ -40,11 +40,12 @@ export class QuestionnaireRepository {
 					message: 'fail to fetch questionnaire by id',
 					originalError: err,
 				});
-			}) as Promise<QuestionnaireDocument>;
+			})) as QuestionnaireDocument | null;
+		return questionnaire ? questionnaire : undefined;
 	}
 
-	async fetchBySharedId(questionnaireSharedId: string): Promise<QuestionnaireDocument> {
-		return this.questionnaireSchema
+	async fetchBySharedId(questionnaireSharedId: string): Promise<QuestionnaireDocument | undefined> {
+		const questionnaire = (await this.questionnaireSchema
 			.findOne({ sharedId: questionnaireSharedId })
 			.exec()
 			.catch((err: Error) => {
@@ -53,7 +54,9 @@ export class QuestionnaireRepository {
 					message: 'fail to fetch questionnaire by shared id',
 					originalError: err,
 				});
-			}) as Promise<QuestionnaireDocument>;
+			})) as QuestionnaireDocument | null;
+
+		return questionnaire ? questionnaire : undefined;
 	}
 
 	async createQuiz({

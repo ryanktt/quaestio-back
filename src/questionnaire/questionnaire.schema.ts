@@ -160,7 +160,7 @@ export class Questionnaire extends SchemaBaseInterface {
 
 	@Field(() => [Question])
 	@Prop({
-		type: () => Question,
+		type: () => [Question],
 		required: true,
 		discriminators: () => [
 			{ type: QuestionMultipleChoice, value: EQuestionType.MULTIPLE_CHOICE },

@@ -92,6 +92,40 @@ type QuestionText implements Question {
   feedbackAfterSubmit: String
 }
 
+type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionnaireType!
+  user: Admin!
+  title: String!
+  sharedId: String!
+  questions: [Question!]!
+}
+
+interface Questionnaire {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionnaireType!
+  user: Admin!
+  title: String!
+  sharedId: String!
+  questions: [Question!]!
+}
+
+enum QuestionnaireType {
+  SURVEY
+  EXAM
+  QUIZ
+}
+
+interface SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Location {
   country: String!
   state: String!
@@ -121,12 +155,6 @@ interface User {
 enum UserType {
   Admin
   Respondent
-}
-
-interface SchemaBaseInterface {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 type Admin implements User & SchemaBaseInterface {
@@ -168,4 +196,67 @@ type Mutation {
   signUp(password: String!, email: String!, name: String!): Admin!
   signIn(password: String!, email: String!): SignInResponse!
   logOut: LogOutResponse!
+  createQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!
+}
+
+input QuestionDiscriminatorInput {
+  type: QuestionType!
+  questionMultipleChoice: QuestionMultipleChoiceInput
+  questionSingleChoice: QuestionSingleChoiceInput
+  questionTrueOrFalse: QuestionTrueOrFalseInput
+  questionText: QuestionTextInput
+}
+
+input QuestionMultipleChoiceInput {
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean = false
+  description: String
+  showCorrectAnswer: Boolean = false
+  options: [OptionInput!]!
+  randomizeOptionInputs: Boolean = false
+  wrongAnswerFeedback: String
+  correctAnswerFeedback: String
+}
+
+input OptionInput {
+  title: String!
+  correct: Boolean!
+  feedbackAfterSubmit: String
+}
+
+input QuestionSingleChoiceInput {
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean = false
+  description: String
+  showCorrectAnswer: Boolean = false
+  options: [OptionInput!]!
+  randomizeOptionInputs: Boolean!
+  wrongAnswerFeedback: String
+  rightAnswerFeedback: String
+}
+
+input QuestionTrueOrFalseInput {
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean = false
+  description: String
+  showCorrectAnswer: Boolean = false
+  options: [OptionInput!]!
+  wrongAnswerFeedback: String
+  correctAnswerFeedback: String
+}
+
+input QuestionTextInput {
+  type: QuestionType!
+  title: String!
+  weight: Float
+  required: Boolean = false
+  description: String
+  showCorrectAnswer: Boolean = false
+  feedbackAfterSubmit: String
 }

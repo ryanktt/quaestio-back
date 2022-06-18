@@ -133,10 +133,13 @@ export class QuestionText extends Question {
 
 @InterfaceType({
 	isAbstract: true,
-	resolveType: (questionnaire: Questionnaire) => {
-		if (questionnaire.type === EQuestionnaireType.SURVEY) return 'QuestionnaireSurvey';
-		if (questionnaire.type === EQuestionnaireType.EXAM) return 'QuestionnaireExam';
-		if (questionnaire.type === EQuestionnaireType.QUIZ) return 'QuestionnaireQuiz';
+	resolveType: (questionnaire: Questionnaire): EQuestionnaireType | undefined => {
+		if (questionnaire.type === EQuestionnaireType.QuestionnaireSurvey)
+			return EQuestionnaireType.QuestionnaireSurvey;
+		if (questionnaire.type === EQuestionnaireType.QuestionnaireExam)
+			return EQuestionnaireType.QuestionnaireExam;
+		if (questionnaire.type === EQuestionnaireType.QuestionnaireQuiz)
+			return EQuestionnaireType.QuestionnaireQuiz;
 		return;
 	},
 })
@@ -176,7 +179,7 @@ export class Questionnaire extends SchemaBaseInterface {
 @Schema()
 export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
-	readonly type: EQuestionnaireType.EXAM;
+	readonly type: EQuestionnaireType.QuestionnaireExam;
 
 	@Field(() => Admin)
 	user: string;
@@ -211,7 +214,7 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 @Schema()
 export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
-	readonly type: EQuestionnaireType.SURVEY;
+	readonly type: EQuestionnaireType.QuestionnaireSurvey;
 
 	@Field(() => Admin)
 	user: string;
@@ -230,7 +233,7 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 @Schema()
 export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
-	readonly type: EQuestionnaireType.QUIZ;
+	readonly type: EQuestionnaireType.QuestionnaireQuiz;
 
 	@Field(() => Admin)
 	user: string;

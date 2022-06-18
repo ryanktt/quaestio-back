@@ -31,9 +31,9 @@ export enum EQuestionType {
 	TEXT = 'TEXT',
 }
 export enum EQuestionnaireType {
-	SURVEY = 'SURVEY',
-	EXAM = 'EXAM',
-	QUIZ = 'QUIZ',
+	QuestionnaireSurvey = 'QuestionnaireSurvey',
+	QuestionnaireExam = 'QuestionnaireExam',
+	QuestionnaireQuiz = 'QuestionnaireQuiz',
 }
 registerEnumType(EQuestionnaireErrorCode, { name: 'QuestionnaireErrorCode' });
 registerEnumType(EQuestionnaireType, { name: 'QuestionnaireType' });
@@ -55,4 +55,10 @@ export interface ICreateQuestionnaireQuizParams {
 	questions: QuestionDiscriminatorInput[];
 	user: AdminDocument;
 	title: string;
+}
+
+export interface IFetchQuestionnaireParams {
+	questionnaireSharedId: string;
+	questionnaireId: string;
+	user: AdminDocument;
 }

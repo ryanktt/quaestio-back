@@ -2,11 +2,10 @@ import { Questionnaire, QuestionnaireQuiz } from './questionnaire.schema';
 import { QuestionDiscriminatorInput } from './questionnaire.input';
 import { QuestionnaireService } from './questionnaire.service';
 
-import { Resolver, ResolveField, Parent, Context, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, ResolveField, Parent, Context, Mutation, Args, Query } from '@nestjs/graphql';
 import { Admin, AdminDocument } from 'src/user';
-import { IAdminContext } from 'src/session';
+import { IAdminContext, Role } from 'src/session';
 import { ILoaders } from 'src/app.loaders';
-import { Role } from '../utils/utils.auth';
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {
@@ -18,6 +17,16 @@ export class QuestionnaireResolver {
 		@Parent() questionnaire: Questionnaire,
 	): Promise<AdminDocument> {
 		return userLoader.load(questionnaire.user) as Promise<AdminDocument>;
+	}
+
+	@Role('Admin')
+	@Query(() => Questionnaire, { nullable: true })
+	async fetchQuestionnaire(
+		@Context('req') { user }: IAdminContext,
+		@Args('questionnaireSharedId', { nullable: true }) questionnaireSharedId: string,
+		@Args('questionnaireId', { nullable: true }) questionnaireId: string,
+	): Promise<Questionnaire | undefined> {
+		return this.questionnaireService.fetchQuestionnaire({ questionnaireId, questionnaireSharedId, user });
 	}
 
 	@Role('Admin')

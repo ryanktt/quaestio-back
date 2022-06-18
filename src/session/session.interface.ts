@@ -16,8 +16,6 @@ export enum ESessionErrorCode {
 
 registerEnumType(ESessionErrorCode, { name: 'SessionErrorCode' });
 
-export const Role = (role: EUserRole): CustomDecorator<string> => SetMetadata('role', role);
-
 export interface ICreateSessionParams {
 	userAgent: string;
 	expiresAt: Date;

@@ -92,7 +92,7 @@ type QuestionText implements Question {
   feedbackAfterSubmit: String
 }
 
-type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
+type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -101,6 +101,10 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   title: String!
   sharedId: String!
   questions: [Question!]!
+  timeLimit: Float
+  passingGradePercent: Float
+  maxRetryAmount: Float
+  randomizeQuestions: Boolean!
 }
 
 interface Questionnaire {
@@ -115,15 +119,37 @@ interface Questionnaire {
 }
 
 enum QuestionnaireType {
-  SURVEY
-  EXAM
-  QUIZ
+  QuestionnaireSurvey
+  QuestionnaireExam
+  QuestionnaireQuiz
 }
 
 interface SchemaBaseInterface {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionnaireType!
+  user: Admin!
+  title: String!
+  sharedId: String!
+  questions: [Question!]!
+}
+
+type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionnaireType!
+  user: Admin!
+  title: String!
+  sharedId: String!
+  questions: [Question!]!
 }
 
 type Location {
@@ -190,6 +216,7 @@ type Session {
 
 type Query {
   fetchAdmin(userId: String, email: String): Admin
+  fetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
 }
 
 type Mutation {

@@ -28,7 +28,7 @@ import { UserModule } from 'src/user';
 			},
 		]),
 		forwardRef(() => UserModule),
-		UtilsModule,
+		forwardRef(() => UtilsModule),
 	],
 	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 	exports: [QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],

@@ -4,8 +4,9 @@ import { QuestionnaireService } from './questionnaire.service';
 
 import { Resolver, ResolveField, Parent, Context, Mutation, Args, Query } from '@nestjs/graphql';
 import { Admin, AdminDocument } from 'src/user';
-import { IAdminContext, Role } from 'src/session';
+import { IAdminContext } from 'src/session';
 import { ILoaders } from 'src/app.loaders';
+import { Role } from '@utils/*';
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {

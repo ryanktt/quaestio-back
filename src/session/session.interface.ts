@@ -1,7 +1,6 @@
 import { SessionDocument } from './session.schema';
 
-import { AdminDocument, EUserRole, RespondentDocument } from 'src/user';
-import { CustomDecorator, SetMetadata } from '@nestjs/common';
+import { AdminDocument, RespondentDocument } from 'src/user';
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum ESessionErrorCode {

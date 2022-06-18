@@ -2,10 +2,7 @@ import { AppError, EGeneralErrorCode } from './utils.error';
 import { UtilsPromise } from './utils.promise';
 import { DocumentType } from './utils.schema';
 
-import { CustomDecorator, Injectable, SetMetadata } from '@nestjs/common';
-import { EUserRole } from 'src/user';
-
-export const Role = (role: keyof typeof EUserRole): CustomDecorator<string> => SetMetadata('role', role);
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UtilsAuth {

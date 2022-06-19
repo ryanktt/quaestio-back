@@ -32,4 +32,6 @@ export class SchemaBaseInterface {
 	updatedAt: Date;
 }
 
-export type DocumentType<T> = { id: string } & Omit<HydratedDocument<T>, 'id'>;
+export type DocumentType<T> = Omit<HydratedDocument<T>, 'id'> & { id: string } & {
+	constructor: { modelName: string };
+};

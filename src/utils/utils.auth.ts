@@ -8,7 +8,10 @@ import { Injectable } from '@nestjs/common';
 export class UtilsAuth {
 	constructor(private readonly utilsPromise: UtilsPromise) {}
 
-	/**Asserts reference relations between documents */
+	/** Asserts equality between mongo document id fields.
+	 * Example: docToVal: questionnaire, refDocArray: [{doc: user, refKey: 'user}]
+	 * This will assert that the user.id field is equal to the questionnaire.user field
+	 */
 	async validateUserDocAccess<T, U>(
 		docToVal: DocumentType<U> | undefined,
 		refDocsArr: { doc: DocumentType<T>; refKey: keyof DocumentType<U> }[],
@@ -16,7 +19,7 @@ export class UtilsAuth {
 		await this.utilsPromise.promisify(() => {
 			if (!docToVal) return;
 			refDocsArr.forEach(({ refKey, doc }) => {
-				const docToValName = (docToVal.constructor as unknown as { modelName: string }).modelName;
+				const docToValName = docToVal.constructor.modelName;
 
 				if (docToVal[refKey] !== doc.id) {
 					throw new AppError({

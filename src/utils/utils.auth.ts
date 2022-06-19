@@ -16,9 +16,11 @@ export class UtilsAuth {
 		await this.utilsPromise.promisify(() => {
 			if (!docToVal) return;
 			refDocsArr.forEach(({ refKey, doc }) => {
+				const docToValName = (docToVal.constructor as unknown as { modelName: string }).modelName;
+
 				if (docToVal[refKey] !== doc.id) {
 					throw new AppError({
-						message: `user does not have access to this document`,
+						message: `user does not have access to the ${docToValName} document`,
 						code: EGeneralErrorCode.ACCESS_DENIED,
 					});
 				}

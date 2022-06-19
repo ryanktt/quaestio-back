@@ -1,4 +1,5 @@
 export * from './utils.decorators';
+export * from './utils.interface';
 export * from './utils.promise';
 export * from './utils.schema';
 export * from './utils.module';

@@ -1,10 +1,6 @@
+import { ObjKeyTypes } from './utils.interface';
+
 import { Injectable } from '@nestjs/common';
-
-type ObjKeyValueMatchTypes<T, U> = {
-	[K in keyof T]: T[K] extends U ? K : never;
-}[keyof T];
-
-type ObjKeyTypes<T> = ObjKeyValueMatchTypes<T, string | number | symbol>;
 
 @Injectable()
 export class UtilsArray {

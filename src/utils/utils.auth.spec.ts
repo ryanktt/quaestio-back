@@ -19,28 +19,25 @@ describe('UtilsAuth', () => {
 	});
 
 	describe('Asserts equality between mongo document id fields', () => {
-		const questionnaireDocCounterpart = { user: '123456789' } as IQuestDocCounterpart;
+		const questionnaireDocCounterpart = { user: '987654321' } as IQuestDocCounterpart;
 		const userDocCounterpart = { id: '987654321' } as IUserDoCounterpart;
 		questionnaireDocCounterpart.constructor.modelName = 'Questionnaire';
 
-		it('should throw an error', async () => {
-			questionnaireDocCounterpart.user = '123456789';
-
-			await expect(
-				utilsAuth.validateUserDocAccess(questionnaireDocCounterpart, [
-					{ doc: userDocCounterpart, refKey: 'user' },
-				]),
-			).rejects.toThrowError('user does not have access to the Questionnaire document');
-		});
-
 		it('should do nothing', async () => {
-			questionnaireDocCounterpart.user = '987654321';
-
 			await expect(
 				utilsAuth.validateUserDocAccess(questionnaireDocCounterpart, [
 					{ doc: userDocCounterpart, refKey: 'user' },
 				]),
 			).resolves.toBeUndefined();
+		});
+
+		it('should throw an error', async () => {
+			questionnaireDocCounterpart.user = '123456789';
+			await expect(
+				utilsAuth.validateUserDocAccess(questionnaireDocCounterpart, [
+					{ doc: userDocCounterpart, refKey: 'user' },
+				]),
+			).rejects.toThrowError('user does not have access to the Questionnaire document');
 		});
 	});
 });

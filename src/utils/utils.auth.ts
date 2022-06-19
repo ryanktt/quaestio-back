@@ -3,6 +3,7 @@ import { UtilsPromise } from './utils.promise';
 import { DocumentType } from './utils.schema';
 
 import { Injectable } from '@nestjs/common';
+import { ObjKeyTypes } from './utils.interface';
 
 @Injectable()
 export class UtilsAuth {
@@ -14,7 +15,7 @@ export class UtilsAuth {
 	 */
 	async validateUserDocAccess<T, U>(
 		docToVal: DocumentType<U> | undefined,
-		refDocsArr: { doc: DocumentType<T>; refKey: keyof DocumentType<U> }[],
+		refDocsArr: { doc: DocumentType<T>; refKey: ObjKeyTypes<DocumentType<U>> }[],
 	): Promise<void> {
 		await this.utilsPromise.promisify(() => {
 			if (!docToVal) return;

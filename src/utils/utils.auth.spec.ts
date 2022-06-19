@@ -19,8 +19,8 @@ describe('UtilsAuth', () => {
 	});
 
 	describe('Asserts equality between mongo document id fields', () => {
-		const questionnaireDocCounterpart = { user: '987654321' } as IQuestDocCounterpart;
-		const userDocCounterpart = { id: '987654321' } as IUserDoCounterpart;
+		const questionnaireDocCounterpart = { user: '123456789' } as IQuestDocCounterpart;
+		const userDocCounterpart = { id: '123456789' } as IUserDoCounterpart;
 		questionnaireDocCounterpart.constructor.modelName = 'Questionnaire';
 
 		it('should do nothing', async () => {
@@ -32,7 +32,7 @@ describe('UtilsAuth', () => {
 		});
 
 		it('should throw an error', async () => {
-			questionnaireDocCounterpart.user = '123456789';
+			questionnaireDocCounterpart.user = '987654321';
 			await expect(
 				utilsAuth.validateUserDocAccess(questionnaireDocCounterpart, [
 					{ doc: userDocCounterpart, refKey: 'user' },

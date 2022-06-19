@@ -25,4 +25,21 @@ describe('UtilsArray', () => {
 			expect(utilsArray.mapFromArray(objArray, 'id')).toStrictEqual(map);
 		});
 	});
+
+	describe('Sorts an object array by its ids', () => {
+		const unorderedObjs = [
+			{ id: '2', name: 'Liara' },
+			{ id: '3', name: 'Gerry' },
+			{ id: '1', name: 'Shepard' },
+		];
+		const orderedObjIds = ['1', '2', '3'];
+		const orderedObjs = [
+			{ id: '1', name: 'Shepard' },
+			{ id: '2', name: 'Liara' },
+			{ id: '3', name: 'Gerry' },
+		];
+		it('should return the the sorted objects', () => {
+			expect(utilsArray.getObjectsSortedByIds(unorderedObjs, 'id', orderedObjIds)).toStrictEqual(orderedObjs);
+		});
+	});
 });

@@ -133,14 +133,8 @@ export class QuestionText extends Question {
 
 @InterfaceType({
 	isAbstract: true,
-	resolveType: (questionnaire: Questionnaire): EQuestionnaireType | undefined => {
-		if (questionnaire.type === EQuestionnaireType.QuestionnaireSurvey)
-			return EQuestionnaireType.QuestionnaireSurvey;
-		if (questionnaire.type === EQuestionnaireType.QuestionnaireExam)
-			return EQuestionnaireType.QuestionnaireExam;
-		if (questionnaire.type === EQuestionnaireType.QuestionnaireQuiz)
-			return EQuestionnaireType.QuestionnaireQuiz;
-		return;
+	resolveType: (questionnaire: Questionnaire): EQuestionnaireType => {
+		return questionnaire.type;
 	},
 })
 @Schema({ discriminatorKey: 'type' })

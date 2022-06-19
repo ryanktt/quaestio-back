@@ -7,11 +7,7 @@ import { Model } from 'mongoose';
 
 @InterfaceType({
 	isAbstract: true,
-	resolveType: (user: User) => {
-		if (user.role === EUserRole.Admin) return 'Admin';
-		if (user.role === EUserRole.Respondent) return 'Respondent';
-		return undefined;
-	},
+	resolveType: (user: User): EUserRole => user.role,
 })
 @Schema({ discriminatorKey: 'role' })
 export class User extends SchemaBaseInterface {

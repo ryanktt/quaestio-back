@@ -216,7 +216,7 @@ type Session {
 
 type AnswerSingleChoice implements Answer {
   type: AnswerType!
-  question: String
+  question: String!
   answeredAt: DateTime!
   correct: Boolean
   option: String
@@ -224,7 +224,7 @@ type AnswerSingleChoice implements Answer {
 
 interface Answer {
   type: AnswerType!
-  question: String
+  question: String!
   answeredAt: DateTime!
   correct: Boolean
 }
@@ -238,7 +238,7 @@ enum AnswerType {
 
 type AnswerMultipleChoice implements Answer {
   type: AnswerType!
-  question: String
+  question: String!
   answeredAt: DateTime!
   correct: Boolean
   options: [String!]
@@ -246,7 +246,7 @@ type AnswerMultipleChoice implements Answer {
 
 type AnswerTrueOrFalse implements Answer {
   type: AnswerType!
-  question: String
+  question: String!
   answeredAt: DateTime!
   correct: Boolean
   option: String
@@ -254,7 +254,7 @@ type AnswerTrueOrFalse implements Answer {
 
 type AnswerText implements Answer {
   type: AnswerType!
-  question: String
+  question: String!
   answeredAt: DateTime!
   correct: Boolean
   text: String

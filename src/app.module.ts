@@ -4,6 +4,7 @@ import { SessionGuard, SessionModule } from './session';
 import { QuestionnaireModule, QuestionnaireRepository } from './questionnaire';
 import { UserRepository, UserModule } from './user';
 import { UtilsArray, UtilsModule } from './utils';
+import { ResponseModule } from './response';
 import { loaders } from './app.loaders';
 
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -43,6 +44,7 @@ interface IEnvirolmentVariables {
 		}),
 		ConfigModule.forRoot(),
 		QuestionnaireModule,
+		ResponseModule,
 		SessionModule,
 		UtilsModule,
 		UserModule,

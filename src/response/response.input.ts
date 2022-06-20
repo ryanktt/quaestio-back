@@ -48,3 +48,21 @@ class AnswerTextInput extends AnswerInput {
 	@Field({ nullable: true })
 	text?: string;
 }
+
+@InputType()
+export class AnswerDiscriminatorInput {
+	@Field(() => EAnswerType)
+	answerType!: EAnswerType;
+
+	@Field(() => AnswerMultipleChoiceInput, { nullable: true })
+	answerMultipleChoice?: AnswerMultipleChoiceInput;
+
+	@Field(() => AnswerSingleChoiceInput, { nullable: true })
+	answerSingleChoice?: AnswerSingleChoiceInput;
+
+	@Field(() => AnswerTrueOrFalseInput, { nullable: true })
+	answerTrueOrFalse?: AnswerTrueOrFalseInput;
+
+	@Field(() => AnswerTextInput, { nullable: true })
+	answerText?: AnswerTextInput;
+}

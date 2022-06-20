@@ -25,7 +25,7 @@ class Answer {
 	@Prop({ required: true, enum: EAnswerType })
 	type: EAnswerType;
 
-	@Field(() => String, { nullable: true })
+	@Field(() => String)
 	@Prop({ enum: EAnswerType, required: true })
 	question: string;
 

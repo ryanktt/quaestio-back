@@ -1,8 +1,9 @@
+import { EUserRole } from '../user.interface';
+import { User } from '../user.schema';
+
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { EUserRole } from '../user.interface';
-import { User } from '../user.schema';
 import { Model } from 'mongoose';
 
 @ObjectType()

@@ -1,5 +1,6 @@
-import { Field, InputType } from '@nestjs/graphql';
 import { EAnswerType } from './response.interface';
+
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 class AnswerInput {

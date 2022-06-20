@@ -1,5 +1,5 @@
-import mongoose, { HydratedDocument } from 'mongoose';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 mongoose.plugin((schema: mongoose.Schema) => {

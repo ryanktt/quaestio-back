@@ -1,9 +1,9 @@
 import {
+	Question,
 	QuestionText,
 	QuestionTrueOrFalse,
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
-	Question,
 } from './questionnaire.schema';
 
 import { QuestionDiscriminatorInput } from './questionnaire.input';

@@ -3,12 +3,9 @@ import { EAnswerType } from './response.interface';
 import { Answer } from './response.schema';
 
 import { Injectable } from '@nestjs/common';
-import { UtilsPromise } from '@utils/*';
 
 @Injectable()
 export class ResponseHelper {
-	constructor(private readonly utilsPromise: UtilsPromise) {}
-
 	getAnswerFromAnswerDiscriminatorInput(
 		answerDiscriminatorInput: AnswerDiscriminatorInput,
 	): Answer | undefined {

@@ -3,21 +3,21 @@ import { EAnswerType } from './response.interface';
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-class AnswerInput {
+export class AnswerInput {
 	@Field(() => EAnswerType)
-	type!: EAnswerType;
+	type: EAnswerType;
 
 	@Field()
-	questionId!: string;
+	questionId: string;
 
-	@Field(() => Date, { nullable: true })
-	answeredAt?: Date;
+	@Field(() => Date)
+	answeredAt: Date;
 }
 
 @InputType()
 class AnswerMultipleChoiceInput extends AnswerInput {
 	@Field(() => EAnswerType)
-	type!: EAnswerType.MULTIPLE_CHOICE;
+	type: EAnswerType.MULTIPLE_CHOICE;
 
 	@Field(() => [String], { nullable: true })
 	optionIds?: string[];
@@ -26,7 +26,7 @@ class AnswerMultipleChoiceInput extends AnswerInput {
 @InputType()
 class AnswerSingleChoiceInput extends AnswerInput {
 	@Field(() => EAnswerType)
-	type!: EAnswerType.SINGLE_CHOICE;
+	type: EAnswerType.SINGLE_CHOICE;
 
 	@Field({ nullable: true })
 	optionId?: string;
@@ -35,7 +35,7 @@ class AnswerSingleChoiceInput extends AnswerInput {
 @InputType()
 class AnswerTrueOrFalseInput extends AnswerInput {
 	@Field(() => EAnswerType)
-	type!: EAnswerType.MULTIPLE_CHOICE;
+	type: EAnswerType.MULTIPLE_CHOICE;
 
 	@Field({ nullable: true })
 	optionId?: string;
@@ -44,7 +44,7 @@ class AnswerTrueOrFalseInput extends AnswerInput {
 @InputType()
 class AnswerTextInput extends AnswerInput {
 	@Field(() => EAnswerType)
-	type!: EAnswerType.TEXT;
+	type: EAnswerType.TEXT;
 
 	@Field({ nullable: true })
 	text?: string;
@@ -53,7 +53,7 @@ class AnswerTextInput extends AnswerInput {
 @InputType()
 export class AnswerDiscriminatorInput {
 	@Field(() => EAnswerType)
-	answerType!: EAnswerType;
+	type: EAnswerType;
 
 	@Field(() => AnswerMultipleChoiceInput, { nullable: true })
 	answerMultipleChoice?: AnswerMultipleChoiceInput;

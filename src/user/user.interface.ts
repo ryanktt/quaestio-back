@@ -14,8 +14,9 @@ export enum EUserErrorCode {
 	INVALID_NAME = 'INVALID_NAME',
 }
 export enum EUserRole {
-	Admin = 'Admin',
 	Respondent = 'Respondent',
+	Admin = 'Admin',
+	User = 'User',
 }
 
 registerEnumType(EUserErrorCode, { name: 'UserErrorCode' });

@@ -1,9 +1,8 @@
 import { AdminService } from './admin.service';
-import { EUserRole } from '../user.interface';
 import { Admin } from './admin.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
-import { IAdminContext, IPublicContext, Session, SessionService } from 'src/session';
+import { IPublicContext, Session, SessionService } from 'src/session';
 import { forwardRef, Inject } from '@nestjs/common';
 import { Role } from '@utils/*';
 
@@ -17,15 +16,6 @@ class SignInResponse {
 
 	@Field()
 	authToken: string;
-}
-
-@ObjectType()
-class LogOutResponse {
-	@Field(() => Session)
-	session: Session;
-
-	@Field(() => Admin)
-	user: Admin;
 }
 
 @Resolver(() => Admin)
@@ -60,12 +50,5 @@ export class AdminResolver {
 		@Args('email') email: string,
 	): Promise<SignInResponse> {
 		return this.adminService.signIn({ email, password, ip: clientIp, userAgent });
-	}
-
-	@Role(EUserRole.Admin)
-	@Mutation(() => LogOutResponse)
-	async logOut(@Context('req') { user, session }: IAdminContext): Promise<LogOutResponse> {
-		await this.sessionService.deactivateSession(session);
-		return { session, user };
 	}
 }

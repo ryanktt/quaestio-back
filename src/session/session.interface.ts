@@ -1,6 +1,6 @@
 import { SessionDocument } from './session.schema';
 
-import { AdminDocument, RespondentDocument } from 'src/user';
+import { AdminDocument, RespondentDocument, UserDocument } from 'src/user';
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum ESessionErrorCode {
@@ -42,6 +42,11 @@ export interface IPublicContext {
 export interface IAdminContext extends IPublicContext {
 	session: SessionDocument;
 	user: AdminDocument;
+}
+
+export interface IUserContext extends IPublicContext {
+	session: SessionDocument;
+	user: UserDocument;
 }
 
 export interface IRespondentContext extends IPublicContext {

@@ -235,8 +235,9 @@ interface User {
 }
 
 enum UserType {
-  Admin
   Respondent
+  Admin
+  User
 }
 
 type Admin implements User & SchemaBaseInterface {
@@ -254,11 +255,6 @@ type SignInResponse {
   authToken: String!
 }
 
-type LogOutResponse {
-  session: Session!
-  user: Admin!
-}
-
 type Session {
   _id: String!
   createdAt: DateTime!
@@ -272,15 +268,14 @@ type Session {
 
 type Query {
   fetchAdmin(userId: String, email: String): Admin
-  fetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
+  adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
 }
 
 type Mutation {
   signUp(password: String!, email: String!, name: String!): Admin!
   signIn(password: String!, email: String!): SignInResponse!
-  logOut: LogOutResponse!
-  createQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!
-  createResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): Response!
+  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!
+  publicCreateResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): Response!
 }
 
 input QuestionDiscriminatorInput {

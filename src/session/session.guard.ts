@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { ESessionErrorCode, IAdminContext, IRespondentContext } from './session.interface';
+import { ESessionErrorCode } from './session.interface';
 import { SessionService } from './session.service';
 
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { EUserRole, RespondentDocument, AdminDocument } from 'src/user';
 import { Reflector } from '@nestjs/core';
+import { EUserRole } from 'src/user';
 import { AppError } from '@utils/*';
 
 @Injectable()
@@ -27,16 +27,9 @@ export class SessionGuard implements CanActivate {
 			if (user.role !== ctxRole) {
 				throw new AppError({ code: ESessionErrorCode.INVALID_SESSION, message: 'invalid session' });
 			}
-			if (ctxRole === EUserRole.Admin) {
-				const adminRequest = req as IAdminContext;
-				adminRequest.user = user as AdminDocument;
-				adminRequest.session = session;
-			}
-			if (ctxRole === EUserRole.Respondent) {
-				const respondentRequest = req as IRespondentContext;
-				respondentRequest.user = user as RespondentDocument;
-				respondentRequest.session = session;
-			}
+
+			req.session = session;
+			req.user = user;
 		}
 
 		return true;

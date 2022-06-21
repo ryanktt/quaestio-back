@@ -152,6 +152,52 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   questions: [Question!]!
 }
 
+type AnswerSingleChoice implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+  option: String
+}
+
+interface Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+}
+
+enum AnswerType {
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
+  TRUE_OR_FALSE
+  TEXT
+}
+
+type AnswerMultipleChoice implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+  options: [String!]
+}
+
+type AnswerTrueOrFalse implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+  option: String
+}
+
+type AnswerText implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+  text: String
+}
+
 type Location {
   country: String!
   state: String!
@@ -212,52 +258,6 @@ type Session {
   userAgent: String!
   active: Boolean!
   expiresAt: DateTime!
-}
-
-type AnswerSingleChoice implements Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
-  option: String
-}
-
-interface Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
-}
-
-enum AnswerType {
-  MULTIPLE_CHOICE
-  SINGLE_CHOICE
-  TRUE_OR_FALSE
-  TEXT
-}
-
-type AnswerMultipleChoice implements Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
-  options: [String!]
-}
-
-type AnswerTrueOrFalse implements Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
-  option: String
-}
-
-type AnswerText implements Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
-  text: String
 }
 
 type Query {

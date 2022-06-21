@@ -20,7 +20,7 @@ import { User } from 'src/user';
 @Schema({
 	discriminatorKey: 'type',
 })
-class Answer {
+export class Answer {
 	@Field(() => EAnswerType)
 	@Prop({ required: true, enum: EAnswerType })
 	type: EAnswerType;

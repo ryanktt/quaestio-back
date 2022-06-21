@@ -8,7 +8,7 @@ class AnswerInput {
 	type!: EAnswerType;
 
 	@Field()
-	question!: string;
+	questionId!: string;
 
 	@Field(() => Date, { nullable: true })
 	answeredAt?: Date;
@@ -20,7 +20,7 @@ class AnswerMultipleChoiceInput extends AnswerInput {
 	type!: EAnswerType.MULTIPLE_CHOICE;
 
 	@Field(() => [String], { nullable: true })
-	options?: string[];
+	optionIds?: string[];
 }
 
 @InputType()
@@ -29,7 +29,7 @@ class AnswerSingleChoiceInput extends AnswerInput {
 	type!: EAnswerType.SINGLE_CHOICE;
 
 	@Field({ nullable: true })
-	option?: string;
+	optionId?: string;
 }
 
 @InputType()
@@ -38,7 +38,7 @@ class AnswerTrueOrFalseInput extends AnswerInput {
 	type!: EAnswerType.MULTIPLE_CHOICE;
 
 	@Field({ nullable: true })
-	option?: string;
+	optionId?: string;
 }
 
 @InputType()

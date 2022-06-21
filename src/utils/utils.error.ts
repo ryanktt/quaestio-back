@@ -1,5 +1,6 @@
 import { EUserErrorCode, ERespondentErrorCode } from 'src/user';
 import { EQuestionnaireErrorCode } from 'src/questionnaire';
+import { EResponseErrorCode } from 'src/response';
 import { ESessionErrorCode } from 'src/session';
 
 export enum EGeneralErrorCode {
@@ -10,6 +11,7 @@ type EErrorCode =
 	| EGeneralErrorCode
 	| EQuestionnaireErrorCode
 	| ERespondentErrorCode
+	| EResponseErrorCode
 	| ESessionErrorCode
 	| EUserErrorCode;
 

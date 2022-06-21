@@ -22,7 +22,7 @@ export class QuestionnaireHelper {
 	getQuestionFromQuestionDiscriminatorInput(
 		questionDiscriminatorInput: QuestionDiscriminatorInput,
 	): Question | undefined {
-		const map: Record<EQuestionType, QuestionInput> = {
+		const map: Record<EQuestionType, QuestionInput | undefined> = {
 			[EQuestionType.MULTIPLE_CHOICE]: questionDiscriminatorInput.questionMultipleChoice,
 			[EQuestionType.SINGLE_CHOICE]: questionDiscriminatorInput.questionSingleChoice,
 			[EQuestionType.TRUE_OR_FALSE]: questionDiscriminatorInput.questionTrueOrFalse,

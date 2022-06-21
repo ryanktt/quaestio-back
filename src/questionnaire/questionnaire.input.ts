@@ -101,14 +101,14 @@ export class QuestionDiscriminatorInput {
 	type: EQuestionType;
 
 	@Field(() => QuestionMultipleChoiceInput, { nullable: true })
-	questionMultipleChoice: QuestionMultipleChoiceInput;
+	questionMultipleChoice?: QuestionMultipleChoiceInput;
 
 	@Field(() => QuestionSingleChoiceInput, { nullable: true })
-	questionSingleChoice: QuestionSingleChoiceInput;
+	questionSingleChoice?: QuestionSingleChoiceInput;
 
 	@Field(() => QuestionTrueOrFalseInput, { nullable: true })
-	questionTrueOrFalse: QuestionTrueOrFalseInput;
+	questionTrueOrFalse?: QuestionTrueOrFalseInput;
 
 	@Field(() => QuestionTextInput, { nullable: true })
-	questionText: QuestionTextInput;
+	questionText?: QuestionTextInput;
 }

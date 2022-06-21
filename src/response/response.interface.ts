@@ -1,5 +1,8 @@
-import { registerEnumType } from '@nestjs/graphql';
+import { AnswerDiscriminatorInput } from './response.input';
 import { Answer } from './response.schema';
+
+import { registerEnumType } from '@nestjs/graphql';
+import { RespondentDocument } from 'src/user';
 
 export enum EAnswerType {
 	MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
@@ -8,15 +11,23 @@ export enum EAnswerType {
 	TEXT = 'TEXT',
 }
 export enum EResponseErrorCode {
+	CREATE_RESPONSE_INVALID_PARAMS = 'CREATE_RESPONSE_INVALID_PARAMS',
 	CREATE_RESPONSE_ERROR = 'CREATE_RESPONSE_ERROR',
+	INVALID_ANSWER = 'INVALID_ANSWER',
 }
 
 registerEnumType(EAnswerType, { name: 'AnswerType' });
 registerEnumType(EResponseErrorCode, { name: 'SessionErrorCode' });
 
-export interface ICreateResponseParams {
+export interface IRepositoryCreateResponseParams {
 	questionnaireId: string;
 	answers: Answer[];
-	sharedId: string;
+	sharedId?: string;
 	userId: string;
+}
+
+export interface ICreateResponseParams {
+	answers: AnswerDiscriminatorInput[];
+	user: RespondentDocument;
+	questionnaireId: string;
 }

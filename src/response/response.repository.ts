@@ -1,4 +1,4 @@
-import { EResponseErrorCode, ICreateResponseParams } from './response.interface';
+import { EResponseErrorCode, IRepositoryCreateResponseParams } from './response.interface';
 import { ResponseDocument, ResponseModel } from './response.schema';
 
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,7 +9,7 @@ import { AppError } from '@utils/*';
 export class ResponseRepository {
 	constructor(@InjectModel('Response') private readonly responseSchema: ResponseModel) {}
 
-	async create(params: ICreateResponseParams): Promise<ResponseDocument> {
+	async create(params: IRepositoryCreateResponseParams): Promise<ResponseDocument> {
 		const { answers, sharedId, questionnaireId, userId } = params;
 		return this.responseSchema
 			.create({ answers, sharedId, questionnaire: questionnaireId, user: userId })

@@ -22,8 +22,8 @@ interface IError {
 	payload?: unknown;
 }
 
-class ErrorCollector {
-	errors: IError[] = [];
+export class ErrorCollector {
+	private errors: IError[] = [];
 
 	collect(err: AppError): void {
 		const { code, message, originalError, payload } = err;
@@ -33,6 +33,8 @@ class ErrorCollector {
 	run({ message, code, payload }: IError): void {
 		if (this.errors.length > 0) {
 			throw new AppError({ message, code, errors: this.errors, payload });
+		} else {
+			this.errors = [];
 		}
 	}
 }

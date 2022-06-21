@@ -3,9 +3,10 @@ import { EAnswerType } from './response.interface';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { DocumentType, SchemaBase } from '@utils/*';
+import { Questionnaire } from 'src/questionnaire';
+import { Respondent } from 'src/user';
 import { v4 as uuidv4 } from 'uuid';
 import { Model } from 'mongoose';
-import { User } from 'src/user';
 
 @InterfaceType({
 	isAbstract: true,
@@ -81,11 +82,11 @@ class AnswerText extends Answer {
 @ObjectType()
 @Schema()
 export class Response extends SchemaBase {
-	@Field(() => User)
+	@Field(() => Questionnaire)
 	@Prop({ type: String, ref: 'Questionnaire', required: true })
 	questionnaire: string;
 
-	@Field()
+	@Field(() => Respondent)
 	@Prop({ type: String, ref: 'Respondent', required: true })
 	user: string;
 

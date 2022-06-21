@@ -198,6 +198,16 @@ type AnswerText implements Answer {
   text: String
 }
 
+type Response {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  questionnaire: Questionnaire!
+  user: Respondent!
+  answers: [Answer!]!
+  sharedId: String!
+}
+
 type Location {
   country: String!
   state: String!
@@ -270,6 +280,7 @@ type Mutation {
   signIn(password: String!, email: String!): SignInResponse!
   logOut: LogOutResponse!
   createQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!
+  createResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): Response!
 }
 
 input QuestionDiscriminatorInput {
@@ -332,4 +343,40 @@ input QuestionTextInput {
   description: String
   showCorrectAnswer: Boolean = false
   feedbackAfterSubmit: String
+}
+
+input AnswerDiscriminatorInput {
+  type: AnswerType!
+  answerMultipleChoice: AnswerMultipleChoiceInput
+  answerSingleChoice: AnswerSingleChoiceInput
+  answerTrueOrFalse: AnswerTrueOrFalseInput
+  answerText: AnswerTextInput
+}
+
+input AnswerMultipleChoiceInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime!
+  optionIds: [String!]
+}
+
+input AnswerSingleChoiceInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime!
+  optionId: String
+}
+
+input AnswerTrueOrFalseInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime!
+  optionId: String
+}
+
+input AnswerTextInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime!
+  text: String
 }

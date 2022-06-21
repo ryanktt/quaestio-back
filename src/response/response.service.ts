@@ -4,8 +4,8 @@ import { Answer, Response } from './response.schema';
 import { ResponseHelper } from './response.helper';
 
 import { EQuestionnaireErrorCode, QuestionnaireRepository } from 'src/questionnaire';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AppError, UtilsAuth } from '@utils/*';
+import { Injectable } from '@nestjs/common';
+import { AppError } from '@utils/*';
 
 @Injectable()
 export class ResponseService {
@@ -13,7 +13,6 @@ export class ResponseService {
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly responseRepository: ResponseRepository,
 		private readonly responseHelper: ResponseHelper,
-		@Inject(forwardRef(() => UtilsAuth)) private readonly utilsAuth: UtilsAuth,
 	) {}
 
 	async createResponse({

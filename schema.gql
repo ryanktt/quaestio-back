@@ -272,8 +272,8 @@ type Query {
 }
 
 type Mutation {
-  signUp(password: String!, email: String!, name: String!): Admin!
-  signIn(password: String!, email: String!): SignInResponse!
+  publicSignUp(password: String!, email: String!, name: String!): Admin!
+  publicSignIn(password: String!, email: String!): SignInResponse!
   adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!
   publicCreateResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): Response!
 }

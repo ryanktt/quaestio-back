@@ -35,7 +35,7 @@ export class AdminResolver {
 	}
 
 	@Mutation(() => Admin)
-	async signUp(
+	async publicSignUp(
 		@Args('password') password: string,
 		@Args('email') email: string,
 		@Args('name') name: string,
@@ -44,7 +44,7 @@ export class AdminResolver {
 	}
 
 	@Mutation(() => SignInResponse)
-	async signIn(
+	async publicSignIn(
 		@Context('req') { clientIp, userAgent }: IPublicContext,
 		@Args('password') password: string,
 		@Args('email') email: string,

@@ -22,7 +22,7 @@ export class QuestionnaireResolver {
 
 	@Role('Admin')
 	@Query(() => Questionnaire, { nullable: true })
-	async fetchQuestionnaire(
+	async adminFetchQuestionnaire(
 		@Context('req') { user }: IAdminContext,
 		@Args('questionnaireSharedId', { nullable: true }) questionnaireSharedId: string,
 		@Args('questionnaireId', { nullable: true }) questionnaireId: string,
@@ -32,7 +32,7 @@ export class QuestionnaireResolver {
 
 	@Role('Admin')
 	@Mutation(() => QuestionnaireQuiz)
-	async createQuestionnaireQuiz(
+	async adminCreateQuestionnaireQuiz(
 		@Context('req') { user }: IAdminContext,
 		@Args('questions', { type: () => [QuestionDiscriminatorInput] }) questions: QuestionDiscriminatorInput[],
 		@Args('title') title: string,

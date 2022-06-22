@@ -51,8 +51,9 @@ export interface IRepositoryCreateQuestionnareParams {
 	title: string;
 }
 
-export interface ICreateQuestionnaireQuizParams {
+export interface ICreateQuestionnaireParams {
 	questions: QuestionDiscriminatorInput[];
+	type: EQuestionnaireType;
 	user: AdminDocument;
 	title: string;
 }
@@ -61,4 +62,11 @@ export interface IFetchQuestionnaireParams {
 	questionnaireSharedId: string;
 	questionnaireId: string;
 	user: AdminDocument;
+}
+
+export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
+	randomizeQuestions: boolean;
+	passingGradePercent?: number;
+	maxRetryAmount?: number;
+	timeLimit?: number;
 }

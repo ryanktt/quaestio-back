@@ -2,11 +2,17 @@ import {
 	QuestionnaireModel,
 	QuestionnaireDocument,
 	QuestionnaireQuizModel,
+	QuestionnaireExamModel,
 	QuestionnaireSurveyModel,
+	QuestionnaireExamDocument,
 	QuestionnaireQuizDocument,
 	QuestionnaireSurveyDocument,
 } from './questionnaire.schema';
-import { EQuestionnaireErrorCode, IRepositoryCreateQuestionnareParams } from './questionnaire.interface';
+import {
+	EQuestionnaireErrorCode,
+	IRepositoryCreateQuestionnaireExamParams,
+	IRepositoryCreateQuestionnareParams,
+} from './questionnaire.interface';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
@@ -16,6 +22,7 @@ import { AppError } from '@utils/*';
 export class QuestionnaireRepository {
 	constructor(
 		@InjectModel('QuestionnaireSurvey') private readonly questionnaireSurveySchema: QuestionnaireSurveyModel,
+		@InjectModel('QuestionnaireExam') private readonly questionnaireExamSchema: QuestionnaireExamModel,
 		@InjectModel('QuestionnaireQuiz') private readonly questionnaireQuizSchema: QuestionnaireQuizModel,
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
 	) {}
@@ -88,5 +95,33 @@ export class QuestionnaireRepository {
 				originalError: err,
 			});
 		}) as Promise<QuestionnaireSurveyDocument>;
+	}
+
+	async createExam({
+		passingGradePercent,
+		randomizeQuestions,
+		maxRetryAmount,
+		questions,
+		timeLimit,
+		userId,
+		title,
+	}: IRepositoryCreateQuestionnaireExamParams): Promise<QuestionnaireExamDocument> {
+		return this.questionnaireExamSchema
+			.create({
+				passingGradePercent,
+				randomizeQuestions,
+				maxRetryAmount,
+				user: userId,
+				timeLimit,
+				questions,
+				title,
+			})
+			.catch((err: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_EXAM_ERROR,
+					message: 'fail to create questionnaire exam',
+					originalError: err,
+				});
+			}) as Promise<QuestionnaireExamDocument>;
 	}
 }

@@ -1,10 +1,11 @@
 import {
 	EQuestionnaireErrorCode,
 	IFetchQuestionnaireParams,
-	ICreateQuestionnaireQuizParams,
+	ICreateQuestionnaireParams,
+	EQuestionnaireType,
 } from './questionnaire.interface';
-import { Question, Questionnaire, QuestionnaireQuiz } from './questionnaire.schema';
 import { QuestionnaireRepository } from './questionnaire.repository';
+import { Question, Questionnaire } from './questionnaire.schema';
 import { QuestionnaireHelper } from './questionnaire.helper';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
@@ -34,11 +35,16 @@ export class QuestionnaireService {
 		return questionnaire;
 	}
 
-	async createQuestionnaireQuiz({
+	async createQuestionnaire({
 		questions: questionDiscriminatorInputArray,
+		passingGradePercent,
+		randomizeQuestions,
+		maxRetryAmount,
+		timeLimit,
+		type,
 		title,
 		user,
-	}: ICreateQuestionnaireQuizParams): Promise<QuestionnaireQuiz> {
+	}: ICreateQuestionnaireParams): Promise<Questionnaire> {
 		const errCollector = AppError.collectorInstance();
 
 		const questions = questionDiscriminatorInputArray.map((discriminatorInput, index) => {
@@ -58,6 +64,20 @@ export class QuestionnaireService {
 			message: 'invalid params to create questionnaire',
 		});
 
-		return this.questionnaireRepository.createQuiz({ questions, title, userId: user.id });
+		if (type === EQuestionnaireType.QuestionnaireQuiz) {
+			return this.questionnaireRepository.createQuiz({ questions, title, userId: user.id });
+		}
+		if (type === EQuestionnaireType.QuestionnaireSurvey) {
+			return this.questionnaireRepository.createSurvey({ questions, title, userId: user.id });
+		}
+		return this.questionnaireRepository.createExam({
+			passingGradePercent,
+			randomizeQuestions,
+			userId: user.id,
+			maxRetryAmount,
+			timeLimit,
+			questions,
+			title,
+		});
 	}
 }

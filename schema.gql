@@ -208,7 +208,7 @@ type Response {
   sharedId: String!
 }
 
-type Location {
+type RespondentLocation {
   country: String!
   state: String!
   city: String!
@@ -222,7 +222,7 @@ type Respondent implements User & SchemaBaseInterface {
   role: UserType!
   name: String!
   email: String!
-  location: Location
+  location: RespondentLocation
 }
 
 interface User {

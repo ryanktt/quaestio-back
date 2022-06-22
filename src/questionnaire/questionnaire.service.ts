@@ -1,8 +1,8 @@
 import {
+	EQuestionnaireType,
 	EQuestionnaireErrorCode,
 	IFetchQuestionnaireParams,
 	ICreateQuestionnaireParams,
-	EQuestionnaireType,
 } from './questionnaire.interface';
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { Question, Questionnaire } from './questionnaire.schema';

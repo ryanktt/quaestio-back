@@ -63,8 +63,8 @@ export interface ICreateQuestionnaireParams {
 }
 
 export interface IFetchQuestionnaireParams {
-	questionnaireSharedId: string;
-	questionnaireId: string;
+	questionnaireSharedId?: string;
+	questionnaireId?: string;
 	user: AdminDocument;
 }
 

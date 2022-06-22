@@ -30,8 +30,8 @@ export class QuestionnaireResolver {
 	@Query(() => Questionnaire, { nullable: true })
 	async adminFetchQuestionnaire(
 		@Context('req') { user }: IAdminContext,
-		@Args('questionnaireSharedId', { nullable: true }) questionnaireSharedId: string,
-		@Args('questionnaireId', { nullable: true }) questionnaireId: string,
+		@Args('questionnaireSharedId', { nullable: true }) questionnaireSharedId?: string,
+		@Args('questionnaireId', { nullable: true }) questionnaireId?: string,
 	): Promise<Questionnaire | undefined> {
 		return this.questionnaireService.fetchQuestionnaire({ questionnaireId, questionnaireSharedId, user });
 	}

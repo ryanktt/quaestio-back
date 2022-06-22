@@ -275,6 +275,8 @@ type Mutation {
   publicSignUp(password: String!, email: String!, name: String!): Admin!
   publicSignIn(password: String!, email: String!): SignInResponse!
   adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!
+  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireSurvey!
+  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float): QuestionnaireExam!
   publicCreateResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): Response!
 }
 

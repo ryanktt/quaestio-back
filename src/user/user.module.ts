@@ -1,6 +1,7 @@
 import { RespondentRepository, RespondentSchema, RespondentHelper } from './respondent';
 import { AdminSchema, AdminRepository, AdminService, AdminResolver } from './admin';
 import { UserRepository } from './user.repository';
+import { UserResolver } from './user.resolver';
 import { UserSchema } from './user.schema';
 import { UserHelper } from './user.helper';
 
@@ -25,6 +26,7 @@ import { SessionModule } from 'src/session';
 	],
 	providers: [
 		UserRepository,
+		UserResolver,
 		UserHelper,
 		RespondentRepository,
 		RespondentHelper,

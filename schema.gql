@@ -255,6 +255,11 @@ type SignInResponse {
   authToken: String!
 }
 
+type LogOutResponse {
+  session: Session!
+  user: User!
+}
+
 type Session {
   _id: String!
   createdAt: DateTime!
@@ -272,6 +277,7 @@ type Query {
 }
 
 type Mutation {
+  userlogOut: LogOutResponse!
   publicSignUp(password: String!, email: String!, name: String!): Admin!
   publicSignIn(password: String!, email: String!): SignInResponse!
   adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!

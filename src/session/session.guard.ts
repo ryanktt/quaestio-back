@@ -24,7 +24,7 @@ export class SessionGuard implements CanActivate {
 		const ctxRole = this.reflector.get<EUserRole>('role', context.getHandler());
 		if (ctxRole) {
 			const { user, session } = await this.sessionService.authenticateUser(authToken);
-			if (user.role !== ctxRole) {
+			if (user.role !== ctxRole && ctxRole !== EUserRole.User) {
 				throw new AppError({ code: ESessionErrorCode.INVALID_SESSION, message: 'invalid session' });
 			}
 

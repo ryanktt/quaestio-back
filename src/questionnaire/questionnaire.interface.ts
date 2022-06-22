@@ -69,7 +69,7 @@ export interface IFetchQuestionnaireParams {
 }
 
 export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
-	randomizeQuestions: boolean;
+	randomizeQuestions?: boolean;
 	passingGradePercent?: number;
 	maxRetryAmount?: number;
 	timeLimit?: number;

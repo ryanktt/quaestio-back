@@ -2,8 +2,7 @@ import { AdminService } from './admin.service';
 import { Admin } from './admin.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
-import { IPublicContext, Session, SessionService } from 'src/session';
-import { forwardRef, Inject } from '@nestjs/common';
+import { IPublicContext, Session } from 'src/session';
 import { Role } from '@utils/*';
 
 @ObjectType()
@@ -20,10 +19,7 @@ class SignInResponse {
 
 @Resolver(() => Admin)
 export class AdminResolver {
-	constructor(
-		@Inject(forwardRef(() => SessionService)) private readonly sessionService: SessionService,
-		private readonly adminService: AdminService,
-	) {}
+	constructor(private readonly adminService: AdminService) {}
 
 	@Role('Admin')
 	@Query(() => Admin, { nullable: true })

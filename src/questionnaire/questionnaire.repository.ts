@@ -2,7 +2,9 @@ import {
 	QuestionnaireModel,
 	QuestionnaireDocument,
 	QuestionnaireQuizModel,
+	QuestionnaireSurveyModel,
 	QuestionnaireQuizDocument,
+	QuestionnaireSurveyDocument,
 } from './questionnaire.schema';
 import { EQuestionnaireErrorCode, IRepositoryCreateQuestionnareParams } from './questionnaire.interface';
 
@@ -13,6 +15,7 @@ import { AppError } from '@utils/*';
 @Injectable()
 export class QuestionnaireRepository {
 	constructor(
+		@InjectModel('QuestionnaireSurvey') private readonly questionnaireSurveySchema: QuestionnaireSurveyModel,
 		@InjectModel('QuestionnaireQuiz') private readonly questionnaireQuizSchema: QuestionnaireQuizModel,
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
 	) {}
@@ -71,5 +74,19 @@ export class QuestionnaireRepository {
 				originalError: err,
 			});
 		}) as Promise<QuestionnaireQuizDocument>;
+	}
+
+	async createSurvey({
+		questions,
+		userId,
+		title,
+	}: IRepositoryCreateQuestionnareParams): Promise<QuestionnaireSurveyDocument> {
+		return this.questionnaireSurveySchema.create({ title, questions, user: userId }).catch((err: Error) => {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_SURVEY_ERROR,
+				message: 'fail to create questionnaire survey',
+				originalError: err,
+			});
+		}) as Promise<QuestionnaireSurveyDocument>;
 	}
 }

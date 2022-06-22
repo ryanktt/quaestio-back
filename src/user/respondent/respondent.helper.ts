@@ -4,7 +4,7 @@ import { lookup } from 'geoip-lite';
 
 @Injectable()
 export class RespondentHelper {
-	getLocationByIp(ip: string): IRespondentLocation | undefined {
+	getRespondentLocationByIp(ip: string): IRespondentLocation | undefined {
 		const location = lookup(ip);
 		if (!location) return undefined;
 

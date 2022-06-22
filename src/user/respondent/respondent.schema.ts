@@ -7,7 +7,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Model } from 'mongoose';
 
 @ObjectType()
-export class Location {
+export class RespondentLocation {
 	@Field()
 	@Prop({ required: true })
 	country: string;
@@ -37,9 +37,9 @@ export class Respondent extends SchemaBase implements User {
 	@Field()
 	email: string;
 
-	@Field(() => Location, { nullable: true })
-	@Prop({ type: Location })
-	location?: Location;
+	@Field(() => RespondentLocation, { nullable: true })
+	@Prop({ type: RespondentLocation })
+	location?: RespondentLocation;
 
 	password: string;
 }

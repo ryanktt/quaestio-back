@@ -28,6 +28,7 @@ export interface IRepositoryCreateResponseParams {
 
 export interface ICreateResponseParams {
 	answers: AnswerDiscriminatorInput[];
-	user: RespondentDocument;
+	user: RespondentDocument; //user?:
+	// TODO quest?: GuestDoc
 	questionnaireId: string;
 }

@@ -2,7 +2,7 @@ import { EUserRole } from '../user.interface';
 import { User } from '../user.schema';
 
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Model } from 'mongoose';
 
@@ -18,7 +18,6 @@ export class Admin extends SchemaBase implements User {
 	@Field()
 	name: string;
 
-	@Prop({ required: true })
 	password: string;
 }
 

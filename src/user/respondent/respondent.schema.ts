@@ -41,8 +41,7 @@ export class Respondent extends SchemaBase implements User {
 	@Prop({ type: Location })
 	location?: Location;
 
-	@Prop()
-	password?: string;
+	password: string;
 }
 
 export const RespondentSchema = SchemaFactory.createForClass(Respondent);

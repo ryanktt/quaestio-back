@@ -56,6 +56,10 @@ export interface ICreateQuestionnaireParams {
 	type: EQuestionnaireType;
 	user: AdminDocument;
 	title: string;
+	passingGradePercent?: number;
+	randomizeQuestions?: boolean;
+	maxRetryAmount?: number;
+	timeLimit?: number;
 }
 
 export interface IFetchQuestionnaireParams {

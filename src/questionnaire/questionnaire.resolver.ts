@@ -1,8 +1,9 @@
-import { Questionnaire, QuestionnaireQuiz } from './questionnaire.schema';
+import { Questionnaire, QuestionnaireQuiz, QuestionnaireSurvey } from './questionnaire.schema';
 import { QuestionDiscriminatorInput } from './questionnaire.input';
 import { QuestionnaireService } from './questionnaire.service';
 
 import { Resolver, ResolveField, Parent, Context, Mutation, Args, Query } from '@nestjs/graphql';
+import { EQuestionnaireType } from './questionnaire.interface';
 import { Admin, AdminDocument } from 'src/user';
 import { IAdminContext } from 'src/session';
 import { ILoaders } from 'src/app.loaders';
@@ -37,6 +38,26 @@ export class QuestionnaireResolver {
 		@Args('questions', { type: () => [QuestionDiscriminatorInput] }) questions: QuestionDiscriminatorInput[],
 		@Args('title') title: string,
 	): Promise<QuestionnaireQuiz> {
-		return this.questionnaireService.createQuestionnaireQuiz({ questions, title, user });
+		return this.questionnaireService.createQuestionnaire({
+			type: EQuestionnaireType.QuestionnaireQuiz,
+			questions,
+			title,
+			user,
+		}) as Promise<QuestionnaireQuiz>;
+	}
+
+	@Role('Admin')
+	@Mutation(() => QuestionnaireSurvey)
+	async adminCreateQuestionnaireSurvey(
+		@Context('req') { user }: IAdminContext,
+		@Args('questions', { type: () => [QuestionDiscriminatorInput] }) questions: QuestionDiscriminatorInput[],
+		@Args('title') title: string,
+	): Promise<QuestionnaireSurvey> {
+		return this.questionnaireService.createQuestionnaire({
+			type: EQuestionnaireType.QuestionnaireSurvey,
+			questions,
+			title,
+			user,
+		}) as Promise<QuestionnaireSurvey>;
 	}
 }

@@ -310,7 +310,7 @@ input QuestionMultipleChoiceInput {
 input OptionInput {
   title: String!
   correct: Boolean!
-  feedbackAfterSubmit: String
+  feedbackAfterSubmit: String = "false"
 }
 
 input QuestionSingleChoiceInput {

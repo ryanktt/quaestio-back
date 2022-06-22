@@ -17,8 +17,8 @@ export class Option {
 	@Prop()
 	correct?: boolean;
 
-	@Field({ nullable: true })
-	@Prop()
+	@Field({ nullable: true, defaultValue: false })
+	@Prop({ default: false })
 	feedbackAfterSubmit?: string;
 }
 

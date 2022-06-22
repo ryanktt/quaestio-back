@@ -1,4 +1,9 @@
-import { Questionnaire, QuestionnaireQuiz, QuestionnaireSurvey } from './questionnaire.schema';
+import {
+	Questionnaire,
+	QuestionnaireExam,
+	QuestionnaireQuiz,
+	QuestionnaireSurvey,
+} from './questionnaire.schema';
 import { QuestionDiscriminatorInput } from './questionnaire.input';
 import { QuestionnaireService } from './questionnaire.service';
 
@@ -59,5 +64,28 @@ export class QuestionnaireResolver {
 			title,
 			user,
 		}) as Promise<QuestionnaireSurvey>;
+	}
+
+	@Role('Admin')
+	@Mutation(() => QuestionnaireExam)
+	async adminCreateQuestionnaireExam(
+		@Context('req') { user }: IAdminContext,
+		@Args('questions', { type: () => [QuestionDiscriminatorInput] }) questions: QuestionDiscriminatorInput[],
+		@Args('title') title: string,
+		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
+		@Args('passingGradePercent', { nullable: true }) passingGradePercent?: number,
+		@Args('maxRetryAmount', { nullable: true }) maxRetryAmount?: number,
+		@Args('timeLimit', { nullable: true }) timeLimit?: number,
+	): Promise<QuestionnaireExam> {
+		return this.questionnaireService.createQuestionnaire({
+			type: EQuestionnaireType.QuestionnaireExam,
+			passingGradePercent,
+			randomizeQuestions,
+			maxRetryAmount,
+			questions,
+			timeLimit,
+			title,
+			user,
+		}) as Promise<QuestionnaireExam>;
 	}
 }

@@ -1,12 +1,21 @@
-import { EQuestionnaireErrorCode, EQuestionType } from './questionnaire.interface';
-import { Question, QuestionDiscriminatorInput, QuestionInput } from './schema';
+import {
+	EQuestionType,
+	EQuestionnaireErrorCode,
+	ICreateQuestionnaireParams,
+} from './questionnaire.interface';
+import { CreateQuestionnaireValidator, Question, QuestionDiscriminatorInput, QuestionInput } from './schema';
 
 import { AppError, UtilsPromise } from '@utils/*';
 import { Injectable } from '@nestjs/common';
+import Joi from 'joi';
 
 @Injectable()
 export class QuestionnaireHelper {
 	constructor(private readonly utilsPromise: UtilsPromise) {}
+
+	async validateQuestionnaireCreationParams(params: ICreateQuestionnaireParams): Promise<void> {
+		await this.utilsPromise.promisify(() => Joi.assert(params, CreateQuestionnaireValidator));
+	}
 
 	async validateTitle(title: string): Promise<void> {
 		return this.utilsPromise.promisify(() => {

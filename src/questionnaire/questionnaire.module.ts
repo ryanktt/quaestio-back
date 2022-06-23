@@ -3,7 +3,7 @@ import {
 	QuestionnaireExamSchema,
 	QuestionnaireQuizSchema,
 	QuestionnaireSurveySchema,
-} from './questionnaire.schema';
+} from './schema';
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { QuestionnaireResolver } from './questionnaire.resolver';
 import { QuestionnaireService } from './questionnaire.service';

@@ -4,9 +4,9 @@ import {
 	QuestionTrueOrFalse,
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
-} from './questionnaire.schema';
+	QuestionDiscriminatorInput,
+} from './schema';
 
-import { QuestionDiscriminatorInput } from './questionnaire.input';
 import { registerEnumType } from '@nestjs/graphql';
 import { AdminDocument } from 'src/user';
 

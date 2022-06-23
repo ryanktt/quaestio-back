@@ -1,6 +1,5 @@
 import { EQuestionnaireErrorCode, EQuestionType } from './questionnaire.interface';
-import { QuestionDiscriminatorInput, QuestionInput } from './questionnaire.input';
-import { Question } from './questionnaire.schema';
+import { Question, QuestionDiscriminatorInput, QuestionInput } from './schema';
 
 import { AppError, UtilsPromise } from '@utils/*';
 import { Injectable } from '@nestjs/common';

@@ -4,6 +4,7 @@ import { EResponseErrorCode } from 'src/response';
 import { ESessionErrorCode } from 'src/session';
 
 export enum EGeneralErrorCode {
+	VALIDATION_FIELD = 'VALIDATION_FIELD',
 	ACCESS_DENIED = 'ACCESS_DENIED',
 }
 

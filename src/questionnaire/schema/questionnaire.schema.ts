@@ -1,4 +1,4 @@
-import { EQuestionType, EQuestionnaireType } from './questionnaire.interface';
+import { EQuestionType, EQuestionnaireType } from '../questionnaire.interface';
 
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';

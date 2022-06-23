@@ -3,8 +3,8 @@ import {
 	QuestionnaireExam,
 	QuestionnaireQuiz,
 	QuestionnaireSurvey,
-} from './questionnaire.schema';
-import { QuestionDiscriminatorInput } from './questionnaire.input';
+	QuestionDiscriminatorInput,
+} from './schema';
 import { QuestionnaireService } from './questionnaire.service';
 
 import { Resolver, ResolveField, Parent, Context, Mutation, Args, Query } from '@nestjs/graphql';

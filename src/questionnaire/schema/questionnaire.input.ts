@@ -1,4 +1,4 @@
-import { EQuestionType } from './questionnaire.interface';
+import { EQuestionType } from '../questionnaire.interface';
 
 import { Field, InputType } from '@nestjs/graphql';
 

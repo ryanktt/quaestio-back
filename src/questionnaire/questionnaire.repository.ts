@@ -7,7 +7,7 @@ import {
 	QuestionnaireExamDocument,
 	QuestionnaireQuizDocument,
 	QuestionnaireSurveyDocument,
-} from './questionnaire.schema';
+} from './schema';
 import {
 	EQuestionnaireErrorCode,
 	IRepositoryCreateQuestionnaireExamParams,

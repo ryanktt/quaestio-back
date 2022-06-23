@@ -5,7 +5,7 @@ import {
 	ICreateQuestionnaireParams,
 } from './questionnaire.interface';
 import { QuestionnaireRepository } from './questionnaire.repository';
-import { Question, Questionnaire } from './questionnaire.schema';
+import { Question, Questionnaire } from './schema';
 import { QuestionnaireHelper } from './questionnaire.helper';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';

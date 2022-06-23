@@ -1,5 +1,5 @@
 import { QuestionnaireRepository } from './questionnaire.repository';
-import { QuestionnaireDocument } from './questionnaire.schema';
+import { QuestionnaireDocument } from './schema';
 
 import { UtilsArray } from '@utils/*';
 import DataLoader from 'dataloader';

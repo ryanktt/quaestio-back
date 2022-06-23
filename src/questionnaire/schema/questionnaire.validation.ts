@@ -1,4 +1,4 @@
-import { EQuestionType } from '../questionnaire.interface';
+import { EQuestionnaireType, EQuestionType } from '../questionnaire.interface';
 import Joi from 'joi';
 
 export const OptionInputValidator = Joi.object().keys({
@@ -12,7 +12,7 @@ export const baseQuestionInputValidatorKeys = {
 		.valid(...Object.values(EQuestionType))
 		.required(),
 	title: Joi.string().required(),
-	weight: Joi.number().required(),
+	weight: Joi.number(),
 	required: Joi.boolean(),
 	description: Joi.string(),
 	showCorrectAnswer: Joi.boolean(),
@@ -72,4 +72,17 @@ export const QuestionDiscriminatorInputValidator = Joi.object().keys({
 		then: Joi.required(),
 		otherwise: Joi.optional(),
 	}),
+});
+
+export const CreateQuestionnaireValidator = Joi.object().keys({
+	type: Joi.string()
+		.valid(...Object.values(EQuestionnaireType))
+		.required(),
+	title: Joi.string().required(),
+	user: Joi.object().required(),
+	questions: Joi.array().items(QuestionDiscriminatorInputValidator),
+	passingGradePercent: Joi.number(),
+	randomizeQuestions: Joi.boolean(),
+	maxRetryAmount: Joi.number(),
+	timeLimit: Joi.number(),
 });

@@ -25,7 +25,7 @@ export class UtilsAuth {
 
 				if (docToVal[refKey] !== doc.id) {
 					throw new AppError({
-						message: `user does not have access to the ${docToValName} document`,
+						message: `user does not have access to ${docToValName}`,
 						code: EGeneralErrorCode.ACCESS_DENIED,
 					});
 				}

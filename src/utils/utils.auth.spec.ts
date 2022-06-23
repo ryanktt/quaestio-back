@@ -37,7 +37,7 @@ describe('UtilsAuth', () => {
 				utilsAuth.validateUserDocAccess(questionnaireDocCounterpart, [
 					{ doc: userDocCounterpart, refKey: 'user' },
 				]),
-			).rejects.toThrowError('user does not have access to the Questionnaire document');
+			).rejects.toThrowError('user does not have access to Questionnaire');
 		});
 	});
 });

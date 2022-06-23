@@ -126,10 +126,6 @@ export class QuestionText extends Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TEXT;
 
-	@Field()
-	@Prop({ required: true })
-	description: string;
-
 	@Field({ nullable: true })
 	@Prop()
 	feedbackAfterSubmit?: string;

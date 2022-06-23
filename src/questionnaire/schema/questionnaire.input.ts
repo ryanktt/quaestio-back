@@ -91,9 +91,6 @@ export class QuestionTextInput extends QuestionInput {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TEXT;
 
-	@Field()
-	description: string;
-
 	@Field({ nullable: true })
 	feedbackAfterSubmit?: string;
 }

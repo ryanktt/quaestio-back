@@ -43,8 +43,8 @@ export class QuestionSingleChoiceInput extends QuestionInput {
 	@Field(() => [OptionInput])
 	options: OptionInput[];
 
-	@Field()
-	randomizeOptionInputs: boolean;
+	@Field({ nullable: true, defaultValue: false })
+	randomizeOptions: boolean;
 
 	@Field({ nullable: true })
 	wrongAnswerFeedback?: string;
@@ -62,13 +62,13 @@ export class QuestionMultipleChoiceInput extends QuestionInput {
 	options: OptionInput[];
 
 	@Field({ defaultValue: false })
-	randomizeOptionInputs: boolean;
+	randomizeOptions: boolean;
 
 	@Field({ nullable: true })
 	wrongAnswerFeedback?: string;
 
 	@Field({ nullable: true })
-	correctAnswerFeedback?: string;
+	rightAnswerFeedback?: string;
 }
 
 @InputType()
@@ -83,13 +83,16 @@ export class QuestionTrueOrFalseInput extends QuestionInput {
 	wrongAnswerFeedback?: string;
 
 	@Field({ nullable: true })
-	correctAnswerFeedback?: string;
+	rightAnswerFeedback?: string;
 }
 
 @InputType()
 export class QuestionTextInput extends QuestionInput {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TEXT;
+
+	@Field()
+	description: string;
 
 	@Field({ nullable: true })
 	feedbackAfterSubmit?: string;

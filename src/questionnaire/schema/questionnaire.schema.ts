@@ -100,7 +100,7 @@ export class QuestionMultipleChoice extends Question {
 
 	@Field({ nullable: true })
 	@Prop()
-	correctAnswerFeedback?: string;
+	rightAnswerFeedback?: string;
 }
 
 @ObjectType({ implements: Question })
@@ -118,13 +118,17 @@ export class QuestionTrueOrFalse extends Question {
 
 	@Field({ nullable: true })
 	@Prop()
-	correctAnswerFeedback?: string;
+	rightAnswerFeedback?: string;
 }
 
 @ObjectType({ implements: Question })
 export class QuestionText extends Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TEXT;
+
+	@Field()
+	@Prop({ required: true })
+	description: string;
 
 	@Field({ nullable: true })
 	@Prop()

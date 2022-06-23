@@ -61,7 +61,7 @@ type QuestionMultipleChoice implements Question {
   options: [Option!]!
   randomizeOptions: Boolean!
   wrongAnswerFeedback: String
-  correctAnswerFeedback: String
+  rightAnswerFeedback: String
 }
 
 type QuestionTrueOrFalse implements Question {
@@ -76,7 +76,7 @@ type QuestionTrueOrFalse implements Question {
   showCorrectAnswer: Boolean!
   options: [Option!]!
   wrongAnswerFeedback: String
-  correctAnswerFeedback: String
+  rightAnswerFeedback: String
 }
 
 type QuestionText implements Question {
@@ -302,9 +302,9 @@ input QuestionMultipleChoiceInput {
   description: String
   showCorrectAnswer: Boolean = false
   options: [OptionInput!]!
-  randomizeOptionInputs: Boolean = false
+  randomizeOptions: Boolean = false
   wrongAnswerFeedback: String
-  correctAnswerFeedback: String
+  rightAnswerFeedback: String
 }
 
 input OptionInput {
@@ -321,7 +321,7 @@ input QuestionSingleChoiceInput {
   description: String
   showCorrectAnswer: Boolean = false
   options: [OptionInput!]!
-  randomizeOptionInputs: Boolean!
+  randomizeOptions: Boolean = false
   wrongAnswerFeedback: String
   rightAnswerFeedback: String
 }
@@ -335,7 +335,7 @@ input QuestionTrueOrFalseInput {
   showCorrectAnswer: Boolean = false
   options: [OptionInput!]!
   wrongAnswerFeedback: String
-  correctAnswerFeedback: String
+  rightAnswerFeedback: String
 }
 
 input QuestionTextInput {

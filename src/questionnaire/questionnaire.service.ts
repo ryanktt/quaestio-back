@@ -35,33 +35,18 @@ export class QuestionnaireService {
 		return questionnaire;
 	}
 
-	async createQuestionnaire({
-		questions: questionDiscriminatorInputArray,
-		passingGradePercent,
-		randomizeQuestions,
-		maxRetryAmount,
-		timeLimit,
-		type,
-		title,
-		user,
-	}: ICreateQuestionnaireParams): Promise<Questionnaire> {
-		const errCollector = AppError.collectorInstance();
-
-		const questions = questionDiscriminatorInputArray.map((discriminatorInput, index) => {
-			const question = this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(discriminatorInput);
-			const errObj = {
-				message: `object of specified type ${discriminatorInput.type} was not provided at index[${index}]`,
-				code: EQuestionnaireErrorCode.INVALID_QUESTION,
-			};
-			if (!question) errCollector.collect(new AppError(errObj));
-			return question as Question;
+	async createQuestionnaire(params: ICreateQuestionnaireParams): Promise<Questionnaire> {
+		const { questions: questionDiscriminatorInputArray, title, type, user } = params;
+		await this.questionnaireHelper.validateQuestionnaireCreationParams(params).catch((err: Error) => {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_INVALID_PARAMS,
+				originalError: err instanceof Error ? err : undefined,
+				message: 'invalid params to create questionnaire',
+			});
 		});
 
-		this.questionnaireHelper.validateTitle(title).catch((err: AppError) => errCollector.collect(err));
-
-		errCollector.run({
-			code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_INVALID_PARAMS,
-			message: 'invalid params to create questionnaire',
+		const questions = questionDiscriminatorInputArray.map((input) => {
+			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as Question;
 		});
 
 		if (type === EQuestionnaireType.QuestionnaireQuiz) {
@@ -70,6 +55,7 @@ export class QuestionnaireService {
 		if (type === EQuestionnaireType.QuestionnaireSurvey) {
 			return this.questionnaireRepository.createSurvey({ questions, title, userId: user.id });
 		}
+		const { passingGradePercent, randomizeQuestions, maxRetryAmount, timeLimit } = params;
 		return this.questionnaireRepository.createExam({
 			passingGradePercent,
 			randomizeQuestions,

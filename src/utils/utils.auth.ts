@@ -11,7 +11,9 @@ export class UtilsAuth {
 	constructor(private readonly utilsPromise: UtilsPromise) {}
 
 	/** Asserts equality between mongo document id fields.
+	 *
 	 * Example: docToVal: questionnaire, refDocArray: [{doc: user, refKey: 'user}]
+	 *
 	 * This will assert that the user.id field is equal to the questionnaire.user field
 	 */
 	async validateUserDocAccess<T extends DocumentType<AnyObj>, U extends DocumentType<AnyObj>>(

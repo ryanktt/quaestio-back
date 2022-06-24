@@ -5,8 +5,8 @@ import {
 	ICreateQuestionnaireParams,
 } from './questionnaire.interface';
 import { QuestionnaireRepository } from './questionnaire.repository';
-import { Question, Questionnaire } from './schema';
 import { QuestionnaireHelper } from './questionnaire.helper';
+import { Question, Questionnaire } from './schema';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError, UtilsAuth } from '@utils/*';
@@ -19,11 +19,16 @@ export class QuestionnaireService {
 		@Inject(forwardRef(() => UtilsAuth)) private readonly utilsAuth: UtilsAuth,
 	) {}
 
-	async fetchQuestionnaire({
-		questionnaireSharedId,
-		questionnaireId,
-		user,
-	}: IFetchQuestionnaireParams): Promise<Questionnaire | undefined> {
+	async fetchQuestionnaire(params: IFetchQuestionnaireParams): Promise<Questionnaire | undefined> {
+		const { questionnaireSharedId, questionnaireId, user } = params;
+		await this.questionnaireHelper.validateFetchQuestionnaireParams(params).catch((originalError: Error) => {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_INVALID_PARAMS,
+				message: 'invalid params to fetch questionnaire',
+				originalError,
+			});
+		});
+
 		let questionnaire;
 		if (questionnaireId) {
 			questionnaire = await this.questionnaireRepository.fetchById(questionnaireId);
@@ -37,11 +42,11 @@ export class QuestionnaireService {
 
 	async createQuestionnaire(params: ICreateQuestionnaireParams): Promise<Questionnaire> {
 		const { questions: questionDiscriminatorInputArray, title, type, user } = params;
-		await this.questionnaireHelper.validateQuestionnaireCreationParams(params).catch((err: Error) => {
+		await this.questionnaireHelper.validateCreateQuestionnaireParams(params).catch((originalError: Error) => {
 			throw new AppError({
 				code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_INVALID_PARAMS,
-				originalError: err instanceof Error ? err : undefined,
 				message: 'invalid params to create questionnaire',
+				originalError,
 			});
 		});
 

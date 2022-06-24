@@ -86,3 +86,11 @@ export const CreateQuestionnaireValidator = Joi.object().keys({
 	maxRetryAmount: Joi.number(),
 	timeLimit: Joi.number(),
 });
+
+export const FetchQuestionnaireValidator = Joi.object()
+	.keys({
+		user: Joi.object().required(),
+		questionnaireSharedId: Joi.string(),
+		questionnaireId: Joi.string(),
+	})
+	.or('questionnaireSharedId', 'questionnaireId');

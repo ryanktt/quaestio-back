@@ -1,9 +1,16 @@
 import {
 	EQuestionType,
 	EQuestionnaireErrorCode,
+	IFetchQuestionnaireParams,
 	ICreateQuestionnaireParams,
 } from './questionnaire.interface';
-import { CreateQuestionnaireValidator, Question, QuestionDiscriminatorInput, QuestionInput } from './schema';
+import {
+	CreateQuestionnaireValidator,
+	FetchQuestionnaireValidator,
+	QuestionDiscriminatorInput,
+	QuestionInput,
+	Question,
+} from './schema';
 
 import { AppError, UtilsPromise } from '@utils/*';
 import { Injectable } from '@nestjs/common';
@@ -13,8 +20,12 @@ import Joi from 'joi';
 export class QuestionnaireHelper {
 	constructor(private readonly utilsPromise: UtilsPromise) {}
 
-	async validateQuestionnaireCreationParams(params: ICreateQuestionnaireParams): Promise<void> {
+	async validateCreateQuestionnaireParams(params: ICreateQuestionnaireParams): Promise<void> {
 		await this.utilsPromise.promisify(() => Joi.assert(params, CreateQuestionnaireValidator));
+	}
+
+	async validateFetchQuestionnaireParams(params: IFetchQuestionnaireParams): Promise<void> {
+		await this.utilsPromise.promisify(() => Joi.assert(params, FetchQuestionnaireValidator));
 	}
 
 	async validateTitle(title: string): Promise<void> {

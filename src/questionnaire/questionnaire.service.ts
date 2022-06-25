@@ -2,6 +2,7 @@ import {
 	EQuestionnaireType,
 	IFetchQuestionnaireParams,
 	ICreateQuestionnaireParams,
+	IFetchQuestionnairesParams,
 } from './questionnaire.interface';
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { QuestionnaireHelper } from './questionnaire.helper';
@@ -23,6 +24,17 @@ export class QuestionnaireService {
 		return this.questionnaireRepository.fetchQuestionnaire({
 			...(questionnaireId ? { questionnaireId } : { questionnaireSharedId }),
 			userId: user.id,
+		});
+	}
+
+	async fetchQuestionnaires(params: IFetchQuestionnairesParams): Promise<Questionnaire[]> {
+		const { questionnaireSharedIds, questionnaireIds, user } = params;
+		await this.questionnaireHelper.validateFetchQuestionnairesParams(params);
+
+		return this.questionnaireRepository.fetchQuestionnaires({
+			questionnaireSharedIds,
+			userIds: [user.id],
+			questionnaireIds,
 		});
 	}
 

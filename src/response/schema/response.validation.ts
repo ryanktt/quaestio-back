@@ -29,3 +29,29 @@ const AnswerTextInputValidator = Joi.object().keys({
 	...baseAnswerInputValidatorKeys,
 	text: Joi.string(),
 });
+
+export const AnswerDiscriminatorInputValidator = Joi.object().keys({
+	type: Joi.string()
+		.valid(...Object.values(EAnswerType))
+		.required(),
+	answerMultipleChoice: AnswerMultipleChoiceInputValidator.when('type', {
+		is: Joi.string().valid(EAnswerType.MULTIPLE_CHOICE),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
+	answerSingleChoice: AnswerSingleChoiceInputValidator.when('type', {
+		is: Joi.string().valid(EAnswerType.SINGLE_CHOICE),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
+	answerTrueOrFalse: AnswerTrueOrFalseInputValidator.when('type', {
+		is: Joi.string().valid(EAnswerType.TRUE_OR_FALSE),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
+	answerText: AnswerTextInputValidator.when('type', {
+		is: Joi.string().valid(EAnswerType.TEXT),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
+});

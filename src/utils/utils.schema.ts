@@ -1,5 +1,5 @@
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 mongoose.plugin((schema: mongoose.Schema) => {
@@ -35,3 +35,5 @@ export class SchemaBaseInterface {
 export type DocumentType<T> = Omit<HydratedDocument<T>, 'id'> & { id: string } & {
 	constructor: { modelName: string };
 };
+
+export type FilterType<T> = FilterQuery<Omit<T, '_id'> & { _id: ObjectId }>;

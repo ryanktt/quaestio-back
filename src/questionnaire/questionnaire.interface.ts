@@ -52,6 +52,12 @@ export interface IRepositoryCreateQuestionnareParams {
 	title: string;
 }
 
+export interface IRepositoryFetchQuestionnairesParams {
+	questionnaireSharedIds?: string[];
+	questionnaireIds?: string[];
+	userIds?: string[];
+}
+
 export interface ICreateQuestionnaireParams {
 	questions: QuestionDiscriminatorInput[];
 	type: EQuestionnaireType;

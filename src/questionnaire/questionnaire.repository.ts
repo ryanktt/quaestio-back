@@ -10,12 +10,14 @@ import {
 } from './schema';
 import {
 	EQuestionnaireErrorCode,
-	IRepositoryCreateQuestionnaireExamParams,
 	IRepositoryCreateQuestionnareParams,
+	IRepositoryFetchQuestionnairesParams,
+	IRepositoryCreateQuestionnaireExamParams,
 } from './questionnaire.interface';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
 import { AppError } from '@utils/*';
 
 @Injectable()
@@ -27,15 +29,37 @@ export class QuestionnaireRepository {
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
 	) {}
 
+	async fetchQuestionnaires({
+		questionnaireSharedIds,
+		questionnaireIds,
+		userIds,
+	}: IRepositoryFetchQuestionnairesParams): Promise<QuestionnaireDocument[]> {
+		const query: FilterQuery<QuestionnaireDocument> = {};
+		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
+		if (questionnaireIds) query._id = { $in: questionnaireIds };
+		if (userIds) query.user = { $in: userIds };
+
+		return this.questionnaireSchema
+			.find(query)
+			.exec()
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
+					message: 'fail to fetch questionnaires by ids',
+					originalError,
+				});
+			}) as Promise<QuestionnaireDocument[]>;
+	}
+
 	async fetchByIds(questionnaireIds: string[]): Promise<QuestionnaireDocument[]> {
 		return this.questionnaireSchema
 			.find({ _id: { $in: questionnaireIds } })
 			.exec()
-			.catch((err: Error) => {
+			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
 					message: 'fail to fetch questionnaires by ids',
-					originalError: err,
+					originalError,
 				});
 			}) as Promise<QuestionnaireDocument[]>;
 	}
@@ -44,11 +68,11 @@ export class QuestionnaireRepository {
 		const questionnaire = (await this.questionnaireSchema
 			.findById(questionnaireId)
 			.exec()
-			.catch((err: Error) => {
+			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_ERROR,
 					message: 'fail to fetch questionnaire by id',
-					originalError: err,
+					originalError,
 				});
 			})) as QuestionnaireDocument | null;
 		return questionnaire ? questionnaire : undefined;
@@ -58,11 +82,11 @@ export class QuestionnaireRepository {
 		const questionnaire = (await this.questionnaireSchema
 			.findOne({ sharedId: questionnaireSharedId })
 			.exec()
-			.catch((err: Error) => {
+			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_ERROR,
 					message: 'fail to fetch questionnaire by shared id',
-					originalError: err,
+					originalError,
 				});
 			})) as QuestionnaireDocument | null;
 
@@ -74,13 +98,15 @@ export class QuestionnaireRepository {
 		userId,
 		title,
 	}: IRepositoryCreateQuestionnareParams): Promise<QuestionnaireQuizDocument> {
-		return this.questionnaireQuizSchema.create({ title, questions, user: userId }).catch((err: Error) => {
-			throw new AppError({
-				code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_QUIZ_ERROR,
-				message: 'fail to create questionnaire quiz',
-				originalError: err,
-			});
-		}) as Promise<QuestionnaireQuizDocument>;
+		return this.questionnaireQuizSchema
+			.create({ title, questions, user: userId })
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_QUIZ_ERROR,
+					message: 'fail to create questionnaire quiz',
+					originalError,
+				});
+			}) as Promise<QuestionnaireQuizDocument>;
 	}
 
 	async createSurvey({
@@ -88,13 +114,15 @@ export class QuestionnaireRepository {
 		userId,
 		title,
 	}: IRepositoryCreateQuestionnareParams): Promise<QuestionnaireSurveyDocument> {
-		return this.questionnaireSurveySchema.create({ title, questions, user: userId }).catch((err: Error) => {
-			throw new AppError({
-				code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_SURVEY_ERROR,
-				message: 'fail to create questionnaire survey',
-				originalError: err,
-			});
-		}) as Promise<QuestionnaireSurveyDocument>;
+		return this.questionnaireSurveySchema
+			.create({ title, questions, user: userId })
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_SURVEY_ERROR,
+					message: 'fail to create questionnaire survey',
+					originalError,
+				});
+			}) as Promise<QuestionnaireSurveyDocument>;
 	}
 
 	async createExam({
@@ -116,11 +144,11 @@ export class QuestionnaireRepository {
 				questions,
 				title,
 			})
-			.catch((err: Error) => {
+			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_EXAM_ERROR,
 					message: 'fail to create questionnaire exam',
-					originalError: err,
+					originalError,
 				});
 			}) as Promise<QuestionnaireExamDocument>;
 	}

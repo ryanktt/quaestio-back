@@ -274,6 +274,7 @@ type Session {
 type Query {
   fetchAdmin(userId: String, email: String): Admin
   adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
+  adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!]): [Questionnaire!]!
 }
 
 type Mutation {

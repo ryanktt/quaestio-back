@@ -37,6 +37,17 @@ export class QuestionnaireResolver {
 	}
 
 	@Role('Admin')
+	@Query(() => [Questionnaire])
+	async adminFetchQuestionnaires(
+		@Context('req') { user }: IAdminContext,
+		@Args('questionnaireSharedIds', { type: () => [String], nullable: true })
+		questionnaireSharedIds?: string[],
+		@Args('questionnaireIds', { type: () => [String], nullable: true }) questionnaireIds?: string[],
+	): Promise<Questionnaire[]> {
+		return this.questionnaireService.fetchQuestionnaires({ questionnaireIds, questionnaireSharedIds, user });
+	}
+
+	@Role('Admin')
 	@Mutation(() => QuestionnaireQuiz)
 	async adminCreateQuestionnaireQuiz(
 		@Context('req') { user }: IAdminContext,

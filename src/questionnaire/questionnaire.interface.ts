@@ -52,6 +52,12 @@ export interface IRepositoryCreateQuestionnareParams {
 	title: string;
 }
 
+export interface IRepositoryFetchQuestionnaireParams {
+	questionnaireSharedId?: string;
+	questionnaireId?: string;
+	userId?: string;
+}
+
 export interface IRepositoryFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
@@ -72,6 +78,12 @@ export interface ICreateQuestionnaireParams {
 export interface IFetchQuestionnaireParams {
 	questionnaireSharedId?: string;
 	questionnaireId?: string;
+	user: AdminDocument;
+}
+
+export interface IFetchQuestionnairesParams {
+	questionnaireSharedIds?: string[];
+	questionnaireIds?: string[];
 	user: AdminDocument;
 }
 

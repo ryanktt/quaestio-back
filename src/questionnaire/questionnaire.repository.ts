@@ -13,12 +13,12 @@ import {
 	IRepositoryCreateQuestionnareParams,
 	IRepositoryFetchQuestionnairesParams,
 	IRepositoryCreateQuestionnaireExamParams,
+	IRepositoryFetchQuestionnaireParams,
 } from './questionnaire.interface';
 
+import { AppError, FilterType } from '@utils/*';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { FilterQuery } from 'mongoose';
-import { AppError } from '@utils/*';
 
 @Injectable()
 export class QuestionnaireRepository {
@@ -34,7 +34,7 @@ export class QuestionnaireRepository {
 		questionnaireIds,
 		userIds,
 	}: IRepositoryFetchQuestionnairesParams): Promise<QuestionnaireDocument[]> {
-		const query: FilterQuery<QuestionnaireDocument> = {};
+		const query: FilterType<QuestionnaireDocument> = {};
 		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
 		if (questionnaireIds) query._id = { $in: questionnaireIds };
 		if (userIds) query.user = { $in: userIds };
@@ -45,10 +45,33 @@ export class QuestionnaireRepository {
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
-					message: 'fail to fetch questionnaires by ids',
+					message: 'fail to fetch questionnaires',
 					originalError,
 				});
 			}) as Promise<QuestionnaireDocument[]>;
+	}
+
+	async fetchQuestionnaire({
+		questionnaireSharedId,
+		questionnaireId,
+		userId,
+	}: IRepositoryFetchQuestionnaireParams): Promise<QuestionnaireDocument | undefined> {
+		const query: FilterType<QuestionnaireDocument> = {};
+		if (questionnaireSharedId) query.sharedId = questionnaireSharedId;
+		if (questionnaireId) query._id = questionnaireId;
+		if (userId) query.user = userId;
+
+		const questionnaire = (await this.questionnaireSchema
+			.findOne(query)
+			.exec()
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_ERROR,
+					message: 'fail to fetch questionnaire',
+					originalError,
+				});
+			})) as QuestionnaireDocument | null;
+		return questionnaire ? questionnaire : undefined;
 	}
 
 	async fetchByIds(questionnaireIds: string[]): Promise<QuestionnaireDocument[]> {

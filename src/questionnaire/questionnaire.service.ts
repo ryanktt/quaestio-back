@@ -1,6 +1,5 @@
 import {
 	EQuestionnaireType,
-	EQuestionnaireErrorCode,
 	IFetchQuestionnaireParams,
 	ICreateQuestionnaireParams,
 } from './questionnaire.interface';
@@ -9,7 +8,7 @@ import { QuestionnaireHelper } from './questionnaire.helper';
 import { Question, Questionnaire } from './schema';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AppError, UtilsAuth } from '@utils/*';
+import { UtilsAuth } from '@utils/*';
 
 @Injectable()
 export class QuestionnaireService {
@@ -21,13 +20,7 @@ export class QuestionnaireService {
 
 	async fetchQuestionnaire(params: IFetchQuestionnaireParams): Promise<Questionnaire | undefined> {
 		const { questionnaireSharedId, questionnaireId, user } = params;
-		await this.questionnaireHelper.validateFetchQuestionnaireParams(params).catch((originalError: Error) => {
-			throw new AppError({
-				code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_INVALID_PARAMS,
-				message: 'invalid params to fetch questionnaire',
-				originalError,
-			});
-		});
+		await this.questionnaireHelper.validateFetchQuestionnaireParams(params);
 
 		let questionnaire;
 		if (questionnaireId) {
@@ -42,13 +35,7 @@ export class QuestionnaireService {
 
 	async createQuestionnaire(params: ICreateQuestionnaireParams): Promise<Questionnaire> {
 		const { questions: questionDiscriminatorInputArray, title, type, user } = params;
-		await this.questionnaireHelper.validateCreateQuestionnaireParams(params).catch((originalError: Error) => {
-			throw new AppError({
-				code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_INVALID_PARAMS,
-				message: 'invalid params to create questionnaire',
-				originalError,
-			});
-		});
+		await this.questionnaireHelper.validateCreateQuestionnaireParams(params);
 
 		const questions = questionDiscriminatorInputArray.map((input) => {
 			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as Question;
@@ -60,6 +47,7 @@ export class QuestionnaireService {
 		if (type === EQuestionnaireType.QuestionnaireSurvey) {
 			return this.questionnaireRepository.createSurvey({ questions, title, userId: user.id });
 		}
+
 		const { passingGradePercent, randomizeQuestions, maxRetryAmount, timeLimit } = params;
 		return this.questionnaireRepository.createExam({
 			passingGradePercent,

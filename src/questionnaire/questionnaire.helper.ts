@@ -21,11 +21,27 @@ export class QuestionnaireHelper {
 	constructor(private readonly utilsPromise: UtilsPromise) {}
 
 	async validateCreateQuestionnaireParams(params: ICreateQuestionnaireParams): Promise<void> {
-		await this.utilsPromise.promisify(() => Joi.assert(params, CreateQuestionnaireValidator));
+		await this.utilsPromise
+			.promisify(() => Joi.assert(params, CreateQuestionnaireValidator))
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_INVALID_PARAMS,
+					message: 'invalid params to create questionnaire',
+					originalError,
+				});
+			});
 	}
 
 	async validateFetchQuestionnaireParams(params: IFetchQuestionnaireParams): Promise<void> {
-		await this.utilsPromise.promisify(() => Joi.assert(params, FetchQuestionnaireValidator));
+		await this.utilsPromise
+			.promisify(() => Joi.assert(params, FetchQuestionnaireValidator))
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_INVALID_PARAMS,
+					message: 'invalid params to fetch questionnaire',
+					originalError,
+				});
+			});
 	}
 
 	async validateTitle(title: string): Promise<void> {

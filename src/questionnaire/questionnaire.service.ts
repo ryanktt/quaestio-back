@@ -7,30 +7,23 @@ import { QuestionnaireRepository } from './questionnaire.repository';
 import { QuestionnaireHelper } from './questionnaire.helper';
 import { Question, Questionnaire } from './schema';
 
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { UtilsAuth } from '@utils/*';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class QuestionnaireService {
 	constructor(
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly questionnaireHelper: QuestionnaireHelper,
-		@Inject(forwardRef(() => UtilsAuth)) private readonly utilsAuth: UtilsAuth,
 	) {}
 
 	async fetchQuestionnaire(params: IFetchQuestionnaireParams): Promise<Questionnaire | undefined> {
 		const { questionnaireSharedId, questionnaireId, user } = params;
 		await this.questionnaireHelper.validateFetchQuestionnaireParams(params);
 
-		let questionnaire;
-		if (questionnaireId) {
-			questionnaire = await this.questionnaireRepository.fetchById(questionnaireId);
-		} else if (questionnaireSharedId) {
-			questionnaire = await this.questionnaireRepository.fetchBySharedId(questionnaireSharedId);
-		}
-
-		await this.utilsAuth.validateUserDocAccess(questionnaire, [{ doc: user, refKey: 'user' }]);
-		return questionnaire;
+		return this.questionnaireRepository.fetchQuestionnaire({
+			...(questionnaireId ? { questionnaireId } : { questionnaireSharedId }),
+			userId: user.id,
+		});
 	}
 
 	async createQuestionnaire(params: ICreateQuestionnaireParams): Promise<Questionnaire> {

@@ -3,9 +3,11 @@ import {
 	EQuestionnaireErrorCode,
 	IFetchQuestionnaireParams,
 	ICreateQuestionnaireParams,
+	IFetchQuestionnairesParams,
 } from './questionnaire.interface';
 import {
 	CreateQuestionnaireValidator,
+	FetchQuestionnairesValidator,
 	FetchQuestionnaireValidator,
 	QuestionDiscriminatorInput,
 	QuestionInput,
@@ -39,6 +41,18 @@ export class QuestionnaireHelper {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_INVALID_PARAMS,
 					message: 'invalid params to fetch questionnaire',
+					originalError,
+				});
+			});
+	}
+
+	async validateFetchQuestionnairesParams(params: IFetchQuestionnairesParams): Promise<void> {
+		await this.utilsPromise
+			.promisify(() => Joi.assert(params, FetchQuestionnairesValidator))
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_INVALID_PARAMS,
+					message: 'invalid params to fetch questionnaires',
 					originalError,
 				});
 			});

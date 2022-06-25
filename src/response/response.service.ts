@@ -1,7 +1,7 @@
 import { EResponseErrorCode, ICreateResponseParams } from './response.interface';
 import { ResponseRepository } from './response.repository';
-import { Answer, Response } from './response.schema';
 import { ResponseHelper } from './response.helper';
+import { Answer, Response } from './schema';
 
 import { EQuestionnaireErrorCode, QuestionnaireRepository } from 'src/questionnaire';
 import { Injectable } from '@nestjs/common';

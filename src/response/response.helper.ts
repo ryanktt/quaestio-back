@@ -1,6 +1,5 @@
-import { AnswerDiscriminatorInput, AnswerInput } from './response.input';
+import { AnswerDiscriminatorInput, AnswerInput, Answer } from './schema';
 import { EAnswerType } from './response.interface';
-import { Answer } from './response.schema';
 
 import { Injectable } from '@nestjs/common';
 

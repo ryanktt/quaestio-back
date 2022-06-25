@@ -1,8 +1,8 @@
 import { ResponseRepository } from './response.repository';
 import { ResponseResolver } from './response.resolver';
 import { ResponseService } from './response.service';
-import { ResponseSchema } from './response.schema';
 import { ResponseHelper } from './response.helper';
+import { ResponseSchema } from './schema';
 
 import { QuestionnaireModule } from 'src/questionnaire';
 import { MongooseModule } from '@nestjs/mongoose';

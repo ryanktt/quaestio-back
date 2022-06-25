@@ -1,4 +1,4 @@
-import { EAnswerType } from './response.interface';
+import { EAnswerType } from '../response.interface';
 
 import { Field, InputType } from '@nestjs/graphql';
 

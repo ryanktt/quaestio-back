@@ -1,4 +1,4 @@
-import { EAnswerType } from './response.interface';
+import { EAnswerType } from '../response.interface';
 
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';

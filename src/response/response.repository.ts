@@ -1,5 +1,5 @@
 import { EResponseErrorCode, IRepositoryCreateResponseParams } from './response.interface';
-import { ResponseDocument, ResponseModel } from './response.schema';
+import { ResponseDocument, ResponseModel } from './schema';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';

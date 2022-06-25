@@ -1,6 +1,6 @@
-import { AnswerDiscriminatorInput } from './response.input';
+import { AnswerDiscriminatorInput } from './schema/response.input';
 import { ResponseService } from './response.service';
-import { Response } from './response.schema';
+import { Response } from './schema';
 
 import { Resolver, ResolveField, Parent, Context, Mutation, Args } from '@nestjs/graphql';
 import { Questionnaire } from 'src/questionnaire';

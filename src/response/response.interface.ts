@@ -1,5 +1,4 @@
-import { AnswerDiscriminatorInput } from './response.input';
-import { Answer } from './response.schema';
+import { AnswerDiscriminatorInput, Answer } from './schema';
 
 import { registerEnumType } from '@nestjs/graphql';
 import { RespondentDocument } from 'src/user';

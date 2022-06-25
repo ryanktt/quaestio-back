@@ -1,10 +1,26 @@
-import { AnswerDiscriminatorInput, AnswerInput, Answer } from './schema';
-import { EAnswerType } from './response.interface';
+import { AnswerDiscriminatorInput, AnswerInput, Answer, CreateResponseValidator } from './schema';
+import { EAnswerType, EResponseErrorCode, ICreateResponseParams } from './response.interface';
 
+import { AppError, UtilsPromise } from '@utils/*';
 import { Injectable } from '@nestjs/common';
+import Joi from 'joi';
 
 @Injectable()
 export class ResponseHelper {
+	constructor(private readonly utilsPromise: UtilsPromise) {}
+
+	async validateCreateResponseParams(params: ICreateResponseParams): Promise<void> {
+		await this.utilsPromise
+			.promisify(() => Joi.assert(params, CreateResponseValidator))
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EResponseErrorCode.CREATE_RESPONSE_INVALID_PARAMS,
+					message: 'invalid params to create response',
+					originalError,
+				});
+			});
+	}
+
 	getAnswerFromAnswerDiscriminatorInput(
 		answerDiscriminatorInput: AnswerDiscriminatorInput,
 	): Answer | undefined {

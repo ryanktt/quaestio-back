@@ -44,16 +44,6 @@ export class QuestionnaireHelper {
 			});
 	}
 
-	async validateTitle(title: string): Promise<void> {
-		return this.utilsPromise.promisify(() => {
-			const code = EQuestionnaireErrorCode.INVALID_TITLE;
-			if (title.length < 3) throw new AppError({ message: 'invalid title, min character length: 3', code });
-			if (title.length > 350) {
-				throw new AppError({ message: 'invalid title, max character length: 350', code });
-			}
-		});
-	}
-
 	getQuestionFromQuestionDiscriminatorInput(
 		questionDiscriminatorInput: QuestionDiscriminatorInput,
 	): Question | undefined {

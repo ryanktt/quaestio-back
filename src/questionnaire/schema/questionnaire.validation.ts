@@ -1,4 +1,5 @@
 import { EQuestionnaireType, EQuestionType } from '../questionnaire.interface';
+
 import Joi from 'joi';
 
 export const OptionInputValidator = Joi.object().keys({
@@ -17,8 +18,6 @@ export const baseQuestionInputValidatorKeys = {
 	description: Joi.string(),
 	showCorrectAnswer: Joi.boolean(),
 };
-
-export const QuestionInputValidator = Joi.object().keys(baseQuestionInputValidatorKeys);
 
 const QuestionSingleChoiceInputValidator = Joi.object().keys({
 	...baseQuestionInputValidatorKeys,

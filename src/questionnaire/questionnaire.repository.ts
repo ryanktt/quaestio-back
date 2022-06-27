@@ -37,13 +37,11 @@ export class QuestionnaireRepository {
 		questionnaireSharedIds,
 		questionnaireIds,
 		userIds,
-		latest,
 	}: IRepositoryFetchQuestionnairesParams): Promise<QuestionnaireDocument[]> {
 		const query: FilterType<QuestionnaireDocument> = {};
 		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
 		if (questionnaireIds) query._id = { $in: questionnaireIds };
 		if (userIds) query.user = { $in: userIds };
-		if (latest) query.latest = latest;
 
 		return this.questionnaireSchema
 			.find(query)
@@ -61,12 +59,10 @@ export class QuestionnaireRepository {
 		questionnaireSharedId,
 		questionnaireId,
 		userId,
-		latest,
 	}: IRepositoryFetchQuestionnaireParams): Promise<QuestionnaireDocument | undefined> {
 		const query: FilterType<QuestionnaireDocument> = {};
 		if (questionnaireSharedId) query.sharedId = questionnaireSharedId;
 		if (questionnaireId) query._id = questionnaireId;
-		if (latest) query.latest = latest;
 		if (userId) query.user = userId;
 
 		const questionnaire = (await this.questionnaireSchema
@@ -186,49 +182,66 @@ export class QuestionnaireRepository {
 
 	async updateQuiz({
 		questions,
-		createdAt,
-		updatedAt,
-		latest,
 		title,
 		quiz,
 	}: IRepositoryUpdateQuestionnareQuizParams): Promise<QuestionnaireQuizDocument> {
-		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'questions', value: questions });
-		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'createdAt', value: createdAt });
-		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'updatedAt', value: updatedAt });
-		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'latest', value: latest });
-		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'title', value: title });
+		const updatedQuiz = new this.questionnaireQuizSchema({
+			createdAt: quiz.createdAt,
+			questions: quiz.questions,
+			sharedId: quiz.sharedId,
+			title: quiz.title,
+			user: quiz.user,
+			updatedAt: new Date(),
+		}) as QuestionnaireQuizDocument;
 
-		return quiz.save().catch((originalError: Error) => {
-			throw new AppError({
-				code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_QUIZ_ERROR,
-				message: 'fail to update questionnaire quiz',
-				originalError,
-			});
-		}) as Promise<QuestionnaireQuizDocument>;
+		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'title', value: title });
+
+		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireQuizDocument> => {
+			this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'latest', value: false });
+			try {
+				await quiz.save({ session });
+				return updatedQuiz.save({ session }) as Promise<QuestionnaireQuizDocument>;
+			} catch (err) {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_QUIZ_ERROR,
+					originalError: err instanceof Error ? err : undefined,
+					message: 'fail to update questionnaire quiz',
+				});
+			}
+		});
 	}
 
 	async updateSurvey({
 		questions,
-		createdAt,
-		updatedAt,
 		survey,
-		latest,
 		title,
 	}: IRepositoryUpdateQuestionnareSurveyParams): Promise<QuestionnaireSurveyDocument> {
-		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'questions', value: questions });
-		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'questions', value: questions });
-		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'createdAt', value: createdAt });
-		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'updatedAt', value: updatedAt });
-		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'latest', value: latest });
-		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'title', value: title });
+		const updatedSurvey = new this.questionnaireSurveySchema({
+			createdAt: survey.createdAt,
+			questions: survey.questions,
+			sharedId: survey.sharedId,
+			title: survey.title,
+			user: survey.user,
+			updatedAt: new Date(),
+		}) as QuestionnaireSurveyDocument;
 
-		return survey.save().catch((originalError: Error) => {
-			throw new AppError({
-				code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_SURVEY_ERROR,
-				message: 'fail to update questionnaire survey',
-				originalError,
-			});
-		}) as Promise<QuestionnaireSurveyDocument>;
+		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'title', value: title });
+
+		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireSurveyDocument> => {
+			this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'latest', value: false });
+			try {
+				await survey.save({ session });
+				return updatedSurvey.save({ session }) as Promise<QuestionnaireSurveyDocument>;
+			} catch (err) {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_SURVEY_ERROR,
+					originalError: err instanceof Error ? err : undefined,
+					message: 'fail to update questionnaire survey',
+				});
+			}
+		});
 	}
 
 	async updateExam({
@@ -237,28 +250,49 @@ export class QuestionnaireRepository {
 		maxRetryAmount,
 		questions,
 		timeLimit,
-		createdAt,
-		updatedAt,
-		latest,
 		title,
 		exam,
 	}: IRepositoryUpdateQuestionnareExamParams): Promise<QuestionnaireExamDocument> {
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'passingGradePercent', value: passingGradePercent });
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'randomizeQuestions', value: randomizeQuestions });
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'maxRetryAmount', value: maxRetryAmount });
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'createdAt', value: createdAt });
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'updatedAt', value: updatedAt });
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'timeLimit', value: timeLimit });
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'questions', value: questions });
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'latest', value: latest });
-		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'title', value: title });
+		const updatedExam = new this.questionnaireExamSchema({
+			maxRetryAmount: exam.maxRetryAmount,
+			passingGradePercent: exam.passingGradePercent,
+			randomizeQuestions: exam.randomizeQuestions,
+			timeLimit: exam.timeLimit,
+			createdAt: exam.createdAt,
+			questions: exam.questions,
+			sharedId: exam.sharedId,
+			title: exam.title,
+			user: exam.user,
+			updatedAt: new Date(),
+		}) as QuestionnaireExamDocument;
 
-		return exam.save().catch((originalError: Error) => {
-			throw new AppError({
-				code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_EXAM_ERROR,
-				message: 'fail to update questionnaire exam',
-				originalError,
-			});
-		}) as Promise<QuestionnaireExamDocument>;
+		this.utilsDoc.handleFieldUpdate({
+			doc: updatedExam,
+			field: 'passingGradePercent',
+			value: passingGradePercent,
+		});
+		this.utilsDoc.handleFieldUpdate({
+			doc: updatedExam,
+			field: 'randomizeQuestions',
+			value: randomizeQuestions,
+		});
+		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'maxRetryAmount', value: maxRetryAmount });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'timeLimit', value: timeLimit });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'title', value: title });
+
+		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireExamDocument> => {
+			this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'latest', value: false });
+			try {
+				await exam.save({ session });
+				return updatedExam.save({ session }) as Promise<QuestionnaireExamDocument>;
+			} catch (err) {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_EXAM_ERROR,
+					originalError: err instanceof Error ? err : undefined,
+					message: 'fail to update questionnaire exam',
+				});
+			}
+		});
 	}
 }

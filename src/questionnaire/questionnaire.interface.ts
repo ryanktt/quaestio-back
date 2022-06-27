@@ -91,12 +91,14 @@ export interface IRepositoryFetchQuestionnaireParams {
 	questionnaireSharedId?: string;
 	questionnaireId?: string;
 	userId?: string;
+	latest?: boolean;
 }
 
 export interface IRepositoryFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
 	userIds?: string[];
+	latest?: boolean;
 }
 
 export interface ICreateQuestionnaireParams {

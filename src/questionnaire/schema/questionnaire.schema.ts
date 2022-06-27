@@ -152,6 +152,10 @@ export class Questionnaire extends SchemaBaseInterface {
 	title: string;
 
 	@Field()
+	@Prop({ required: true, default: true })
+	latest: boolean;
+
+	@Field()
 	@Prop({ default: uuidv4(), required: true })
 	sharedId: string;
 
@@ -183,6 +187,9 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 
 	@Field()
 	sharedId: string;
+
+	@Field()
+	latest: boolean;
 
 	@Field(() => [Question])
 	questions: Question[];
@@ -219,6 +226,9 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	@Field()
 	sharedId: string;
 
+	@Field()
+	latest: boolean;
+
 	@Field(() => [Question])
 	questions: Question[];
 }
@@ -237,6 +247,9 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 
 	@Field()
 	sharedId: string;
+
+	@Field()
+	latest: boolean;
 
 	@Field(() => [Question])
 	questions: Question[];

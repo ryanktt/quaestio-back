@@ -99,6 +99,7 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   type: QuestionnaireType!
   user: Admin!
   title: String!
+  latest: Boolean!
   sharedId: String!
   questions: [Question!]!
   timeLimit: Float
@@ -114,6 +115,7 @@ interface Questionnaire {
   type: QuestionnaireType!
   user: Admin!
   title: String!
+  latest: Boolean!
   sharedId: String!
   questions: [Question!]!
 }
@@ -137,6 +139,7 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   type: QuestionnaireType!
   user: Admin!
   title: String!
+  latest: Boolean!
   sharedId: String!
   questions: [Question!]!
 }
@@ -148,6 +151,7 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   type: QuestionnaireType!
   user: Admin!
   title: String!
+  latest: Boolean!
   sharedId: String!
   questions: [Question!]!
 }

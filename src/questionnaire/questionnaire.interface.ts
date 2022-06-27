@@ -15,6 +15,7 @@ import { AdminDocument } from 'src/user';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',
+	UPDATE_QUESTIONNAIRE_INVALID_PARAMS = 'UPDATE_QUESTIONNAIRE_INVALID_PARAMS',
 	FETCH_QUESTIONNAIRE_INVALID_PARAMS = 'FETCH_QUESTIONNAIRE_INVALID_PARAMS',
 	FETCH_QUESTIONNAIRES_INVALID_PARAMS = 'FETCH_QUESTIONNAIRES_INVALID_PARAMS',
 	CREATE_QUESTIONNAIRE_SURVEY_ERROR = 'CREATE_QUESTIONNAIRE_SURVEY_ERROR',
@@ -107,6 +108,17 @@ export interface ICreateQuestionnaireParams {
 	randomizeQuestions?: boolean;
 	maxRetryAmount?: number;
 	timeLimit?: number;
+}
+
+export interface IUpdateQuestionnaireParams {
+	type: EQuestionnaireType;
+	user: AdminDocument;
+	questions?: QuestionDiscriminatorInput[];
+	passingGradePercent?: number;
+	randomizeQuestions?: boolean;
+	maxRetryAmount?: number;
+	timeLimit?: number;
+	title?: string;
 }
 
 export interface IFetchQuestionnaireParams {

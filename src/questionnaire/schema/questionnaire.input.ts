@@ -10,7 +10,7 @@ export class OptionInput {
 	@Field()
 	correct: boolean;
 
-	@Field({ nullable: true, defaultValue: false })
+	@Field({ nullable: true })
 	feedbackAfterSubmit?: string;
 }
 

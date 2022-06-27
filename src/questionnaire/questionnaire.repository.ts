@@ -9,6 +9,7 @@ import {
 	QuestionnaireSurveyDocument,
 } from './schema';
 import {
+	IRepositoryUpdateQuestionnareSurveyParams,
 	IRepositoryCreateQuestionnaireExamParams,
 	IRepositoryUpdateQuestionnareQuizParams,
 	IRepositoryFetchQuestionnairesParams,
@@ -193,5 +194,22 @@ export class QuestionnaireRepository {
 				originalError,
 			});
 		}) as Promise<QuestionnaireQuizDocument>;
+	}
+
+	async updateSurvey({
+		questions,
+		survey,
+		title,
+	}: IRepositoryUpdateQuestionnareSurveyParams): Promise<QuestionnaireSurveyDocument> {
+		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'title', value: title });
+
+		return survey.save().catch((originalError: Error) => {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_SURVEY_ERROR,
+				message: 'fail to update questionnaire survey',
+				originalError,
+			});
+		}) as Promise<QuestionnaireSurveyDocument>;
 	}
 }

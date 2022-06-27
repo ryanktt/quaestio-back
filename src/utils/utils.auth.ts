@@ -3,6 +3,7 @@ import { UtilsPromise } from './utils.promise';
 import { DocumentType } from './utils.schema';
 
 import { Injectable } from '@nestjs/common';
+import { LeanDocument } from 'mongoose';
 
 type AnyObj = Record<string, unknown>;
 
@@ -18,7 +19,7 @@ export class UtilsAuth {
 	 */
 	async validateUserDocAccess<T extends DocumentType<AnyObj>, U extends DocumentType<AnyObj>>(
 		docToVal: U | undefined,
-		refDocsArr: { doc: T; refKey: keyof U }[],
+		refDocsArr: { doc: T; refKey: keyof LeanDocument<U> }[],
 	): Promise<void> {
 		await this.utilsPromise.promisify(() => {
 			if (!docToVal) return;
@@ -33,5 +34,23 @@ export class UtilsAuth {
 				}
 			});
 		});
+	}
+
+	handleFieldUpdate<T extends DocumentType<AnyObj>, K extends keyof LeanDocument<T>>(params: {
+		doc: T;
+		field: K;
+		value?: T[K];
+	}): T | undefined {
+		const { doc, field, value } = params;
+		if (value === null && doc[field] !== undefined) {
+			doc[field] = undefined as typeof doc[typeof field];
+			return doc;
+		}
+		if (value && typeof doc[field] === typeof value && doc[field] !== value) {
+			doc[field] = value;
+			return doc;
+		}
+
+		return;
 	}
 }

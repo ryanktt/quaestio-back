@@ -112,6 +112,7 @@ export interface ICreateQuestionnaireParams {
 
 export interface IUpdateQuestionnaireParams {
 	type: EQuestionnaireType;
+	questionnaireId: string;
 	user: AdminDocument;
 	questions?: QuestionDiscriminatorInput[];
 	passingGradePercent?: number;

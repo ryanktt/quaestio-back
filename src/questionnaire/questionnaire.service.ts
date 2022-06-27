@@ -3,12 +3,21 @@ import {
 	IFetchQuestionnaireParams,
 	ICreateQuestionnaireParams,
 	IFetchQuestionnairesParams,
+	IUpdateQuestionnaireParams,
+	EQuestionnaireErrorCode,
 } from './questionnaire.interface';
+import {
+	QuestionnaireSurveyDocument,
+	QuestionnaireExamDocument,
+	QuestionnaireQuizDocument,
+	Questionnaire,
+	Question,
+} from './schema';
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { QuestionnaireHelper } from './questionnaire.helper';
-import { Question, Questionnaire } from './schema';
 
 import { Injectable } from '@nestjs/common';
+import { AppError } from '@utils/*';
 
 @Injectable()
 export class QuestionnaireService {
@@ -58,6 +67,53 @@ export class QuestionnaireService {
 			passingGradePercent,
 			randomizeQuestions,
 			userId: user.id,
+			maxRetryAmount,
+			timeLimit,
+			questions,
+			title,
+		});
+	}
+
+	async updateQuestionnaire(params: IUpdateQuestionnaireParams): Promise<Questionnaire> {
+		const { questions: questionDiscriminatorInputArray, questionnaireId, title, type, user } = params;
+		await this.questionnaireHelper.validateUpdateQuestionnaireParams(params);
+
+		const questionnaire = await this.questionnaireRepository.fetchQuestionnaire({
+			questionnaireId,
+			userId: user.id,
+		});
+
+		if (!questionnaire || questionnaire.type !== type) {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.QUESTIONNAIRE_NOT_FOUND,
+				message: 'questionnaire was not found',
+			});
+		}
+
+		const questions = questionDiscriminatorInputArray?.map((input) => {
+			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as Question;
+		});
+
+		if (type === EQuestionnaireType.QuestionnaireQuiz) {
+			return this.questionnaireRepository.updateQuiz({
+				quiz: questionnaire as QuestionnaireQuizDocument,
+				questions,
+				title,
+			});
+		}
+		if (type === EQuestionnaireType.QuestionnaireSurvey) {
+			return this.questionnaireRepository.updateSurvey({
+				survey: questionnaire as QuestionnaireSurveyDocument,
+				questions,
+				title,
+			});
+		}
+
+		const { passingGradePercent, randomizeQuestions, maxRetryAmount, timeLimit } = params;
+		return this.questionnaireRepository.updateExam({
+			exam: questionnaire as QuestionnaireExamDocument,
+			passingGradePercent,
+			randomizeQuestions,
 			maxRetryAmount,
 			timeLimit,
 			questions,

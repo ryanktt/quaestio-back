@@ -8,7 +8,7 @@ import { LeanDocument } from 'mongoose';
 type AnyObj = Record<string, unknown>;
 
 @Injectable()
-export class UtilsAuth {
+export class UtilsDoc {
 	constructor(private readonly utilsPromise: UtilsPromise) {}
 
 	/** Asserts equality between mongo document id fields.

@@ -1,21 +1,21 @@
 import { UtilsPromise } from './utils.promise';
 import { DocumentType } from './utils.schema';
-import { UtilsAuth } from './utils.auth';
+import { UtilsDoc } from './utils.doc';
 
 import { Test } from '@nestjs/testing';
 
 type IQuestDocCounterpart = DocumentType<{ user: string }>;
 type IUserDoCounterpart = DocumentType<{ id: string }>;
 
-describe('UtilsAuth', () => {
-	let utilsAuth: UtilsAuth;
+describe('UtilsDoc', () => {
+	let utilsDoc: UtilsDoc;
 
 	beforeEach(async () => {
 		const moduleRef = await Test.createTestingModule({
-			providers: [UtilsAuth, UtilsPromise],
+			providers: [UtilsDoc, UtilsPromise],
 		}).compile();
 
-		utilsAuth = moduleRef.get<UtilsAuth>(UtilsAuth);
+		utilsDoc = moduleRef.get<UtilsDoc>(UtilsDoc);
 	});
 
 	describe('Asserts equality between mongo document id fields', () => {
@@ -25,7 +25,7 @@ describe('UtilsAuth', () => {
 
 		it('should do nothing', async () => {
 			await expect(
-				utilsAuth.validateUserDocAccess(questionnaireDocCounterpart, [
+				utilsDoc.validateUserDocAccess(questionnaireDocCounterpart, [
 					{ doc: userDocCounterpart, refKey: 'user' },
 				]),
 			).resolves.toBeUndefined();
@@ -34,7 +34,7 @@ describe('UtilsAuth', () => {
 		it('should throw an error', async () => {
 			questionnaireDocCounterpart.user = '987654321';
 			await expect(
-				utilsAuth.validateUserDocAccess(questionnaireDocCounterpart, [
+				utilsDoc.validateUserDocAccess(questionnaireDocCounterpart, [
 					{ doc: userDocCounterpart, refKey: 'user' },
 				]),
 			).rejects.toThrowError('user does not have access to Questionnaire');

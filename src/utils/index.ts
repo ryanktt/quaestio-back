@@ -6,4 +6,4 @@ export * from './utils.module';
 export * from './utils.error';
 export * from './utils.array';
 export * from './utils.date';
-export * from './utils.auth';
+export * from './utils.doc';

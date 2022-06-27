@@ -5,6 +5,7 @@ import {
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
 	QuestionnaireQuizDocument,
+	QuestionnaireExamDocument,
 	QuestionDiscriminatorInput,
 	QuestionnaireSurveyDocument,
 } from './schema';
@@ -76,7 +77,7 @@ export interface IRepositoryUpdateQuestionnareSurveyParams {
 }
 
 export interface IRepositoryUpdateQuestionnareExamParams {
-	exam: QuestionnaireSurveyDocument;
+	exam: QuestionnaireExamDocument;
 	passingGradePercent?: number;
 	randomizeQuestions?: boolean;
 	maxRetryAmount?: number;

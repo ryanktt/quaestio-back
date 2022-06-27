@@ -12,6 +12,7 @@ import {
 	IRepositoryUpdateQuestionnareSurveyParams,
 	IRepositoryCreateQuestionnaireExamParams,
 	IRepositoryUpdateQuestionnareQuizParams,
+	IRepositoryUpdateQuestionnareExamParams,
 	IRepositoryFetchQuestionnairesParams,
 	IRepositoryFetchQuestionnaireParams,
 	IRepositoryCreateQuestionnareParams,
@@ -211,5 +212,30 @@ export class QuestionnaireRepository {
 				originalError,
 			});
 		}) as Promise<QuestionnaireSurveyDocument>;
+	}
+
+	async updateExam({
+		passingGradePercent,
+		randomizeQuestions,
+		maxRetryAmount,
+		questions,
+		timeLimit,
+		title,
+		exam,
+	}: IRepositoryUpdateQuestionnareExamParams): Promise<QuestionnaireExamDocument> {
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'passingGradePercent', value: passingGradePercent });
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'randomizeQuestions', value: randomizeQuestions });
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'maxRetryAmount', value: maxRetryAmount });
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'timeLimit', value: timeLimit });
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'title', value: title });
+
+		return exam.save().catch((originalError: Error) => {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_EXAM_ERROR,
+				message: 'fail to update questionnaire exam',
+				originalError,
+			});
+		}) as Promise<QuestionnaireExamDocument>;
 	}
 }

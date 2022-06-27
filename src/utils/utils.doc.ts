@@ -2,8 +2,8 @@ import { AppError, EGeneralErrorCode } from './utils.error';
 import { UtilsPromise } from './utils.promise';
 import { DocumentType } from './utils.schema';
 
+import { LeanDocument, ClientSession, startSession } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { LeanDocument } from 'mongoose';
 
 type AnyObj = Record<string, unknown>;
 
@@ -46,5 +46,21 @@ export class UtilsDoc {
 		}
 
 		return;
+	}
+
+	async startMongodbSession<T>(
+		cb: (session: ClientSession) => Promise<T>,
+		session?: ClientSession,
+	): Promise<T> {
+		let result;
+		if (!session || !session.inTransaction()) {
+			const newSession = await startSession();
+			await newSession.withTransaction(async () => {
+				result = await cb(newSession);
+			});
+		} else {
+			result = await cb(session);
+		}
+		return result as T;
 	}
 }

@@ -11,12 +11,6 @@ type AnyObj = Record<string, unknown>;
 export class UtilsDoc {
 	constructor(private readonly utilsPromise: UtilsPromise) {}
 
-	/** Asserts equality between mongo document id fields.
-	 *
-	 * Example: docToVal: questionnaire, refDocArray: [{doc: user, refKey: 'user}]
-	 *
-	 * This will assert that the user.id field is equal to the questionnaire.user field
-	 */
 	async validateUserDocAccess<T extends DocumentType<AnyObj>, U extends DocumentType<AnyObj>>(
 		docToVal: U | undefined,
 		refDocsArr: { doc: T; refKey: keyof LeanDocument<U> }[],
@@ -39,7 +33,7 @@ export class UtilsDoc {
 	handleFieldUpdate<T extends DocumentType<AnyObj>, K extends keyof LeanDocument<T>>(params: {
 		doc: T;
 		field: K;
-		value?: T[K];
+		value?: T[K] | null;
 	}): T | undefined {
 		const { doc, field, value } = params;
 		if (value === null && doc[field] !== undefined) {

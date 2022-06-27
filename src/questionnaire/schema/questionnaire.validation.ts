@@ -21,6 +21,7 @@ export const baseQuestionInputValidatorKeys = {
 
 const QuestionSingleChoiceInputValidator = Joi.object().keys({
 	...baseQuestionInputValidatorKeys,
+	type: Joi.string().valid(EQuestionType.SINGLE_CHOICE).required(),
 	options: Joi.array().items(OptionInputValidator).required(),
 	randomizeOptions: Joi.boolean().required(),
 	wrongAnswerFeedback: Joi.string(),
@@ -29,6 +30,7 @@ const QuestionSingleChoiceInputValidator = Joi.object().keys({
 
 const QuestionMultipleChoiceInputValidator = Joi.object().keys({
 	...baseQuestionInputValidatorKeys,
+	type: Joi.string().valid(EQuestionType.MULTIPLE_CHOICE).required(),
 	options: Joi.array().items(OptionInputValidator).required(),
 	randomizeOptions: Joi.boolean().required(),
 	wrongAnswerFeedback: Joi.string(),
@@ -37,6 +39,7 @@ const QuestionMultipleChoiceInputValidator = Joi.object().keys({
 
 const QuestionTrueOrFalseInputValidator = Joi.object().keys({
 	...baseQuestionInputValidatorKeys,
+	type: Joi.string().valid(EQuestionType.TRUE_OR_FALSE).required(),
 	options: Joi.array().items(OptionInputValidator).required(),
 	wrongAnswerFeedback: Joi.string(),
 	rightAnswerFeedback: Joi.string(),
@@ -44,6 +47,7 @@ const QuestionTrueOrFalseInputValidator = Joi.object().keys({
 
 const QuestionTextInputValidator = Joi.object().keys({
 	...baseQuestionInputValidatorKeys,
+	type: Joi.string().valid(EQuestionType.TEXT).required(),
 	feedbackAfterSubmit: Joi.string(),
 });
 

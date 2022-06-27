@@ -99,4 +99,66 @@ export class QuestionnaireResolver {
 			user,
 		}) as Promise<QuestionnaireExam>;
 	}
+
+	@Role('Admin')
+	@Mutation(() => QuestionnaireQuiz)
+	async adminUpdateQuestionnaireQuiz(
+		@Context('req') { user }: IAdminContext,
+		@Args('questionnaireId') questionnaireId: string,
+		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
+		questions?: QuestionDiscriminatorInput[],
+		@Args('title', { nullable: true }) title?: string,
+	): Promise<QuestionnaireQuiz> {
+		return this.questionnaireService.updateQuestionnaire({
+			type: EQuestionnaireType.QuestionnaireQuiz,
+			questionnaireId,
+			questions,
+			title,
+			user,
+		}) as Promise<QuestionnaireQuiz>;
+	}
+
+	@Role('Admin')
+	@Mutation(() => QuestionnaireSurvey)
+	async adminUpdateQuestionnaireSurvey(
+		@Context('req') { user }: IAdminContext,
+		@Args('questionnaireId') questionnaireId: string,
+		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
+		questions?: QuestionDiscriminatorInput[],
+		@Args('title', { nullable: true }) title?: string,
+	): Promise<QuestionnaireSurvey> {
+		return this.questionnaireService.updateQuestionnaire({
+			type: EQuestionnaireType.QuestionnaireSurvey,
+			questionnaireId,
+			questions,
+			title,
+			user,
+		}) as Promise<QuestionnaireSurvey>;
+	}
+
+	@Role('Admin')
+	@Mutation(() => QuestionnaireExam)
+	async adminUpdateQuestionnaireExam(
+		@Context('req') { user }: IAdminContext,
+		@Args('questionnaireId') questionnaireId: string,
+		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
+		questions?: QuestionDiscriminatorInput[],
+		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
+		@Args('passingGradePercent', { nullable: true }) passingGradePercent?: number,
+		@Args('maxRetryAmount', { nullable: true }) maxRetryAmount?: number,
+		@Args('timeLimit', { nullable: true }) timeLimit?: number,
+		@Args('title', { nullable: true }) title?: string,
+	): Promise<QuestionnaireExam> {
+		return this.questionnaireService.updateQuestionnaire({
+			type: EQuestionnaireType.QuestionnaireExam,
+			passingGradePercent,
+			randomizeQuestions,
+			questionnaireId,
+			maxRetryAmount,
+			questions,
+			timeLimit,
+			title,
+			user,
+		}) as Promise<QuestionnaireExam>;
+	}
 }

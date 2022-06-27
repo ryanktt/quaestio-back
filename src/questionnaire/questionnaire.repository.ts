@@ -37,11 +37,13 @@ export class QuestionnaireRepository {
 		questionnaireSharedIds,
 		questionnaireIds,
 		userIds,
+		latest,
 	}: IRepositoryFetchQuestionnairesParams): Promise<QuestionnaireDocument[]> {
 		const query: FilterType<QuestionnaireDocument> = {};
 		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
 		if (questionnaireIds) query._id = { $in: questionnaireIds };
 		if (userIds) query.user = { $in: userIds };
+		if (latest) query.latest = latest;
 
 		return this.questionnaireSchema
 			.find(query)
@@ -59,10 +61,12 @@ export class QuestionnaireRepository {
 		questionnaireSharedId,
 		questionnaireId,
 		userId,
+		latest,
 	}: IRepositoryFetchQuestionnaireParams): Promise<QuestionnaireDocument | undefined> {
 		const query: FilterType<QuestionnaireDocument> = {};
 		if (questionnaireSharedId) query.sharedId = questionnaireSharedId;
 		if (questionnaireId) query._id = questionnaireId;
+		if (latest) query.latest = latest;
 		if (userId) query.user = userId;
 
 		const questionnaire = (await this.questionnaireSchema

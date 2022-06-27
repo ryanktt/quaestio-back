@@ -79,11 +79,24 @@ export const CreateQuestionnaireValidator = Joi.object().keys({
 		.required(),
 	title: Joi.string().max(250).required(),
 	user: Joi.object().required(),
-	questions: Joi.array().items(QuestionDiscriminatorInputValidator),
+	questions: Joi.array().items(QuestionDiscriminatorInputValidator).required(),
 	passingGradePercent: Joi.number(),
 	randomizeQuestions: Joi.boolean(),
 	maxRetryAmount: Joi.number(),
 	timeLimit: Joi.number(),
+});
+
+export const UpdateQuestionnaireValidator = Joi.object().keys({
+	type: Joi.string()
+		.valid(...Object.values(EQuestionnaireType))
+		.required(),
+	title: Joi.string().max(250),
+	user: Joi.object().required(),
+	questions: Joi.array().items(QuestionDiscriminatorInputValidator),
+	randomizeQuestions: Joi.boolean().default(false),
+	passingGradePercent: Joi.number().allow(null),
+	maxRetryAmount: Joi.number().allow(null),
+	timeLimit: Joi.number().allow(null),
 });
 
 export const FetchQuestionnaireValidator = Joi.object()

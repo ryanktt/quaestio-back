@@ -11,7 +11,7 @@ import { QuestionnaireHelper } from './questionnaire.helper';
 
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UtilsPromise } from '@utils/*';
+import { UtilsModule } from '@utils/*';
 import { UserModule } from 'src/user';
 
 @Module({
@@ -27,15 +27,10 @@ import { UserModule } from 'src/user';
 				],
 			},
 		]),
+		forwardRef(() => UtilsModule),
 		forwardRef(() => UserModule),
 	],
-	providers: [
-		QuestionnaireResolver,
-		QuestionnaireRepository,
-		QuestionnaireHelper,
-		QuestionnaireService,
-		UtilsPromise,
-	],
+	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 	exports: [QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 })
 export class QuestionnaireModule {}

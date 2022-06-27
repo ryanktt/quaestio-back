@@ -19,9 +19,9 @@ import {
 	EQuestionnaireErrorCode,
 } from './questionnaire.interface';
 
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError, FilterType, UtilsDoc } from '@utils/*';
 import { InjectModel } from '@nestjs/mongoose';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class QuestionnaireRepository {
@@ -30,7 +30,7 @@ export class QuestionnaireRepository {
 		@InjectModel('QuestionnaireExam') private readonly questionnaireExamSchema: QuestionnaireExamModel,
 		@InjectModel('QuestionnaireQuiz') private readonly questionnaireQuizSchema: QuestionnaireQuizModel,
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
-		@InjectModel('Questionnaire') private readonly utilsDoc: UtilsDoc,
+		@Inject(forwardRef(() => UtilsDoc)) private readonly utilsDoc: UtilsDoc,
 	) {}
 
 	async fetchQuestionnaires({

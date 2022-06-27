@@ -9,14 +9,15 @@ import {
 	QuestionnaireSurveyDocument,
 } from './schema';
 import {
-	EQuestionnaireErrorCode,
-	IRepositoryCreateQuestionnareParams,
-	IRepositoryFetchQuestionnairesParams,
 	IRepositoryCreateQuestionnaireExamParams,
+	IRepositoryUpdateQuestionnareQuizParams,
+	IRepositoryFetchQuestionnairesParams,
 	IRepositoryFetchQuestionnaireParams,
+	IRepositoryCreateQuestionnareParams,
+	EQuestionnaireErrorCode,
 } from './questionnaire.interface';
 
-import { AppError, FilterType } from '@utils/*';
+import { AppError, FilterType, UtilsAuth } from '@utils/*';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 
@@ -27,6 +28,7 @@ export class QuestionnaireRepository {
 		@InjectModel('QuestionnaireExam') private readonly questionnaireExamSchema: QuestionnaireExamModel,
 		@InjectModel('QuestionnaireQuiz') private readonly questionnaireQuizSchema: QuestionnaireQuizModel,
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
+		@InjectModel('Questionnaire') private readonly utilsDoc: UtilsAuth,
 	) {}
 
 	async fetchQuestionnaires({
@@ -174,5 +176,22 @@ export class QuestionnaireRepository {
 					originalError,
 				});
 			}) as Promise<QuestionnaireExamDocument>;
+	}
+
+	async updateQuiz({
+		questions,
+		title,
+		quiz,
+	}: IRepositoryUpdateQuestionnareQuizParams): Promise<QuestionnaireQuizDocument> {
+		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'title', value: title });
+
+		return quiz.save().catch((originalError: Error) => {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_QUIZ_ERROR,
+				message: 'fail to update questionnaire quiz',
+				originalError,
+			});
+		}) as Promise<QuestionnaireQuizDocument>;
 	}
 }

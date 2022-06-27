@@ -4,7 +4,9 @@ import {
 	QuestionTrueOrFalse,
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
+	QuestionnaireQuizDocument,
 	QuestionDiscriminatorInput,
+	QuestionnaireSurveyDocument,
 } from './schema';
 
 import { registerEnumType } from '@nestjs/graphql';
@@ -18,6 +20,7 @@ export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_QUIZ_ERROR = 'CREATE_QUESTIONNAIRE_QUIZ_ERROR',
 	CREATE_QUESTIONNAIRE_EXAM_ERROR = 'CREATE_QUESTIONNAIRE_EXAM_ERROR',
 	UPDATE_QUESTIONNAIRE_SURVEY_ERROR = 'UPDATE_QUESTIONNAIRE_SURVEY_ERROR',
+	UPDATE_QUESTIONNAIRE_QUIZ_ERROR = 'UPDATE_QUESTIONNAIRE_QUIZ_ERROR',
 	UPDATE_QUESTIONNAIRE_EXAM_ERROR = 'UPDATE_QUESTIONNAIRE_EXAM_ERROR',
 	FETCH_QUESTIONNAIRES_ERROR = 'FETCH_QUESTIONNAIRES_ERROR',
 	FETCH_QUESTIONNAIRE_ERROR = 'FETCH_QUESTIONNAIRE_ERROR',
@@ -51,6 +54,35 @@ export interface IRepositoryCreateQuestionnareParams {
 	questions: Question[];
 	userId: string;
 	title: string;
+}
+
+export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
+	randomizeQuestions?: boolean;
+	passingGradePercent?: number;
+	maxRetryAmount?: number;
+	timeLimit?: number;
+}
+
+export interface IRepositoryUpdateQuestionnareQuizParams {
+	quiz: QuestionnaireQuizDocument;
+	questions?: Question[];
+	title?: string;
+}
+
+export interface IRepositoryUpdateQuestionnareSurveyParams {
+	survey: QuestionnaireSurveyDocument;
+	questions?: Question[];
+	title?: string;
+}
+
+export interface IRepositoryUpdateQuestionnareExamParams {
+	exam: QuestionnaireSurveyDocument;
+	passingGradePercent?: number;
+	randomizeQuestions?: boolean;
+	maxRetryAmount?: number;
+	questions?: Question[];
+	timeLimit?: number;
+	title?: string;
 }
 
 export interface IRepositoryFetchQuestionnaireParams {
@@ -91,11 +123,4 @@ export interface IFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
 	user: AdminDocument;
-}
-
-export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
-	randomizeQuestions?: boolean;
-	passingGradePercent?: number;
-	maxRetryAmount?: number;
-	timeLimit?: number;
 }

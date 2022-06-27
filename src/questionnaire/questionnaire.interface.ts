@@ -68,12 +68,18 @@ export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCre
 export interface IRepositoryUpdateQuestionnareQuizParams {
 	quiz: QuestionnaireQuizDocument;
 	questions?: Question[];
+	createdAt?: Date;
+	updatedAt?: Date;
+	latest?: boolean;
 	title?: string;
 }
 
 export interface IRepositoryUpdateQuestionnareSurveyParams {
 	survey: QuestionnaireSurveyDocument;
 	questions?: Question[];
+	createdAt?: Date;
+	updatedAt?: Date;
+	latest?: boolean;
 	title?: string;
 }
 
@@ -84,6 +90,9 @@ export interface IRepositoryUpdateQuestionnareExamParams {
 	maxRetryAmount?: number;
 	questions?: Question[];
 	timeLimit?: number;
+	createdAt?: Date;
+	updatedAt?: Date;
+	latest?: boolean;
 	title?: string;
 }
 

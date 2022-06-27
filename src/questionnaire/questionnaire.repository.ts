@@ -186,10 +186,16 @@ export class QuestionnaireRepository {
 
 	async updateQuiz({
 		questions,
+		createdAt,
+		updatedAt,
+		latest,
 		title,
 		quiz,
 	}: IRepositoryUpdateQuestionnareQuizParams): Promise<QuestionnaireQuizDocument> {
 		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'createdAt', value: createdAt });
+		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'updatedAt', value: updatedAt });
+		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'latest', value: latest });
 		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'title', value: title });
 
 		return quiz.save().catch((originalError: Error) => {
@@ -203,10 +209,17 @@ export class QuestionnaireRepository {
 
 	async updateSurvey({
 		questions,
+		createdAt,
+		updatedAt,
 		survey,
+		latest,
 		title,
 	}: IRepositoryUpdateQuestionnareSurveyParams): Promise<QuestionnaireSurveyDocument> {
 		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'createdAt', value: createdAt });
+		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'updatedAt', value: updatedAt });
+		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'latest', value: latest });
 		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'title', value: title });
 
 		return survey.save().catch((originalError: Error) => {
@@ -224,14 +237,20 @@ export class QuestionnaireRepository {
 		maxRetryAmount,
 		questions,
 		timeLimit,
+		createdAt,
+		updatedAt,
+		latest,
 		title,
 		exam,
 	}: IRepositoryUpdateQuestionnareExamParams): Promise<QuestionnaireExamDocument> {
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'passingGradePercent', value: passingGradePercent });
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'randomizeQuestions', value: randomizeQuestions });
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'maxRetryAmount', value: maxRetryAmount });
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'createdAt', value: createdAt });
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'updatedAt', value: updatedAt });
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'timeLimit', value: timeLimit });
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'latest', value: latest });
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'title', value: title });
 
 		return exam.save().catch((originalError: Error) => {

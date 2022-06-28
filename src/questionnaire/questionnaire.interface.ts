@@ -90,6 +90,7 @@ export interface IRepositoryUpdateQuestionnareExamParams {
 export interface IRepositoryFetchQuestionnaireParams {
 	questionnaireSharedId?: string;
 	questionnaireId?: string;
+	latest?: boolean;
 	userId?: string;
 }
 
@@ -97,6 +98,7 @@ export interface IRepositoryFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
 	userIds?: string[];
+	latest?: boolean;
 }
 
 export interface ICreateQuestionnaireParams {
@@ -125,16 +127,13 @@ export interface IUpdateQuestionnaireParams {
 export interface IFetchQuestionnaireParams {
 	questionnaireSharedId?: string;
 	questionnaireId?: string;
+	latest?: boolean;
 	user: AdminDocument;
 }
 
 export interface IFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
-	user: AdminDocument;
-}
-export interface IFetchQuestionnairesParams {
-	questionnaireSharedIds?: string[];
-	questionnaireIds?: string[];
+	latest?: boolean;
 	user: AdminDocument;
 }

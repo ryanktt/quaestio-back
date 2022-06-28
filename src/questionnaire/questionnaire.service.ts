@@ -27,23 +27,25 @@ export class QuestionnaireService {
 	) {}
 
 	async fetchQuestionnaire(params: IFetchQuestionnaireParams): Promise<Questionnaire | undefined> {
-		const { questionnaireSharedId, questionnaireId, user } = params;
+		const { questionnaireSharedId, questionnaireId, latest, user } = params;
 		await this.questionnaireHelper.validateFetchQuestionnaireParams(params);
 
 		return this.questionnaireRepository.fetchQuestionnaire({
 			...(questionnaireId ? { questionnaireId } : { questionnaireSharedId }),
 			userId: user.id,
+			latest,
 		});
 	}
 
 	async fetchQuestionnaires(params: IFetchQuestionnairesParams): Promise<Questionnaire[]> {
-		const { questionnaireSharedIds, questionnaireIds, user } = params;
+		const { questionnaireSharedIds, questionnaireIds, latest, user } = params;
 		await this.questionnaireHelper.validateFetchQuestionnairesParams(params);
 
 		return this.questionnaireRepository.fetchQuestionnaires({
 			questionnaireSharedIds,
 			userIds: [user.id],
 			questionnaireIds,
+			latest,
 		});
 	}
 
@@ -81,6 +83,7 @@ export class QuestionnaireService {
 		const questionnaire = await this.questionnaireRepository.fetchQuestionnaire({
 			questionnaireId,
 			userId: user.id,
+			latest: true,
 		});
 
 		if (!questionnaire || questionnaire.type !== type) {
@@ -101,6 +104,7 @@ export class QuestionnaireService {
 				title,
 			});
 		}
+
 		if (type === EQuestionnaireType.QuestionnaireSurvey) {
 			return this.questionnaireRepository.updateSurvey({
 				survey: questionnaire as QuestionnaireSurveyDocument,

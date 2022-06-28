@@ -37,8 +37,10 @@ export class QuestionnaireRepository {
 		questionnaireSharedIds,
 		questionnaireIds,
 		userIds,
+		latest,
 	}: IRepositoryFetchQuestionnairesParams): Promise<QuestionnaireDocument[]> {
 		const query: FilterType<QuestionnaireDocument> = {};
+		if (typeof latest === 'boolean') query.latest = latest;
 		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
 		if (questionnaireIds) query._id = { $in: questionnaireIds };
 		if (userIds) query.user = { $in: userIds };
@@ -58,9 +60,11 @@ export class QuestionnaireRepository {
 	async fetchQuestionnaire({
 		questionnaireSharedId,
 		questionnaireId,
+		latest,
 		userId,
 	}: IRepositoryFetchQuestionnaireParams): Promise<QuestionnaireDocument | undefined> {
 		const query: FilterType<QuestionnaireDocument> = {};
+		if (typeof latest === 'boolean') query.latest = latest;
 		if (questionnaireSharedId) query.sharedId = questionnaireSharedId;
 		if (questionnaireId) query._id = questionnaireId;
 		if (userId) query.user = userId;
@@ -197,7 +201,7 @@ export class QuestionnaireRepository {
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'questions', value: questions });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'title', value: title });
 
-		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireQuizDocument> => {
+		return this.utilsDoc.startMongodbSession(async (session) => {
 			this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'latest', value: false });
 			try {
 				await quiz.save({ session });

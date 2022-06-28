@@ -2,14 +2,18 @@ import { AppError, EGeneralErrorCode } from './utils.error';
 import { UtilsPromise } from './utils.promise';
 import { DocumentType } from './utils.schema';
 
-import { LeanDocument, ClientSession, startSession } from 'mongoose';
+import { LeanDocument, ClientSession, Connection } from 'mongoose';
+import { InjectConnection } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 
 type AnyObj = Record<string, unknown>;
 
 @Injectable()
 export class UtilsDoc {
-	constructor(private readonly utilsPromise: UtilsPromise) {}
+	constructor(
+		@InjectConnection() private readonly connection: Connection,
+		private readonly utilsPromise: UtilsPromise,
+	) {}
 
 	async validateUserDocAccess<T extends DocumentType<AnyObj>, U extends DocumentType<AnyObj>>(
 		docToVal: U | undefined,
@@ -36,15 +40,16 @@ export class UtilsDoc {
 		value?: T[K] | null;
 	}): T | undefined {
 		const { doc, field, value } = params;
+
 		if (value === null && doc[field] !== undefined) {
 			doc[field] = undefined as typeof doc[typeof field];
 			return doc;
 		}
-		if (value && typeof doc[field] === typeof value && doc[field] !== value) {
-			doc[field] = value;
+
+		if (value !== undefined && typeof doc[field] === typeof value && doc[field] !== value) {
+			doc[field] = value as typeof doc[typeof field];
 			return doc;
 		}
-
 		return;
 	}
 
@@ -54,7 +59,7 @@ export class UtilsDoc {
 	): Promise<T> {
 		let result;
 		if (!session || !session.inTransaction()) {
-			const newSession = await startSession();
+			const newSession = await this.connection.startSession();
 			await newSession.withTransaction(async () => {
 				result = await cb(newSession);
 			});

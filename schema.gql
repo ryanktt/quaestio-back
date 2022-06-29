@@ -209,7 +209,9 @@ type Response {
   questionnaire: Questionnaire!
   user: Respondent!
   answers: [Answer!]!
-  sharedId: String!
+  attemptCount: Float!
+  startedAt: DateTime!
+  completedAt: DateTime
 }
 
 type RespondentLocation {

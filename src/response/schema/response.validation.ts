@@ -60,4 +60,5 @@ export const CreateResponseValidator = Joi.object().keys({
 	answers: Joi.array().items(AnswerDiscriminatorInputValidator).required(),
 	questionnaireId: Joi.string().required(),
 	user: Joi.object().required(),
+	startedAt: Joi.date(),
 });

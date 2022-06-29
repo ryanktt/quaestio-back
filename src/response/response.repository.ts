@@ -9,10 +9,15 @@ import { AppError } from '@utils/*';
 export class ResponseRepository {
 	constructor(@InjectModel('Response') private readonly responseSchema: ResponseModel) {}
 
-	async create(params: IRepositoryCreateResponseParams): Promise<ResponseDocument> {
-		const { answers, sharedId, questionnaireId, userId } = params;
+	async create({
+		questionnaireId,
+		attemptCount,
+		startedAt,
+		answers,
+		userId,
+	}: IRepositoryCreateResponseParams): Promise<ResponseDocument> {
 		return this.responseSchema
-			.create({ answers, sharedId, questionnaire: questionnaireId, user: userId })
+			.create({ answers, questionnaire: questionnaireId, user: userId, attemptCount, startedAt })
 			.catch((err: Error) => {
 				throw new AppError({
 					code: EResponseErrorCode.CREATE_RESPONSE_ERROR,

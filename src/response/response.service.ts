@@ -23,6 +23,7 @@ export class ResponseService {
 			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as Answer;
 		});
 
+		// fetch questionnaire
 		const questionnaire = await this.questionnaireRepository.fetchById(questionnaireId);
 		if (!questionnaire) {
 			throw new AppError({
@@ -31,6 +32,14 @@ export class ResponseService {
 			});
 		}
 
-		return this.responseRepository.create({ answers, userId: user.id, questionnaireId });
+		// get answers from answerDiscInputArr
+		// validate answers
+		// 	assert all questions have an answer answers.lenght === questions.length
+		// 	assert required questions are answered (answeredAt)
+		// correct answers
+		// 	multiple choice: verify if all options are correct to define the answer as correct
+		// 	singl choice: find the question option and see if its corrext
+
+		return this.responseRepository.create({ answers, userId: user.id, questionnaireId, attemptCount: 0 });
 	}
 }

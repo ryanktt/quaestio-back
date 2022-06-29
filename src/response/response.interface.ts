@@ -21,8 +21,17 @@ registerEnumType(EResponseErrorCode, { name: 'SessionErrorCode' });
 export interface IRepositoryCreateResponseParams {
 	questionnaireId: string;
 	answers: Answer[];
-	sharedId?: string;
 	userId: string;
+	attemptCount: number;
+	startedAt?: Date;
+}
+
+export interface IRepositoryUpdateResponseParams {
+	response: RespondentDocument;
+	attemptCount: number;
+	completedAt?: Date;
+	answers?: Answer[];
+	startedAt?: Date;
 }
 
 export interface ICreateResponseParams {

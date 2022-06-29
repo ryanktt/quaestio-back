@@ -5,7 +5,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { DocumentType, SchemaBase } from '@utils/*';
 import { Questionnaire } from 'src/questionnaire';
 import { Respondent } from 'src/user';
-import { v4 as uuidv4 } from 'uuid';
 import { Model } from 'mongoose';
 
 @InterfaceType({
@@ -104,8 +103,16 @@ export class Response extends SchemaBase {
 	answers: Answer[];
 
 	@Field()
-	@Prop({ default: uuidv4(), required: true })
-	sharedId: string;
+	@Prop({ required: true })
+	attemptCount?: number;
+
+	@Field()
+	@Prop({ default: new Date(), required: true })
+	startedAt?: Date;
+
+	@Field({ nullable: true })
+	@Prop()
+	completedAt?: Date;
 }
 
 export const ResponseSchema = SchemaFactory.createForClass(Response);

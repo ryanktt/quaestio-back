@@ -12,7 +12,11 @@ export class SessionHelper {
 		return this.utilsPromise.promisify(() => jwt.verify(token, 'JWT Secret') as IJwtPayload);
 	}
 
-	signJwtToken(payload: IJwtPayload, expiresAt: Date): string {
+	async validateAndGetJwtPublicPayload(token: string): Promise<{ responseId: string }> {
+		return this.utilsPromise.promisify(() => jwt.verify(token, 'JWT Secret') as { responseId: string });
+	}
+
+	signJwtToken(payload: IJwtPayload | { responseId: string }, expiresAt: Date): string {
 		return jwt.sign(payload, 'JWT Secret', { expiresIn: this.utilsDate.getDateInMs(expiresAt) });
 	}
 

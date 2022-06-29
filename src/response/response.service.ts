@@ -1,22 +1,24 @@
-import { ICreateResponseParams } from './response.interface';
+import { ICreateResponseParams, IPublicCreateResponseParams } from './response.interface';
 import { ResponseRepository } from './response.repository';
+import { Answer, ResponseDocument } from './schema';
 import { ResponseHelper } from './response.helper';
-import { Answer, Response } from './schema';
 
 import { EQuestionnaireErrorCode, QuestionnaireRepository } from 'src/questionnaire';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { SessionHelper } from 'src/session';
 import { AppError } from '@utils/*';
 
 @Injectable()
 export class ResponseService {
 	constructor(
+		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly responseRepository: ResponseRepository,
 		private readonly responseHelper: ResponseHelper,
 	) {}
 
-	async createResponse(params: ICreateResponseParams): Promise<Response> {
-		const { answers: answerDiscriminatorInputArray, questionnaireId, user } = params;
+	async createResponse(params: ICreateResponseParams): Promise<ResponseDocument> {
+		const { answers: answerDiscriminatorInputArray, questionnaireId, responseId } = params;
 		await this.responseHelper.validateCreateResponseParams(params);
 
 		const answers = answerDiscriminatorInputArray.map((input) => {
@@ -40,6 +42,29 @@ export class ResponseService {
 		// 	multiple choice: verify if all options are correct to define the answer as correct
 		// 	singl choice: find the question option and see if its corrext
 
-		return this.responseRepository.create({ answers, userId: user.id, questionnaireId, attemptCount: 0 });
+		return this.responseRepository.create({ answers, questionnaireId, attemptCount: 0 });
+	}
+
+	async publicCreateResponse({
+		questionnaireId,
+		authToken,
+		answers,
+	}: IPublicCreateResponseParams): Promise<{ response: ResponseDocument; authToken: string }> {
+		let responseId;
+		if (authToken) {
+			const payload = await this.sessionHelper
+				.validateAndGetJwtPublicPayload(authToken)
+				.catch((err) => console.error(err));
+			responseId = typeof payload === 'object' && 'responseId' in payload ? payload.responseId : undefined;
+		}
+
+		const response = await this.createResponse({ answers, questionnaireId, responseId });
+
+		if (!responseId) {
+			const tokenExpDate = this.sessionHelper.getExpirationDate();
+			authToken = this.sessionHelper.signJwtToken({ responseId: response.id }, tokenExpDate);
+		}
+
+		return { response, authToken: authToken as string };
 	}
 }

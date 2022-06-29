@@ -207,11 +207,15 @@ type Response {
   createdAt: DateTime!
   updatedAt: DateTime!
   questionnaire: Questionnaire!
-  user: Respondent!
   answers: [Answer!]!
   attemptCount: Float!
   startedAt: DateTime!
   completedAt: DateTime
+}
+
+type PublicCreateResponse {
+  authToken: String!
+  response: Response!
 }
 
 type RespondentLocation {
@@ -293,7 +297,7 @@ type Mutation {
   adminUpdateQuestionnaireQuiz(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], title: String): QuestionnaireQuiz!
   adminUpdateQuestionnaireSurvey(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], title: String): QuestionnaireSurvey!
   adminUpdateQuestionnaireExam(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: String): QuestionnaireExam!
-  publicCreateResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): Response!
+  publicCreateResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): PublicCreateResponse!
 }
 
 input QuestionDiscriminatorInput {

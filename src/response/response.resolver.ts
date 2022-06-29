@@ -2,23 +2,23 @@ import { AnswerDiscriminatorInput } from './schema/response.input';
 import { ResponseService } from './response.service';
 import { Response } from './schema';
 
-import { Resolver, ResolveField, Parent, Context, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, ResolveField, Parent, Context, Mutation, Args, ObjectType, Field } from '@nestjs/graphql';
 import { Questionnaire } from 'src/questionnaire';
-import { IRespondentContext } from 'src/session';
-import { Admin, AdminDocument } from 'src/user';
+import { IPublicContext } from 'src/session';
 import { ILoaders } from 'src/app.loaders';
+
+@ObjectType()
+class PublicCreateResponse {
+	@Field()
+	authToken: string;
+
+	@Field(() => Response)
+	response: Response;
+}
 
 @Resolver(() => Response)
 export class ResponseResolver {
 	constructor(private readonly responseService: ResponseService) {}
-
-	@ResolveField(() => Admin)
-	async user(
-		@Context('loaders') { userLoader }: ILoaders,
-		@Parent() response: Response,
-	): Promise<AdminDocument> {
-		return userLoader.load(response.user) as Promise<AdminDocument>;
-	}
 
 	@ResolveField(() => Questionnaire)
 	async questionnaire(
@@ -28,13 +28,12 @@ export class ResponseResolver {
 		return questionnaireLoader.load(response.questionnaire) as Promise<Questionnaire>;
 	}
 
-	@Mutation(() => Response)
+	@Mutation(() => PublicCreateResponse)
 	async publicCreateResponse(
-		@Context('req') { user }: IRespondentContext,
+		@Context('req') { authToken }: IPublicContext,
 		@Args('answers', { type: () => [AnswerDiscriminatorInput] }) answers: AnswerDiscriminatorInput[],
 		@Args('questionnaireId') questionnaireId: string,
-	): Promise<Response> {
-		// TODO create guest
-		return this.responseService.createResponse({ answers, questionnaireId, user });
+	): Promise<PublicCreateResponse> {
+		return this.responseService.publicCreateResponse({ answers, questionnaireId, authToken });
 	}
 }

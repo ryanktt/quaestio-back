@@ -21,7 +21,6 @@ registerEnumType(EResponseErrorCode, { name: 'SessionErrorCode' });
 export interface IRepositoryCreateResponseParams {
 	questionnaireId: string;
 	answers: Answer[];
-	userId: string;
 	attemptCount: number;
 	startedAt?: Date;
 }
@@ -36,7 +35,12 @@ export interface IRepositoryUpdateResponseParams {
 
 export interface ICreateResponseParams {
 	answers: AnswerDiscriminatorInput[];
-	user: RespondentDocument; //user?:
-	// TODO quest?: GuestDoc
 	questionnaireId: string;
+	responseId?: string;
+}
+
+export interface IPublicCreateResponseParams {
+	answers: AnswerDiscriminatorInput[];
+	questionnaireId: string;
+	authToken?: string;
 }

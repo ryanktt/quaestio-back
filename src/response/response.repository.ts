@@ -14,10 +14,9 @@ export class ResponseRepository {
 		attemptCount,
 		startedAt,
 		answers,
-		userId,
 	}: IRepositoryCreateResponseParams): Promise<ResponseDocument> {
 		return this.responseSchema
-			.create({ answers, questionnaire: questionnaireId, user: userId, attemptCount, startedAt })
+			.create({ answers, questionnaire: questionnaireId, attemptCount, startedAt })
 			.catch((err: Error) => {
 				throw new AppError({
 					code: EResponseErrorCode.CREATE_RESPONSE_ERROR,

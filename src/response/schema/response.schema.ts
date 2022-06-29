@@ -4,7 +4,6 @@ import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { DocumentType, SchemaBase } from '@utils/*';
 import { Questionnaire } from 'src/questionnaire';
-import { Respondent } from 'src/user';
 import { Model } from 'mongoose';
 
 @InterfaceType({
@@ -85,9 +84,9 @@ export class Response extends SchemaBase {
 	@Prop({ type: String, ref: 'Questionnaire', required: true })
 	questionnaire: string;
 
-	@Field(() => Respondent)
-	@Prop({ type: String, ref: 'Respondent', required: true })
-	user: string;
+	// @Field(() => Respondent)
+	// @Prop({ type: String, ref: 'Respondent', required: true })
+	// user: string;
 
 	@Field(() => [Answer])
 	@Prop({

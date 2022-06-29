@@ -5,12 +5,17 @@ import { ResponseHelper } from './response.helper';
 import { ResponseSchema } from './schema';
 
 import { QuestionnaireModule } from 'src/questionnaire';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { SessionModule } from 'src/session';
 import { UtilsPromise } from '@utils/*';
-import { Module } from '@nestjs/common';
 
 @Module({
-	imports: [MongooseModule.forFeature([{ name: 'Response', schema: ResponseSchema }]), QuestionnaireModule],
+	imports: [
+		MongooseModule.forFeature([{ name: 'Response', schema: ResponseSchema }]),
+		forwardRef(() => SessionModule),
+		QuestionnaireModule,
+	],
 	providers: [ResponseRepository, ResponseHelper, ResponseService, ResponseResolver, UtilsPromise],
 	exports: [ResponseRepository, ResponseHelper, ResponseService],
 })

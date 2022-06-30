@@ -48,7 +48,12 @@ export interface IPublicCreateResponseParams {
 	authToken?: string;
 }
 
-export interface IValidateAnswer {
+export interface IValidateAnswers {
+	questionnaire: Questionnaire;
+	answers: Answer[];
+}
+
+export interface ICorrectAnswers {
 	questionnaire: Questionnaire;
 	answers: Answer[];
 }

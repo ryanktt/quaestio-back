@@ -3,10 +3,18 @@
 # ------------------------------------------------------
 
 type Option {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   correct: Boolean
   feedbackAfterSubmit: String
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type QuestionSingleChoice implements Question {
   _id: String!
@@ -35,11 +43,6 @@ interface Question {
   description: String
   showCorrectAnswer: Boolean!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 enum QuestionType {
   MULTIPLE_CHOICE

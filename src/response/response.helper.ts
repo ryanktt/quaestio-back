@@ -1,6 +1,7 @@
 import {
 	EAnswerType,
-	IValidateAnswer,
+	ICorrectAnswers,
+	IValidateAnswers,
 	EResponseErrorCode,
 	ICreateResponseParams,
 } from './response.interface';
@@ -14,6 +15,7 @@ import {
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError, UtilsPromise } from '@utils/*';
+import { QuestionTypes } from 'src/questionnaire';
 import { SessionHelper } from 'src/session';
 import Joi from 'joi';
 
@@ -67,7 +69,7 @@ export class ResponseHelper {
 		return answer as Answer;
 	}
 
-	validateAnswers({ answers, questionnaire }: IValidateAnswer): void {
+	validateAnswers({ answers, questionnaire }: IValidateAnswers): void {
 		const questionMap: Record<string, { required: boolean; verified: boolean }> = {};
 		questionnaire.questions.forEach(
 			(question) => (questionMap[question._id.toString()] = { required: question.required, verified: false }),
@@ -108,6 +110,39 @@ export class ResponseHelper {
 				});
 			}
 			questionMap[questionId].verified = true;
+		});
+	}
+
+	correctAnswers({ answers, questionnaire }: ICorrectAnswers): void {
+		const isOptionCorrect = (optionId: string, correctOpIds: string[]): boolean =>
+			correctOpIds.includes(optionId);
+
+		const isOptionsCorrect = (optionIds: string[], correctOpIds: string[]): boolean =>
+			correctOpIds.every((correctOptionId) => optionIds.includes(correctOptionId));
+
+		const questionMap: Record<string, { correctOptionIds: string[] }> = {};
+		const { questions } = questionnaire;
+
+		questions.forEach((question: QuestionTypes) => {
+			const questionId = question._id.toString();
+			if ('options' in question) {
+				const correctOptionIds = question.options.reduce((accumulator, option) => {
+					if (option.correct) return [...accumulator, option._id.toString()];
+					return accumulator;
+				}, []);
+				questionMap[questionId] = { correctOptionIds };
+			}
+		});
+
+		answers.forEach((answer: AnswerTypes) => {
+			const questionId = answer.question;
+			const correctOptionIds = questionMap[questionId].correctOptionIds;
+
+			if ('option' in answer && answer.option) {
+				answer.correct = isOptionCorrect(answer.option, correctOptionIds);
+			} else if ('options' in answer) {
+				answer.correct = isOptionsCorrect(answer.options || [], correctOptionIds);
+			}
 		});
 	}
 

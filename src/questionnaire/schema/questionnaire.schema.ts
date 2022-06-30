@@ -8,7 +8,7 @@ import { Admin } from 'src/user';
 import { Model } from 'mongoose';
 
 @ObjectType()
-export class Option {
+export class Option extends SchemaBaseInterface {
 	@Field()
 	@Prop({ required: true })
 	title: string;
@@ -130,6 +130,12 @@ export class QuestionText extends Question {
 	@Prop()
 	feedbackAfterSubmit?: string;
 }
+
+export type QuestionTypes =
+	| QuestionText
+	| QuestionSingleChoice
+	| QuestionMultipleChoice
+	| QuestionTrueOrFalse;
 
 @InterfaceType({
 	isAbstract: true,

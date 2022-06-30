@@ -77,6 +77,8 @@ class AnswerText extends Answer {
 	text?: string;
 }
 
+export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrueOrFalse | AnswerText;
+
 @ObjectType()
 @Schema()
 export class Response extends SchemaBase {

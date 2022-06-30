@@ -1,6 +1,7 @@
 import { AnswerDiscriminatorInput, Answer } from './schema';
 
 import { registerEnumType } from '@nestjs/graphql';
+import { Questionnaire } from 'src/questionnaire';
 import { RespondentDocument } from 'src/user';
 
 export enum EAnswerType {
@@ -12,6 +13,8 @@ export enum EAnswerType {
 export enum EResponseErrorCode {
 	CREATE_RESPONSE_INVALID_PARAMS = 'CREATE_RESPONSE_INVALID_PARAMS',
 	CREATE_RESPONSE_ERROR = 'CREATE_RESPONSE_ERROR',
+	FETCH_RESPONSES_ERROR = 'FETCH_RESPONSES_ERROR',
+	FETCH_RESPONSE_ERROR = 'FETCH_RESPONSE_ERROR',
 	INVALID_ANSWER = 'INVALID_ANSWER',
 }
 
@@ -43,4 +46,9 @@ export interface IPublicCreateResponseParams {
 	answers: AnswerDiscriminatorInput[];
 	questionnaireId: string;
 	authToken?: string;
+}
+
+export interface IValidateAnswer {
+	questionnaire: Questionnaire;
+	answers: Answer[];
 }

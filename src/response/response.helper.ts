@@ -1,13 +1,17 @@
 import { AnswerDiscriminatorInput, AnswerInput, Answer, CreateResponseValidator } from './schema';
 import { EAnswerType, EResponseErrorCode, ICreateResponseParams } from './response.interface';
 
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError, UtilsPromise } from '@utils/*';
-import { Injectable } from '@nestjs/common';
+import { SessionHelper } from 'src/session';
 import Joi from 'joi';
 
 @Injectable()
 export class ResponseHelper {
-	constructor(private readonly utilsPromise: UtilsPromise) {}
+	constructor(
+		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
+		private readonly utilsPromise: UtilsPromise,
+	) {}
 
 	async validateCreateResponseParams(params: ICreateResponseParams): Promise<void> {
 		await this.utilsPromise
@@ -50,5 +54,13 @@ export class ResponseHelper {
 		}
 
 		return answer as Answer;
+	}
+
+	async getGuestRespondentJwtPayload(authToken?: string): Promise<{ responseId: string } | undefined> {
+		if (!authToken) return;
+		const payload = await this.sessionHelper
+			.validateAndGetJwtPublicPayload(authToken)
+			.catch((err) => console.error(err));
+		return typeof payload === 'object' && 'responseId' in payload ? payload : undefined;
 	}
 }

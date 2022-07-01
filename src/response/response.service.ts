@@ -25,7 +25,6 @@ export class ResponseService {
 			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as Answer;
 		});
 
-		// fetch questionnaire
 		const questionnaire = await this.questionnaireRepository.fetchById(questionnaireId);
 		if (!questionnaire) {
 			throw new AppError({
@@ -34,15 +33,16 @@ export class ResponseService {
 			});
 		}
 
-		// get answers from answerDiscInputArr
-		// validate answers
-		// 	assert all questions have an answer answers.lenght === questions.length
-		// 	assert required questions are answered (answeredAt)
-		// correct answers
-		// 	multiple choice: verify if all options are correct to define the answer as correct
-		// 	singl choice: find the question option and see if its corrext
+		this.responseHelper.validateAnswers({ answers, questionnaire });
+		this.responseHelper.correctAnswers({ answers, questionnaire });
 
-		return this.responseRepository.create({ answers, questionnaireId, attemptCount: 0 });
+		const response = await this.responseRepository.fetchById(responseId);
+		if (!response) {
+			return this.responseRepository.create({ answers, questionnaireId, attemptCount: 0 });
+		} else {
+			response.answers = answers;
+			return this.responseRepository.save(response);
+		}
 	}
 
 	async publicCreateResponse({
@@ -50,21 +50,16 @@ export class ResponseService {
 		authToken,
 		answers,
 	}: IPublicCreateResponseParams): Promise<{ response: ResponseDocument; authToken: string }> {
-		let responseId;
-		if (authToken) {
-			const payload = await this.sessionHelper
-				.validateAndGetJwtPublicPayload(authToken)
-				.catch((err) => console.error(err));
-			responseId = typeof payload === 'object' && 'responseId' in payload ? payload.responseId : undefined;
-		}
+		const payload = await this.responseHelper.getGuestRespondentJwtPayload(authToken);
 
+		const responseId = typeof payload === 'object' ? payload.responseId : undefined;
 		const response = await this.createResponse({ answers, questionnaireId, responseId });
 
-		if (!responseId) {
+		if (!payload) {
 			const tokenExpDate = this.sessionHelper.getExpirationDate();
 			authToken = this.sessionHelper.signJwtToken({ responseId: response.id }, tokenExpDate);
 		}
 
-		return { response, authToken: authToken as string };
+		return { response, authToken: authToken || '' };
 	}
 }

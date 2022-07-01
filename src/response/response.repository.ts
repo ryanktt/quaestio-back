@@ -26,7 +26,18 @@ export class ResponseRepository {
 			}) as Promise<ResponseDocument>;
 	}
 
-	async fetchById(responseId: string): Promise<ResponseDocument | undefined> {
+	async save(response: ResponseDocument): Promise<ResponseDocument> {
+		return response.save().catch((originalError: Error) => {
+			throw new AppError({
+				code: EResponseErrorCode.SAVE_RESPONSE_ERROR,
+				message: 'fail to save response',
+				originalError,
+			});
+		}) as Promise<ResponseDocument>;
+	}
+
+	async fetchById(responseId?: string): Promise<ResponseDocument | undefined> {
+		if (!responseId) return;
 		const response = (await this.responseSchema
 			.findById(responseId)
 			.exec()

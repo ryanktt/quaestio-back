@@ -1,4 +1,4 @@
-import { ICreateResponseParams, IPublicCreateResponseParams } from './response.interface';
+import { IUpsertResponseParams, IPublicUpsertResponseParams } from './response.interface';
 import { ResponseRepository } from './response.repository';
 import { Answer, ResponseDocument } from './schema';
 import { ResponseHelper } from './response.helper';
@@ -17,9 +17,9 @@ export class ResponseService {
 		private readonly responseHelper: ResponseHelper,
 	) {}
 
-	async createResponse(params: ICreateResponseParams): Promise<ResponseDocument> {
+	async upsertResponse(params: IUpsertResponseParams): Promise<ResponseDocument> {
 		const { answers: answerDiscriminatorInputArray, questionnaireId, responseId } = params;
-		await this.responseHelper.validateCreateResponseParams(params);
+		await this.responseHelper.validateUpsertResponseParams(params);
 
 		const answers = answerDiscriminatorInputArray.map((input) => {
 			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as Answer;
@@ -45,15 +45,15 @@ export class ResponseService {
 		}
 	}
 
-	async publicCreateResponse({
+	async publicUpsertResponse({
 		questionnaireId,
 		authToken,
 		answers,
-	}: IPublicCreateResponseParams): Promise<{ response: ResponseDocument; authToken: string }> {
+	}: IPublicUpsertResponseParams): Promise<{ response: ResponseDocument; authToken: string }> {
 		const payload = await this.responseHelper.getGuestRespondentJwtPayload(authToken);
 
 		const responseId = typeof payload === 'object' ? payload.responseId : undefined;
-		const response = await this.createResponse({ answers, questionnaireId, responseId });
+		const response = await this.upsertResponse({ answers, questionnaireId, responseId });
 
 		if (!payload) {
 			const tokenExpDate = this.sessionHelper.getExpirationDate();

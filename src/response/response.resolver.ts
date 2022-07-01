@@ -8,7 +8,7 @@ import { IPublicContext } from 'src/session';
 import { ILoaders } from 'src/app.loaders';
 
 @ObjectType()
-class PublicCreateResponse {
+class PublicUpsertResponse {
 	@Field()
 	authToken: string;
 
@@ -28,12 +28,12 @@ export class ResponseResolver {
 		return questionnaireLoader.load(response.questionnaire) as Promise<Questionnaire>;
 	}
 
-	@Mutation(() => PublicCreateResponse)
-	async publicCreateResponse(
+	@Mutation(() => PublicUpsertResponse)
+	async publicUpsertResponse(
 		@Context('req') { authToken }: IPublicContext,
 		@Args('answers', { type: () => [AnswerDiscriminatorInput] }) answers: AnswerDiscriminatorInput[],
 		@Args('questionnaireId') questionnaireId: string,
-	): Promise<PublicCreateResponse> {
-		return this.responseService.publicCreateResponse({ answers, questionnaireId, authToken });
+	): Promise<PublicUpsertResponse> {
+		return this.responseService.publicUpsertResponse({ answers, questionnaireId, authToken });
 	}
 }

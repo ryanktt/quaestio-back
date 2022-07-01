@@ -215,7 +215,7 @@ type Response {
   completedAt: DateTime
 }
 
-type PublicCreateResponse {
+type PublicUpsertResponse {
   authToken: String!
   response: Response!
 }
@@ -299,7 +299,7 @@ type Mutation {
   adminUpdateQuestionnaireQuiz(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], title: String): QuestionnaireQuiz!
   adminUpdateQuestionnaireSurvey(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], title: String): QuestionnaireSurvey!
   adminUpdateQuestionnaireExam(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: String): QuestionnaireExam!
-  publicCreateResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): PublicCreateResponse!
+  publicUpsertResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): PublicUpsertResponse!
 }
 
 input QuestionDiscriminatorInput {

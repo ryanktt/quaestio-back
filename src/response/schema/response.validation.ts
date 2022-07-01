@@ -56,7 +56,7 @@ export const AnswerDiscriminatorInputValidator = Joi.object().keys({
 	}),
 });
 
-export const CreateResponseValidator = Joi.object().keys({
+export const UpsertResponseValidator = Joi.object().keys({
 	answers: Joi.array().items(AnswerDiscriminatorInputValidator).required(),
 	questionnaireId: Joi.string().required(),
 	user: Joi.object().required(),

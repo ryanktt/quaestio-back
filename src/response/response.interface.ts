@@ -22,7 +22,7 @@ export enum EResponseErrorCode {
 registerEnumType(EAnswerType, { name: 'AnswerType' });
 registerEnumType(EResponseErrorCode, { name: 'SessionErrorCode' });
 
-export interface IRepositoryCreateResponseParams {
+export interface IRepositoryUpsertResponseParams {
 	questionnaireId: string;
 	answers: Answer[];
 	startedAt?: Date;
@@ -35,13 +35,13 @@ export interface IRepositoryUpdateResponseParams {
 	startedAt?: Date;
 }
 
-export interface ICreateResponseParams {
+export interface IUpsertResponseParams {
 	answers: AnswerDiscriminatorInput[];
 	questionnaireId: string;
 	responseId?: string;
 }
 
-export interface IPublicCreateResponseParams {
+export interface IPublicUpsertResponseParams {
 	answers: AnswerDiscriminatorInput[];
 	questionnaireId: string;
 	authToken?: string;

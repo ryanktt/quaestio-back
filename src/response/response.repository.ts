@@ -1,4 +1,4 @@
-import { EResponseErrorCode, IRepositoryCreateResponseParams } from './response.interface';
+import { EResponseErrorCode, IRepositoryUpsertResponseParams } from './response.interface';
 import { ResponseDocument, ResponseModel } from './schema';
 
 import { InjectModel } from '@nestjs/mongoose';
@@ -13,7 +13,7 @@ export class ResponseRepository {
 		questionnaireId,
 		startedAt,
 		answers,
-	}: IRepositoryCreateResponseParams): Promise<ResponseDocument> {
+	}: IRepositoryUpsertResponseParams): Promise<ResponseDocument> {
 		return this.responseSchema
 			.create({ answers, questionnaire: questionnaireId, startedAt })
 			.catch((err: Error) => {

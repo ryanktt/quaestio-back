@@ -3,11 +3,11 @@ import {
 	ICorrectAnswers,
 	IValidateAnswers,
 	EResponseErrorCode,
-	ICreateResponseParams,
+	IUpsertResponseParams,
 } from './response.interface';
 import {
 	AnswerDiscriminatorInput,
-	CreateResponseValidator,
+	UpsertResponseValidator,
 	AnswerInput,
 	AnswerTypes,
 	Answer,
@@ -26,9 +26,9 @@ export class ResponseHelper {
 		private readonly utilsPromise: UtilsPromise,
 	) {}
 
-	async validateCreateResponseParams(params: ICreateResponseParams): Promise<void> {
+	async validateUpsertResponseParams(params: IUpsertResponseParams): Promise<void> {
 		await this.utilsPromise
-			.promisify(() => Joi.assert(params, CreateResponseValidator))
+			.promisify(() => Joi.assert(params, UpsertResponseValidator))
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EResponseErrorCode.CREATE_RESPONSE_INVALID_PARAMS,

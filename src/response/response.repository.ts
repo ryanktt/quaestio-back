@@ -11,12 +11,11 @@ export class ResponseRepository {
 
 	async create({
 		questionnaireId,
-		attemptCount,
 		startedAt,
 		answers,
 	}: IRepositoryCreateResponseParams): Promise<ResponseDocument> {
 		return this.responseSchema
-			.create({ answers, questionnaire: questionnaireId, attemptCount, startedAt })
+			.create({ answers, questionnaire: questionnaireId, startedAt })
 			.catch((err: Error) => {
 				throw new AppError({
 					code: EResponseErrorCode.CREATE_RESPONSE_ERROR,

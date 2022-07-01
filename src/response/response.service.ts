@@ -38,7 +38,7 @@ export class ResponseService {
 
 		const response = await this.responseRepository.fetchById(responseId);
 		if (!response) {
-			return this.responseRepository.create({ answers, questionnaireId, attemptCount: 0 });
+			return this.responseRepository.create({ answers, questionnaireId });
 		} else {
 			response.answers = answers;
 			return this.responseRepository.save(response);

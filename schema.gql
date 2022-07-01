@@ -211,7 +211,6 @@ type Response {
   updatedAt: DateTime!
   questionnaire: Questionnaire!
   answers: [Answer!]!
-  attemptCount: Float!
   startedAt: DateTime!
   completedAt: DateTime
 }

@@ -103,9 +103,9 @@ export class Response extends SchemaBase {
 	})
 	answers: Answer[];
 
-	@Field()
-	@Prop({ required: true })
-	attemptCount?: number;
+	// @Field()
+	// @Prop({ required: true })
+	// attemptCount?: number;
 
 	@Field()
 	@Prop({ default: new Date(), required: true })

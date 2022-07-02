@@ -8,7 +8,8 @@ import { Admin } from 'src/user';
 import { Model } from 'mongoose';
 
 @ObjectType()
-export class Option extends SchemaBaseInterface {
+@Schema()
+export class Option extends SchemaBase {
 	@Field()
 	@Prop({ required: true })
 	title: string;
@@ -21,6 +22,8 @@ export class Option extends SchemaBaseInterface {
 	@Prop({ default: false })
 	feedbackAfterSubmit?: string;
 }
+
+export const OptionSchema = SchemaFactory.createForClass(Option);
 
 @InterfaceType({
 	isAbstract: true,
@@ -60,12 +63,13 @@ export class Question extends SchemaBaseInterface {
 }
 
 @ObjectType({ implements: Question })
+@Schema()
 export class QuestionSingleChoice extends Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.SINGLE_CHOICE;
 
 	@Field(() => [Option])
-	@Prop({ required: true, type: () => [Option] })
+	@Prop({ required: true, type: () => [OptionSchema] })
 	options: Option[];
 
 	@Field()
@@ -82,12 +86,13 @@ export class QuestionSingleChoice extends Question {
 }
 
 @ObjectType({ implements: Question })
+@Schema()
 export class QuestionMultipleChoice extends Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.MULTIPLE_CHOICE;
 
 	@Field(() => [Option])
-	@Prop({ required: true, type: () => [Option] })
+	@Prop({ required: true, type: () => [OptionSchema] })
 	options: Option[];
 
 	@Field({ defaultValue: false })
@@ -104,12 +109,13 @@ export class QuestionMultipleChoice extends Question {
 }
 
 @ObjectType({ implements: Question })
+@Schema()
 export class QuestionTrueOrFalse extends Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TRUE_OR_FALSE;
 
 	@Field(() => [Option])
-	@Prop({ required: true, type: () => [Option] })
+	@Prop({ required: true, type: () => [OptionSchema] })
 	options: Option[];
 
 	@Field({ nullable: true })
@@ -122,6 +128,7 @@ export class QuestionTrueOrFalse extends Question {
 }
 
 @ObjectType({ implements: Question })
+@Schema()
 export class QuestionText extends Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TEXT;

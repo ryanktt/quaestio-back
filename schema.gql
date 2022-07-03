@@ -160,6 +160,9 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
 }
 
 type AnswerSingleChoice implements Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime!
@@ -168,6 +171,9 @@ type AnswerSingleChoice implements Answer {
 }
 
 interface Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime!
@@ -182,6 +188,9 @@ enum AnswerType {
 }
 
 type AnswerMultipleChoice implements Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime!
@@ -190,6 +199,9 @@ type AnswerMultipleChoice implements Answer {
 }
 
 type AnswerTrueOrFalse implements Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime!
@@ -198,6 +210,9 @@ type AnswerTrueOrFalse implements Answer {
 }
 
 type AnswerText implements Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime!
@@ -375,27 +390,27 @@ input AnswerDiscriminatorInput {
 input AnswerMultipleChoiceInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   optionIds: [String!]
 }
 
 input AnswerSingleChoiceInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   optionId: String
 }
 
 input AnswerTrueOrFalseInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   optionId: String
 }
 
 input AnswerTextInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   text: String
 }

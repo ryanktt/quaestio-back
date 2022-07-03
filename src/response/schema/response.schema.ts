@@ -1,10 +1,10 @@
 import { EAnswerType } from '../response.interface';
 
+import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { DocumentType, SchemaBase } from '@utils/*';
+import { Model, Schema as MongooseSchema } from 'mongoose';
 import { Questionnaire } from 'src/questionnaire';
-import { Model } from 'mongoose';
 
 @InterfaceType({
 	isAbstract: true,
@@ -19,17 +19,17 @@ import { Model } from 'mongoose';
 @Schema({
 	discriminatorKey: 'type',
 })
-export class Answer {
+export class Answer extends SchemaBaseInterface {
 	@Field(() => EAnswerType)
 	@Prop({ required: true, enum: EAnswerType })
 	type: EAnswerType;
 
 	@Field(() => String)
-	@Prop({ enum: EAnswerType, required: true })
+	@Prop({ required: true })
 	question: string;
 
 	@Field()
-	@Prop({ required: true })
+	@Prop({ default: new Date() })
 	answeredAt: Date;
 
 	@Field({ nullable: true })
@@ -37,45 +37,95 @@ export class Answer {
 	correct?: boolean;
 }
 
+export const AnswerSchema = SchemaFactory.createForClass(Answer);
+
 @ObjectType({ implements: Answer })
-class AnswerSingleChoice extends Answer {
+@Schema()
+class AnswerSingleChoice extends SchemaBase implements Answer {
 	@Field(() => EAnswerType)
 	type: EAnswerType.SINGLE_CHOICE;
+
+	@Field(() => String)
+	question: string;
+
+	@Field()
+	answeredAt: Date;
+
+	@Field({ nullable: true })
+	correct?: boolean;
 
 	@Field({ nullable: true })
 	@Prop()
 	option?: string;
 }
 
+export const AnswerSingleChoiceSchema = SchemaFactory.createForClass(AnswerSingleChoice);
+
 @ObjectType({ implements: Answer })
-class AnswerMultipleChoice extends Answer {
+@Schema()
+class AnswerMultipleChoice extends SchemaBase implements Answer {
 	@Field(() => EAnswerType)
 	type: EAnswerType.MULTIPLE_CHOICE;
+
+	@Field(() => String)
+	question: string;
+
+	@Field()
+	answeredAt: Date;
+
+	@Field({ nullable: true })
+	correct?: boolean;
 
 	@Field(() => [String], { nullable: true })
 	@Prop({ type: () => String })
 	options?: string[];
 }
 
+export const AnswerMultipleChoiceSchema = SchemaFactory.createForClass(AnswerMultipleChoice);
+
 @ObjectType({ implements: Answer })
-class AnswerTrueOrFalse extends Answer {
+@Schema()
+class AnswerTrueOrFalse extends SchemaBase implements Answer {
 	@Field(() => EAnswerType)
 	type: EAnswerType.TRUE_OR_FALSE;
+
+	@Field(() => String)
+	question: string;
+
+	@Field()
+	answeredAt: Date;
+
+	@Field({ nullable: true })
+	correct?: boolean;
 
 	@Field({ nullable: true })
 	@Prop()
 	option?: string;
 }
 
+export const AnswerTrueOrFalseSchema = SchemaFactory.createForClass(AnswerTrueOrFalse);
+
 @ObjectType({ implements: Answer })
-class AnswerText extends Answer {
+@Schema()
+class AnswerText extends SchemaBase implements Answer {
 	@Field(() => EAnswerType)
 	type: EAnswerType.TEXT;
+
+	@Field(() => String)
+	question: string;
+
+	@Field()
+	answeredAt: Date;
+
+	@Field({ nullable: true })
+	correct?: boolean;
 
 	@Field({ nullable: true })
 	@Prop()
 	text?: string;
 }
+
+export const AnswerTextSchema = SchemaFactory.createForClass(AnswerText);
 
 export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrueOrFalse | AnswerText;
 
@@ -91,16 +141,7 @@ export class Response extends SchemaBase {
 	// user: string;
 
 	@Field(() => [Answer])
-	@Prop({
-		type: () => [Answer],
-		required: true,
-		discriminators: () => [
-			{ type: AnswerMultipleChoice, value: EAnswerType.MULTIPLE_CHOICE },
-			{ type: AnswerSingleChoice, value: EAnswerType.SINGLE_CHOICE },
-			{ type: AnswerTrueOrFalse, value: EAnswerType.TRUE_OR_FALSE },
-			{ type: AnswerText, value: EAnswerType.TEXT },
-		],
-	})
+	@Prop({ type: [AnswerSchema], required: true })
 	answers: Answer[];
 
 	// @Field()
@@ -119,3 +160,9 @@ export class Response extends SchemaBase {
 export const ResponseSchema = SchemaFactory.createForClass(Response);
 export type ResponseDocument = DocumentType<Response>;
 export type ResponseModel = Model<Response>;
+
+const answers = ResponseSchema.path('answers') as unknown as MongooseSchema.Types.DocumentArray;
+answers.discriminator(EAnswerType.MULTIPLE_CHOICE, AnswerMultipleChoiceSchema);
+answers.discriminator(EAnswerType.SINGLE_CHOICE, AnswerSingleChoiceSchema);
+answers.discriminator(EAnswerType.TRUE_OR_FALSE, AnswerTrueOrFalseSchema);
+answers.discriminator(EAnswerType.TEXT, AnswerTextSchema);

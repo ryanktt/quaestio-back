@@ -16,6 +16,25 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type OptionMetrics {
+  optionId: String!
+  selectedCount: Int!
+}
+
+type QuestionMetrics {
+  questionId: String!
+  answerCount: Int!
+  rightAnswerCount: Int!
+  wrongAnswerCount: Int!
+  unansweredCount: Int!
+  optionsMetrics: [OptionMetrics!]!
+}
+
+type QuestionnaireMetrics {
+  questionsMetrics: [QuestionMetrics!]!
+  responseCount: Int!
+}
+
 type QuestionSingleChoice implements Question {
   _id: String!
   createdAt: DateTime!
@@ -105,6 +124,7 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  metrics: QuestionnaireMetrics!
   timeLimit: Float
   passingGradePercent: Float
   maxRetryAmount: Float
@@ -121,6 +141,7 @@ interface Questionnaire {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  metrics: QuestionnaireMetrics!
 }
 
 enum QuestionnaireType {
@@ -145,6 +166,7 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  metrics: QuestionnaireMetrics!
 }
 
 type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
@@ -157,6 +179,7 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  metrics: QuestionnaireMetrics!
 }
 
 type AnswerSingleChoice implements Answer {

@@ -25,6 +25,45 @@ export class Option extends SchemaBase {
 
 export const OptionSchema = SchemaFactory.createForClass(Option);
 
+@ObjectType()
+export class OptionMetrics {
+	@Field()
+	optionId: string;
+
+	@Field(() => Int)
+	selectedCount: number;
+}
+
+@ObjectType()
+export class QuestionMetrics {
+	@Field()
+	questionId: string;
+
+	@Field(() => Int)
+	answerCount: number;
+
+	@Field(() => Int)
+	rightAnswerCount: number;
+
+	@Field(() => Int)
+	wrongAnswerCount: number;
+
+	@Field(() => Int)
+	unansweredCount: number;
+
+	@Field(() => [OptionMetrics])
+	optionsMetrics: [OptionMetrics];
+}
+
+@ObjectType()
+export class QuestionnaireMetrics {
+	@Field(() => [QuestionMetrics])
+	questionsMetrics: [QuestionMetrics];
+
+	@Field(() => Int)
+	responseCount: number;
+}
+
 @InterfaceType({
 	isAbstract: true,
 	resolveType: (value: { type: EQuestionType }): string | undefined => {
@@ -61,6 +100,7 @@ export class Question extends SchemaBaseInterface {
 	@Prop({ required: true, default: false })
 	showCorrectAnswer: boolean;
 }
+
 export const QuestionSchema = SchemaFactory.createForClass(Question);
 
 @ObjectType({ implements: Question })
@@ -100,6 +140,7 @@ export class QuestionSingleChoice extends SchemaBase implements Question {
 	@Prop()
 	rightAnswerFeedback?: string;
 }
+
 export const QuestionSingleChoiceSchema = SchemaFactory.createForClass(QuestionSingleChoice);
 
 @ObjectType({ implements: Question })
@@ -139,6 +180,7 @@ export class QuestionMultipleChoice extends SchemaBase implements Question {
 	@Prop()
 	rightAnswerFeedback?: string;
 }
+
 export const QuestionMultipleChoiceSchema = SchemaFactory.createForClass(QuestionMultipleChoice);
 
 @ObjectType({ implements: Question })
@@ -174,6 +216,7 @@ export class QuestionTrueOrFalse extends SchemaBase implements Question {
 	@Prop()
 	rightAnswerFeedback?: string;
 }
+
 export const QuestionTrueOrFalseSchema = SchemaFactory.createForClass(QuestionTrueOrFalse);
 
 @ObjectType({ implements: Question })
@@ -201,6 +244,7 @@ export class QuestionText extends SchemaBase implements Question {
 	@Prop({ default: 'teste feedback' })
 	feedbackAfterSubmit?: string;
 }
+
 export const QuestionTextSchema = SchemaFactory.createForClass(QuestionText);
 
 export type QuestionTypes =
@@ -240,6 +284,9 @@ export class Questionnaire extends SchemaBaseInterface {
 	@Field(() => [Question])
 	@Prop({ type: [QuestionSchema], required: true })
 	questions: Question[];
+
+	@Field(() => QuestionnaireMetrics, { name: 'metrics' })
+	_gql_metrics: QuestionnaireMetrics;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -278,6 +325,9 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
 	randomizeQuestions: boolean;
+
+	@Field(() => QuestionnaireMetrics, { name: 'metrics' })
+	_gql_metrics: QuestionnaireMetrics;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -300,6 +350,9 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 
 	@Field(() => [Question])
 	questions: Question[];
+
+	@Field(() => QuestionnaireMetrics, { name: 'metrics' })
+	_gql_metrics: QuestionnaireMetrics;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -322,6 +375,9 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 
 	@Field(() => [Question])
 	questions: Question[];
+
+	@Field(() => QuestionnaireMetrics, { name: 'metrics' })
+	_gql_metrics: QuestionnaireMetrics;
 }
 
 export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);

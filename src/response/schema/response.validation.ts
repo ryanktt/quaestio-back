@@ -7,7 +7,7 @@ const baseAnswerInputValidatorKeys = {
 		.valid(...Object.values(EAnswerType))
 		.required(),
 	questionId: Joi.string().required(),
-	answeredAt: Joi.string().required(),
+	answeredAt: Joi.string(),
 };
 
 const AnswerMultipleChoiceInputValidator = Joi.object().keys({
@@ -27,7 +27,7 @@ const AnswerTrueOrFalseInputValidator = Joi.object().keys({
 
 const AnswerTextInputValidator = Joi.object().keys({
 	...baseAnswerInputValidatorKeys,
-	text: Joi.string(),
+	text: Joi.string().trim(),
 });
 
 export const AnswerDiscriminatorInputValidator = Joi.object().keys({
@@ -59,6 +59,6 @@ export const AnswerDiscriminatorInputValidator = Joi.object().keys({
 export const UpsertResponseValidator = Joi.object().keys({
 	answers: Joi.array().items(AnswerDiscriminatorInputValidator).required(),
 	questionnaireId: Joi.string().required(),
-	user: Joi.object().required(),
+	responseId: Joi.string(),
 	startedAt: Joi.date(),
 });

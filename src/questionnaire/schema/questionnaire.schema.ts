@@ -38,7 +38,7 @@ export const OptionSchema = SchemaFactory.createForClass(Option);
 @Schema({ discriminatorKey: 'type', timestamps: true })
 export class Question extends SchemaBaseInterface {
 	@Field(() => EQuestionType)
-	@Prop({ required: true, enum: Object.values(EQuestionType) })
+	@Prop({ required: true, enum: EQuestionType })
 	type: EQuestionType;
 
 	@Field()
@@ -204,10 +204,10 @@ export class QuestionText extends SchemaBase implements Question {
 export const QuestionTextSchema = SchemaFactory.createForClass(QuestionText);
 
 export type QuestionTypes =
-	| QuestionText
-	| QuestionSingleChoice
 	| QuestionMultipleChoice
-	| QuestionTrueOrFalse;
+	| QuestionSingleChoice
+	| QuestionTrueOrFalse
+	| QuestionText;
 
 @InterfaceType({
 	isAbstract: true,

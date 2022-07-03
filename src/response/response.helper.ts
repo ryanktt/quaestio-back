@@ -125,6 +125,7 @@ export class ResponseHelper {
 
 		questions.forEach((question: QuestionTypes) => {
 			const questionId = question._id.toString();
+			questionMap[questionId] = { correctOptionIds: [] };
 			if ('options' in question) {
 				questionMap[questionId].correctOptionIds = question.options.reduce((accumulator, option) => {
 					return option.correct ? [...accumulator, option._id.toString()] : accumulator;
@@ -140,6 +141,8 @@ export class ResponseHelper {
 				answer.correct = isOptionCorrect(answer.option, correctOptionIds);
 			} else if ('options' in answer) {
 				answer.correct = isOptionsCorrect(answer.options || [], correctOptionIds);
+			} else if ('text' in answer) {
+				answer.correct = true;
 			}
 		});
 	}

@@ -3,8 +3,8 @@ import { EQuestionnaireType, EQuestionType } from '../questionnaire.interface';
 import Joi from 'joi';
 
 export const OptionInputValidator = Joi.object().keys({
-	title: Joi.string().required(),
-	feedbackAfterSubmit: Joi.string(),
+	title: Joi.string().trim().required(),
+	feedbackAfterSubmit: Joi.string().trim(),
 	correct: Joi.boolean(),
 });
 
@@ -12,10 +12,10 @@ export const baseQuestionInputValidatorKeys = {
 	type: Joi.string()
 		.valid(...Object.values(EQuestionType))
 		.required(),
-	title: Joi.string().required(),
-	weight: Joi.number(),
+	title: Joi.string().trim().required(),
+	weight: Joi.number().integer().positive(),
 	required: Joi.boolean(),
-	description: Joi.string(),
+	description: Joi.string().trim(),
 	showCorrectAnswer: Joi.boolean(),
 };
 
@@ -24,8 +24,8 @@ const QuestionSingleChoiceInputValidator = Joi.object().keys({
 	type: Joi.string().valid(EQuestionType.SINGLE_CHOICE).required(),
 	options: Joi.array().items(OptionInputValidator).required(),
 	randomizeOptions: Joi.boolean().required(),
-	wrongAnswerFeedback: Joi.string(),
-	rightAnswerFeedback: Joi.string(),
+	wrongAnswerFeedback: Joi.string().trim(),
+	rightAnswerFeedback: Joi.string().trim(),
 });
 
 const QuestionMultipleChoiceInputValidator = Joi.object().keys({
@@ -33,22 +33,22 @@ const QuestionMultipleChoiceInputValidator = Joi.object().keys({
 	type: Joi.string().valid(EQuestionType.MULTIPLE_CHOICE).required(),
 	options: Joi.array().items(OptionInputValidator).required(),
 	randomizeOptions: Joi.boolean().required(),
-	wrongAnswerFeedback: Joi.string(),
-	rightAnswerFeedback: Joi.string(),
+	wrongAnswerFeedback: Joi.string().trim(),
+	rightAnswerFeedback: Joi.string().trim(),
 });
 
 const QuestionTrueOrFalseInputValidator = Joi.object().keys({
 	...baseQuestionInputValidatorKeys,
 	type: Joi.string().valid(EQuestionType.TRUE_OR_FALSE).required(),
 	options: Joi.array().items(OptionInputValidator).required(),
-	wrongAnswerFeedback: Joi.string(),
-	rightAnswerFeedback: Joi.string(),
+	wrongAnswerFeedback: Joi.string().trim(),
+	rightAnswerFeedback: Joi.string().trim(),
 });
 
 const QuestionTextInputValidator = Joi.object().keys({
 	...baseQuestionInputValidatorKeys,
 	type: Joi.string().valid(EQuestionType.TEXT).required(),
-	feedbackAfterSubmit: Joi.string(),
+	feedbackAfterSubmit: Joi.string().trim(),
 });
 
 export const QuestionDiscriminatorInputValidator = Joi.object().keys({
@@ -96,7 +96,7 @@ export const UpdateQuestionnaireValidator = Joi.object().keys({
 		.required(),
 	questionnaireId: Joi.string().required(),
 	user: Joi.object().required(),
-	title: Joi.string().max(250),
+	title: Joi.string().trim().max(250),
 	questions: Joi.array().items(QuestionDiscriminatorInputValidator),
 	randomizeQuestions: Joi.boolean().default(false),
 	passingGradePercent: Joi.number().allow(null),

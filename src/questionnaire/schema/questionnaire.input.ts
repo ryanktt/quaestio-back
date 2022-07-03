@@ -1,6 +1,6 @@
 import { EQuestionType } from '../questionnaire.interface';
 
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class OptionInput {
@@ -22,7 +22,7 @@ export class QuestionInput {
 	@Field()
 	title: string;
 
-	@Field({ nullable: true })
+	@Field(() => Int, { nullable: true })
 	weight?: number;
 
 	@Field({ defaultValue: false })

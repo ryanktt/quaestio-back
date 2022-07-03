@@ -1,11 +1,11 @@
 import { EQuestionType, EQuestionnaireType } from '../questionnaire.interface';
 
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
-import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
+import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { Admin } from 'src/user';
-import { Model } from 'mongoose';
 
 @ObjectType()
 @Schema()
@@ -35,17 +35,17 @@ export const OptionSchema = SchemaFactory.createForClass(Option);
 		return undefined;
 	},
 })
-@Schema({ discriminatorKey: 'type' })
+@Schema({ discriminatorKey: 'type', timestamps: true })
 export class Question extends SchemaBaseInterface {
 	@Field(() => EQuestionType)
-	@Prop({ required: true, enum: EQuestionType })
+	@Prop({ required: true, enum: Object.values(EQuestionType) })
 	type: EQuestionType;
 
 	@Field()
 	@Prop({ required: true })
 	title: string;
 
-	@Field({ nullable: true })
+	@Field(() => Int, { nullable: true })
 	@Prop()
 	weight?: number;
 
@@ -61,15 +61,31 @@ export class Question extends SchemaBaseInterface {
 	@Prop({ required: true, default: false })
 	showCorrectAnswer: boolean;
 }
+export const QuestionSchema = SchemaFactory.createForClass(Question);
 
 @ObjectType({ implements: Question })
 @Schema()
-export class QuestionSingleChoice extends Question {
+export class QuestionSingleChoice extends SchemaBase implements Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.SINGLE_CHOICE;
 
+	@Field()
+	title: string;
+
+	@Field(() => Int, { nullable: true })
+	weight?: number;
+
+	@Field({ defaultValue: false })
+	required: boolean;
+
+	@Field({ nullable: true })
+	description?: string;
+
+	@Field({ defaultValue: false })
+	showCorrectAnswer: boolean;
+
 	@Field(() => [Option])
-	@Prop({ required: true, type: () => [OptionSchema] })
+	@Prop({ required: true, type: [OptionSchema] })
 	options: Option[];
 
 	@Field()
@@ -84,15 +100,31 @@ export class QuestionSingleChoice extends Question {
 	@Prop()
 	rightAnswerFeedback?: string;
 }
+export const QuestionSingleChoiceSchema = SchemaFactory.createForClass(QuestionSingleChoice);
 
 @ObjectType({ implements: Question })
 @Schema()
-export class QuestionMultipleChoice extends Question {
+export class QuestionMultipleChoice extends SchemaBase implements Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.MULTIPLE_CHOICE;
 
+	@Field()
+	title: string;
+
+	@Field(() => Int, { nullable: true })
+	weight?: number;
+
+	@Field({ defaultValue: false })
+	required: boolean;
+
+	@Field({ nullable: true })
+	description?: string;
+
+	@Field({ defaultValue: false })
+	showCorrectAnswer: boolean;
+
 	@Field(() => [Option])
-	@Prop({ required: true, type: () => [OptionSchema] })
+	@Prop({ required: true, type: [OptionSchema] })
 	options: Option[];
 
 	@Field({ defaultValue: false })
@@ -107,15 +139,31 @@ export class QuestionMultipleChoice extends Question {
 	@Prop()
 	rightAnswerFeedback?: string;
 }
+export const QuestionMultipleChoiceSchema = SchemaFactory.createForClass(QuestionMultipleChoice);
 
 @ObjectType({ implements: Question })
 @Schema()
-export class QuestionTrueOrFalse extends Question {
+export class QuestionTrueOrFalse extends SchemaBase implements Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TRUE_OR_FALSE;
 
+	@Field()
+	title: string;
+
+	@Field(() => Int, { nullable: true })
+	weight?: number;
+
+	@Field({ defaultValue: false })
+	required: boolean;
+
+	@Field({ nullable: true })
+	description?: string;
+
+	@Field({ defaultValue: false })
+	showCorrectAnswer: boolean;
+
 	@Field(() => [Option])
-	@Prop({ required: true, type: () => [OptionSchema] })
+	@Prop({ required: true, type: [OptionSchema] })
 	options: Option[];
 
 	@Field({ nullable: true })
@@ -126,17 +174,34 @@ export class QuestionTrueOrFalse extends Question {
 	@Prop()
 	rightAnswerFeedback?: string;
 }
+export const QuestionTrueOrFalseSchema = SchemaFactory.createForClass(QuestionTrueOrFalse);
 
 @ObjectType({ implements: Question })
 @Schema()
-export class QuestionText extends Question {
+export class QuestionText extends SchemaBase implements Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TEXT;
 
+	@Field()
+	title: string;
+
+	@Field(() => Int, { nullable: true })
+	weight?: number;
+
+	@Field({ defaultValue: false })
+	required: boolean;
+
 	@Field({ nullable: true })
-	@Prop()
+	description?: string;
+
+	@Field({ defaultValue: false })
+	showCorrectAnswer: boolean;
+
+	@Field({ nullable: true })
+	@Prop({ default: 'teste feedback' })
 	feedbackAfterSubmit?: string;
 }
+export const QuestionTextSchema = SchemaFactory.createForClass(QuestionText);
 
 export type QuestionTypes =
 	| QuestionText
@@ -173,16 +238,7 @@ export class Questionnaire extends SchemaBaseInterface {
 	sharedId: string;
 
 	@Field(() => [Question])
-	@Prop({
-		type: () => [Question],
-		required: true,
-		discriminators: () => [
-			{ type: QuestionMultipleChoice, value: EQuestionType.MULTIPLE_CHOICE },
-			{ type: QuestionSingleChoice, value: EQuestionType.SINGLE_CHOICE },
-			{ type: QuestionTrueOrFalse, value: EQuestionType.TRUE_OR_FALSE },
-			{ type: QuestionText, value: EQuestionType.TEXT },
-		],
-	})
+	@Prop({ type: [QuestionSchema], required: true })
 	questions: Question[];
 }
 
@@ -271,6 +327,12 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);
 export type QuestionnaireDocument = DocumentType<Questionnaire>;
 export type QuestionnaireModel = Model<Questionnaire>;
+
+const questions = QuestionnaireSchema.path('questions') as unknown as MongooseSchema.Types.DocumentArray;
+questions.discriminator(EQuestionType.MULTIPLE_CHOICE, QuestionMultipleChoiceSchema);
+questions.discriminator(EQuestionType.SINGLE_CHOICE, QuestionSingleChoiceSchema);
+questions.discriminator(EQuestionType.TRUE_OR_FALSE, QuestionTrueOrFalseSchema);
+questions.discriminator(EQuestionType.TEXT, QuestionTextSchema);
 
 export const QuestionnaireExamSchema = SchemaFactory.createForClass(QuestionnaireExam);
 export type QuestionnaireExamDocument = DocumentType<QuestionnaireExam>;

@@ -22,7 +22,7 @@ type QuestionSingleChoice implements Question {
   updatedAt: DateTime!
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
@@ -38,7 +38,7 @@ interface Question {
   updatedAt: DateTime!
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
@@ -57,7 +57,7 @@ type QuestionMultipleChoice implements Question {
   updatedAt: DateTime!
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
@@ -73,7 +73,7 @@ type QuestionTrueOrFalse implements Question {
   updatedAt: DateTime!
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
@@ -88,7 +88,7 @@ type QuestionText implements Question {
   updatedAt: DateTime!
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
@@ -313,7 +313,7 @@ input QuestionDiscriminatorInput {
 input QuestionMultipleChoiceInput {
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean = false
   description: String
   showCorrectAnswer: Boolean = false
@@ -332,7 +332,7 @@ input OptionInput {
 input QuestionSingleChoiceInput {
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean = false
   description: String
   showCorrectAnswer: Boolean = false
@@ -345,7 +345,7 @@ input QuestionSingleChoiceInput {
 input QuestionTrueOrFalseInput {
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean = false
   description: String
   showCorrectAnswer: Boolean = false
@@ -357,7 +357,7 @@ input QuestionTrueOrFalseInput {
 input QuestionTextInput {
   type: QuestionType!
   title: String!
-  weight: Float
+  weight: Int
   required: Boolean = false
   description: String
   showCorrectAnswer: Boolean = false

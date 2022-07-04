@@ -28,6 +28,11 @@ export interface IRepositoryUpsertResponseParams {
 	startedAt?: Date;
 }
 
+export interface IRepositoryFetchResponsesParams {
+	questionnaireIds: string[];
+	responseIds: string[];
+}
+
 export interface IRepositoryUpdateResponseParams {
 	response: RespondentDocument;
 	completedAt?: Date;

@@ -10,6 +10,6 @@ export class UtilsArray {
 	}
 
 	mapFromArray<T, K extends ObjKeyTypes<T>>(objects: T[], key: K): Record<string, T> {
-		return Object.fromEntries(objects.map((obj) => [obj[key] as unknown as string, obj]));
+		return Object.fromEntries(objects.map((obj) => [(obj[key] as unknown as string).toString(), obj]));
 	}
 }

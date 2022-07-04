@@ -51,14 +51,14 @@ export class QuestionMetrics {
 	@Field(() => Int)
 	unansweredCount: number;
 
-	@Field(() => [OptionMetrics])
-	optionsMetrics: [OptionMetrics];
+	@Field(() => [OptionMetrics], { nullable: true })
+	optionsMetrics?: OptionMetrics[];
 }
 
 @ObjectType()
 export class QuestionnaireMetrics {
 	@Field(() => [QuestionMetrics])
-	questionsMetrics: [QuestionMetrics];
+	questionsMetrics: QuestionMetrics[];
 
 	@Field(() => Int)
 	responseCount: number;

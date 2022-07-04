@@ -2,9 +2,9 @@
 import 'reflect-metadata';
 import { SessionGuard, SessionModule } from './session';
 import { QuestionnaireModule, QuestionnaireRepository } from './questionnaire';
+import { ResponseModule, ResponseRepository } from './response';
 import { UserRepository, UserModule } from './user';
 import { UtilsArray, UtilsModule } from './utils';
-import { ResponseModule } from './response';
 import { loaders } from './app.loaders';
 
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -32,15 +32,16 @@ interface IEnvirolmentVariables {
 			useFactory: (
 				utilsArray: UtilsArray,
 				userRepository: UserRepository,
+				responseRepository: ResponseRepository,
 				questionnaireRepository: QuestionnaireRepository,
 			) => ({
 				autoSchemaFile: 'schema.gql',
 				context: {
-					loaders: loaders(utilsArray, userRepository, questionnaireRepository),
+					loaders: loaders(utilsArray, userRepository, responseRepository, questionnaireRepository),
 				},
 			}),
-			inject: [UtilsArray, UserRepository, QuestionnaireRepository],
-			imports: [UtilsModule, UserModule, QuestionnaireModule],
+			inject: [UtilsArray, UserRepository, ResponseRepository, QuestionnaireRepository],
+			imports: [UtilsModule, UserModule, ResponseModule, QuestionnaireModule],
 		}),
 		ConfigModule.forRoot(),
 		QuestionnaireModule,

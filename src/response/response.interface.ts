@@ -29,8 +29,8 @@ export interface IRepositoryUpsertResponseParams {
 }
 
 export interface IRepositoryFetchResponsesParams {
-	questionnaireIds: string[];
-	responseIds: string[];
+	questionnaireIds?: string[];
+	responseIds?: string[];
 }
 
 export interface IRepositoryUpdateResponseParams {
@@ -61,3 +61,15 @@ export interface ICorrectAnswers {
 	questionnaire: Questionnaire;
 	answers: Answer[];
 }
+
+export type MetricsLoaderCtx = { questionnaire: Questionnaire };
+export type MetricsMapRecord = Record<
+	string,
+	{
+		answerCount: number;
+		rightAnswerCount: number;
+		wrongAnswerCount: number;
+		unansweredCount: number;
+		optionsMetrics: Record<string, { selectedCount: number }>;
+	}
+>;

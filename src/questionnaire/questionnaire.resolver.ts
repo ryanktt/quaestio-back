@@ -3,6 +3,7 @@ import {
 	QuestionnaireExam,
 	QuestionnaireQuiz,
 	QuestionnaireSurvey,
+	QuestionnaireMetrics,
 	QuestionDiscriminatorInput,
 } from './schema';
 import { QuestionnaireService } from './questionnaire.service';
@@ -17,6 +18,14 @@ import { Role } from '@utils/*';
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {
 	constructor(private readonly questionnaireService: QuestionnaireService) {}
+
+	@ResolveField(() => QuestionnaireMetrics)
+	async metrics(
+		@Context('loaders') { questionnaireMetricsLoader }: ILoaders,
+		@Parent() questionnaire: Questionnaire,
+	): Promise<QuestionnaireMetrics> {
+		return questionnaireMetricsLoader.load({ questionnaire });
+	}
 
 	@ResolveField(() => Admin)
 	async user(

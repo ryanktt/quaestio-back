@@ -14,7 +14,7 @@ import { UtilsPromise } from '@utils/*';
 	imports: [
 		MongooseModule.forFeature([{ name: 'Response', schema: ResponseSchema }]),
 		forwardRef(() => SessionModule),
-		QuestionnaireModule,
+		forwardRef(() => QuestionnaireModule),
 	],
 	providers: [ResponseRepository, ResponseHelper, ResponseService, ResponseResolver, UtilsPromise],
 	exports: [ResponseRepository, ResponseHelper, ResponseService],

@@ -109,6 +109,7 @@ export const FetchQuestionnaireValidator = Joi.object()
 		user: Joi.object().required(),
 		questionnaireSharedId: Joi.string(),
 		questionnaireId: Joi.string(),
+		latest: Joi.boolean(),
 	})
 	.or('questionnaireSharedId', 'questionnaireId');
 

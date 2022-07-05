@@ -66,10 +66,10 @@ export type MetricsLoaderCtx = { questionnaire: Questionnaire };
 export type MetricsMapRecord = Record<
 	string,
 	{
-		answerCount: number;
-		rightAnswerCount: number;
-		wrongAnswerCount: number;
-		unansweredCount: number;
+		answerCount?: number;
+		rightAnswerCount?: number;
+		wrongAnswerCount?: number;
+		unansweredCount?: number;
 		optionsMetrics: Record<string, { selectedCount: number }>;
 	}
 >;

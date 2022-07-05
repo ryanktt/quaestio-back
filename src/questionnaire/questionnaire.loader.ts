@@ -21,6 +21,16 @@ export function questionnaireLoader(
 	});
 }
 
+const sumRightAnswerCount = (rightAnswerCount?: number, isCorrect?: boolean): number =>
+	isCorrect ? (rightAnswerCount || 0) + 1 : 0;
+
+const sumWrongAnswerCount = (wrongAnswerCount?: number, isCorrect?: boolean): number =>
+	isCorrect ? 0 : (wrongAnswerCount || 0) + 1;
+
+const sumSelectedCount = (selectedCount?: number): number => (selectedCount || 0) + 1;
+
+const sumAnswerCount = (answerCount?: number): number => (answerCount || 0) + 1;
+
 export function questionnaireMetricsLoader(
 	responseRepository: ResponseRepository,
 	utilsArray: UtilsArray,
@@ -35,24 +45,6 @@ export function questionnaireMetricsLoader(
 
 		ctxs.forEach(({ questionnaire }) => (questionnaireMap[questionnaire._id.toString()] = questionnaire));
 		responses.forEach((response) => {
-			questionnaireMap[response.questionnaire].questions.forEach((question: QuestionTypes) => {
-				const questionId = question._id.toString();
-				questionsMetricsMap[questionId] = {
-					answerCount: 0,
-					rightAnswerCount: 0,
-					wrongAnswerCount: 0,
-					unansweredCount: 0,
-					optionsMetrics: {},
-				};
-
-				if ('options' in question) {
-					question.options.forEach((option) => {
-						const optionId = option._id.toString();
-						questionsMetricsMap[questionId].optionsMetrics[optionId] = { selectedCount: 0 };
-					});
-				}
-			});
-
 			responsesMap[response.questionnaire] = {
 				responses: [...(responsesMap[response.questionnaire]?.responses || []), response],
 				questionnaire: questionnaireMap[response.questionnaire],
@@ -62,38 +54,53 @@ export function questionnaireMetricsLoader(
 		const questionnaireMetrics = Object.values(responsesMap).map(({ responses, questionnaire }) => {
 			responses.forEach(({ answers }) =>
 				answers.forEach((answer: AnswerTypes) => {
-					const questionMetrics = questionsMetricsMap[answer.question];
-					questionMetrics.answerCount = questionMetrics.answerCount + 1;
-					questionMetrics.rightAnswerCount = questionMetrics.rightAnswerCount + (answer.correct ? 1 : 0);
-					questionMetrics.wrongAnswerCount = questionMetrics.wrongAnswerCount + (answer.correct ? 0 : 1);
+					questionsMetricsMap[answer.question] = { optionsMetrics: {} };
+					const metrics = questionsMetricsMap[answer.question];
+					metrics.rightAnswerCount = sumRightAnswerCount(metrics?.rightAnswerCount, answer?.correct);
+					metrics.wrongAnswerCount = sumWrongAnswerCount(metrics?.wrongAnswerCount, answer?.correct);
+					metrics.answerCount = sumAnswerCount(metrics?.answerCount);
+
 					if ('option' in answer && answer.option) {
-						const optionMetrics = questionMetrics.optionsMetrics[answer.option];
-						optionMetrics.selectedCount = optionMetrics.selectedCount + 1;
+						metrics.optionsMetrics[answer.option] = {
+							selectedCount: sumSelectedCount(metrics.optionsMetrics?.[answer.option]?.selectedCount),
+						};
+					}
+					if ('options' in answer && answer.options) {
+						answer.options.forEach((option) => {
+							metrics.optionsMetrics[option] = {
+								selectedCount: sumSelectedCount(metrics.optionsMetrics?.[option]?.selectedCount),
+							};
+						});
 					}
 				}),
 			);
 
+			const questionnaireId = questionnaire._id.toString();
+			const responseCount = responses.length;
+
 			const questionsMetrics = questionnaire.questions.map((question: QuestionTypes): QuestionMetrics => {
-				const questionMetrics = questionsMetricsMap[question._id.toString()];
-				const questionMetricsObj: QuestionMetrics = {
-					questionId: question._id.toString(),
-					unansweredCount: responses.length - questionMetrics.answerCount,
-					rightAnswerCount: questionMetrics.rightAnswerCount,
-					wrongAnswerCount: questionMetrics.wrongAnswerCount,
-					answerCount: questionMetrics.answerCount,
+				const questionId = question._id.toString();
+				const metrics = questionsMetricsMap[questionId];
+				return {
+					questionId: questionId,
+					unansweredCount: responseCount - (metrics?.answerCount || 0),
+					rightAnswerCount: metrics?.rightAnswerCount || 0,
+					wrongAnswerCount: metrics?.wrongAnswerCount || 0,
+					answerCount: metrics?.answerCount || 0,
+					optionsMetrics:
+						'options' in question
+							? question.options.map((option) => {
+									const optionId = option._id.toString();
+									return {
+										selectedCount: metrics?.optionsMetrics?.[optionId]?.selectedCount || 0,
+										optionId,
+									};
+							  })
+							: undefined,
 				};
-				if ('options' in question) {
-					questionMetricsObj.optionsMetrics = question.options.map((option) => ({
-						...questionMetrics.optionsMetrics[option._id.toString()],
-						optionId: option._id.toString(),
-					}));
-				} else {
-					questionMetricsObj.optionsMetrics = undefined;
-				}
-				return questionMetricsObj;
 			});
 
-			return { responseCount: responses.length, questionsMetrics, id: questionnaire._id.toString() };
+			return { responseCount, questionsMetrics, id: questionnaireId };
 		});
 
 		return utilsArray.getObjectsSortedByIds(questionnaireMetrics, 'id', questionnaireIds);

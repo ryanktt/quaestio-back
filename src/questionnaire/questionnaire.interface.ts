@@ -1,6 +1,7 @@
 import {
 	Question,
 	QuestionText,
+	Questionnaire,
 	QuestionTrueOrFalse,
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
@@ -12,6 +13,7 @@ import {
 
 import { registerEnumType } from '@nestjs/graphql';
 import { AdminDocument } from 'src/user';
+import { Response } from 'src/response';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',
@@ -131,9 +133,19 @@ export interface IFetchQuestionnaireParams {
 	user: AdminDocument;
 }
 
+export interface IFetchQuestionnaireMetricsParams {
+	questionnaireId: string;
+	user: AdminDocument;
+}
+
 export interface IFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
 	latest?: boolean;
 	user: AdminDocument;
+}
+
+export interface IgetQuestionsMetricsParams {
+	questionnaire: Questionnaire;
+	responses: Response[];
 }

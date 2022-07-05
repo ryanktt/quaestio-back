@@ -1,4 +1,9 @@
-import { questionnaireLoader, questionnaireMetricsLoader, QuestionnaireRepository } from './questionnaire';
+import {
+	QuestionnaireHelper,
+	questionnaireLoader,
+	questionnaireMetricsLoader,
+	QuestionnaireRepository,
+} from './questionnaire';
 import { userLoader, UserRepository } from 'src/user';
 import { ResponseRepository } from './response';
 import { UtilsArray } from './utils';
@@ -13,10 +18,15 @@ export function loaders(
 	utilsArray: UtilsArray,
 	userRepository: UserRepository,
 	responseRepository: ResponseRepository,
+	questionnaireHelper: QuestionnaireHelper,
 	questionnaireRepository: QuestionnaireRepository,
 ): ILoaders {
 	return {
-		questionnaireMetricsLoader: questionnaireMetricsLoader(responseRepository, utilsArray),
+		questionnaireMetricsLoader: questionnaireMetricsLoader(
+			questionnaireHelper,
+			responseRepository,
+			utilsArray,
+		),
 		questionnaireLoader: questionnaireLoader(questionnaireRepository, utilsArray),
 		userLoader: userLoader(userRepository, utilsArray),
 	};

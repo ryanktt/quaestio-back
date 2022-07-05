@@ -11,6 +11,7 @@ import { QuestionnaireHelper } from './questionnaire.helper';
 
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ResponseModule } from 'src/response';
 import { UtilsModule } from '@utils/*';
 import { UserModule } from 'src/user';
 
@@ -27,6 +28,7 @@ import { UserModule } from 'src/user';
 				],
 			},
 		]),
+		forwardRef(() => ResponseModule),
 		forwardRef(() => UtilsModule),
 		forwardRef(() => UserModule),
 	],

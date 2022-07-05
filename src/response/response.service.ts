@@ -11,8 +11,9 @@ import { AppError } from '@utils/*';
 @Injectable()
 export class ResponseService {
 	constructor(
-		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
+		@Inject(forwardRef(() => QuestionnaireRepository))
 		private readonly questionnaireRepository: QuestionnaireRepository,
+		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
 		private readonly responseRepository: ResponseRepository,
 		private readonly responseHelper: ResponseHelper,
 	) {}

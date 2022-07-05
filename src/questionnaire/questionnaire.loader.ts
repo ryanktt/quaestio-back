@@ -1,10 +1,4 @@
-import {
-	Questionnaire,
-	QuestionTypes,
-	QuestionMetrics,
-	QuestionnaireMetrics,
-	QuestionnaireDocument,
-} from './schema';
+import { Questionnaire, QuestionTypes, QuestionMetrics, QuestionnaireMetrics } from './schema';
 import { QuestionnaireRepository } from './questionnaire.repository';
 
 import { ResponseRepository, Response, AnswerTypes, MetricsLoaderCtx, MetricsMapRecord } from 'src/response';
@@ -14,10 +8,10 @@ import DataLoader from 'dataloader';
 export function questionnaireLoader(
 	questionnaireRepository: QuestionnaireRepository,
 	utilsArray: UtilsArray,
-): DataLoader<string, QuestionnaireDocument> {
-	return new DataLoader<string, QuestionnaireDocument>(async (ids: string[]) => {
+): DataLoader<string, Questionnaire> {
+	return new DataLoader<string, Questionnaire>(async (ids: string[]) => {
 		const questionnaires = await questionnaireRepository.fetchByIds(ids);
-		return utilsArray.getObjectsSortedByIds(questionnaires, 'id', ids);
+		return utilsArray.getObjectsSortedByIds(questionnaires, '_id', ids);
 	});
 }
 

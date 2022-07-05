@@ -7,6 +7,7 @@ import {
 	QuestionnaireExamDocument,
 	QuestionnaireQuizDocument,
 	QuestionnaireSurveyDocument,
+	Questionnaire,
 } from './schema';
 import {
 	IRepositoryUpdateQuestionnareSurveyParams,
@@ -38,7 +39,7 @@ export class QuestionnaireRepository {
 		questionnaireIds,
 		userIds,
 		latest,
-	}: IRepositoryFetchQuestionnairesParams): Promise<QuestionnaireDocument[]> {
+	}: IRepositoryFetchQuestionnairesParams): Promise<Questionnaire[]> {
 		const query: FilterType<QuestionnaireDocument> = {};
 		if (typeof latest === 'boolean') query.latest = latest;
 		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
@@ -47,14 +48,14 @@ export class QuestionnaireRepository {
 
 		return this.questionnaireSchema
 			.find(query)
-			.exec()
+			.lean()
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
 					message: 'fail to fetch questionnaires',
 					originalError,
 				});
-			}) as Promise<QuestionnaireDocument[]>;
+			}) as Promise<Questionnaire[]>;
 	}
 
 	async fetchQuestionnaire({
@@ -82,17 +83,17 @@ export class QuestionnaireRepository {
 		return questionnaire ? questionnaire : undefined;
 	}
 
-	async fetchByIds(questionnaireIds: string[]): Promise<QuestionnaireDocument[]> {
+	async fetchByIds(questionnaireIds: string[]): Promise<Questionnaire[]> {
 		return this.questionnaireSchema
 			.find({ _id: { $in: questionnaireIds } })
-			.exec()
+			.lean()
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
 					message: 'fail to fetch questionnaires by ids',
 					originalError,
 				});
-			}) as Promise<QuestionnaireDocument[]>;
+			}) as Promise<Questionnaire[]>;
 	}
 
 	async fetchById(questionnaireId: string): Promise<QuestionnaireDocument | undefined> {

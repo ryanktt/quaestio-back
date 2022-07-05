@@ -1,4 +1,4 @@
-import { UserModel, UserDocument } from './user.schema';
+import { UserModel, UserDocument, User } from './user.schema';
 import { EUserErrorCode } from './user.interface';
 
 import { InjectModel } from '@nestjs/mongoose';
@@ -23,17 +23,17 @@ export class UserRepository {
 		return user ? user : undefined;
 	}
 
-	async fetchByIds(userIds: string[]): Promise<UserDocument[]> {
+	async fetchByIds(userIds: string[]): Promise<User[]> {
 		return this.userSchema
 			.find({ _id: { $in: userIds } })
-			.exec()
+			.lean()
 			.catch((err: Error) => {
 				throw new AppError({
 					code: EUserErrorCode.FETCH_USERS_ERROR,
 					message: 'fail to fetch users by ids',
 					originalError: err,
 				});
-			}) as Promise<UserDocument[]>;
+			}) as Promise<User[]>;
 	}
 
 	async fetchByEmail(email: string): Promise<UserDocument | undefined> {

@@ -1,4 +1,4 @@
-import { AdminDocument, AdminModel } from './admin.schema';
+import { Admin, AdminDocument, AdminModel } from './admin.schema';
 import { ICreateAdminParams } from './admin.interface';
 import { EUserErrorCode } from '../user.interface';
 
@@ -24,17 +24,17 @@ export class AdminRepository {
 		return user ? user : undefined;
 	}
 
-	async fetchByIds(userIds: string[]): Promise<AdminDocument[]> {
+	async fetchByIds(userIds: string[]): Promise<Admin[]> {
 		return this.adminSchema
 			.find({ _id: { $in: userIds } })
-			.exec()
+			.lean()
 			.catch((err: Error) => {
 				throw new AppError({
 					code: EUserErrorCode.FETCH_USERS_ERROR,
 					message: 'fail to fetch users by ids',
 					originalError: err,
 				});
-			}) as Promise<AdminDocument[]>;
+			}) as Promise<Admin[]>;
 	}
 
 	async fetchByEmail(email: string): Promise<AdminDocument | undefined> {

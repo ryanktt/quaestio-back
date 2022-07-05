@@ -258,6 +258,11 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   metrics: QuestionnaireMetrics!
 }
 
+type FetchQuestionnaireMetricsResponse {
+  questionnaire: Questionnaire!
+  metrics: QuestionnaireMetrics!
+}
+
 type RespondentLocation {
   country: String!
   state: String!
@@ -324,6 +329,7 @@ type Session {
 type Query {
   fetchAdmin(userId: String, email: String): Admin
   adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean): Questionnaire
+  adminFetchQuestionnaireMetrics(questionnaireId: String): FetchQuestionnaireMetricsResponse
   adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean): [Questionnaire!]!
 }
 

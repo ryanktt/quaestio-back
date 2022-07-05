@@ -8,12 +8,31 @@ import {
 } from './schema';
 import { QuestionnaireService } from './questionnaire.service';
 
-import { Resolver, ResolveField, Parent, Context, Mutation, Args, Query } from '@nestjs/graphql';
+import {
+	ResolveField,
+	ObjectType,
+	Resolver,
+	Mutation,
+	Context,
+	Parent,
+	Field,
+	Args,
+	Query,
+} from '@nestjs/graphql';
 import { EQuestionnaireType } from './questionnaire.interface';
 import { Admin, AdminDocument } from 'src/user';
 import { IAdminContext } from 'src/session';
 import { ILoaders } from 'src/app.loaders';
 import { Role } from '@utils/*';
+
+@ObjectType()
+class FetchQuestionnaireMetricsResponse {
+	@Field(() => Questionnaire)
+	questionnaire: Questionnaire;
+
+	@Field(() => QuestionnaireMetrics)
+	metrics: QuestionnaireMetrics;
+}
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {
@@ -49,6 +68,15 @@ export class QuestionnaireResolver {
 			latest,
 			user,
 		});
+	}
+
+	@Role('Admin')
+	@Query(() => FetchQuestionnaireMetricsResponse, { nullable: true })
+	async adminFetchQuestionnaireMetrics(
+		@Context('req') { user }: IAdminContext,
+		@Args('questionnaireId', { nullable: true }) questionnaireId: string,
+	): Promise<FetchQuestionnaireMetricsResponse> {
+		return this.questionnaireService.fetchQuestionnaireMetrics({ questionnaireId, user });
 	}
 
 	@Role('Admin')

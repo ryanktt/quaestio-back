@@ -1,17 +1,17 @@
 import {
 	EQuestionnaireType,
+	EQuestionnaireErrorCode,
 	IFetchQuestionnaireParams,
 	ICreateQuestionnaireParams,
 	IFetchQuestionnairesParams,
 	IUpdateQuestionnaireParams,
-	EQuestionnaireErrorCode,
 	IFetchQuestionnaireMetricsParams,
+	IFetchQuestionnaireMetricsResponse,
 } from './questionnaire.interface';
 import {
 	QuestionnaireSurveyDocument,
 	QuestionnaireExamDocument,
 	QuestionnaireQuizDocument,
-	QuestionnaireMetrics,
 	Questionnaire,
 	Question,
 } from './schema';
@@ -131,7 +131,7 @@ export class QuestionnaireService {
 
 	async fetchQuestionnaireMetrics(
 		params: IFetchQuestionnaireMetricsParams,
-	): Promise<{ questionnaire: Questionnaire; metrics: QuestionnaireMetrics }> {
+	): Promise<IFetchQuestionnaireMetricsResponse> {
 		const { questionnaireId, user } = params;
 		await this.questionnaireHelper.validateFetchQuestionnaireParams(params);
 

@@ -5,7 +5,7 @@ import {
 	ICreateQuestionnaireParams,
 	IFetchQuestionnairesParams,
 	IUpdateQuestionnaireParams,
-	IgetQuestionsMetricsParams,
+	IGetQuestionsMetricsParams,
 } from './questionnaire.interface';
 import {
 	CreateQuestionnaireValidator,
@@ -89,7 +89,7 @@ export class QuestionnaireHelper {
 		return map[questionDiscriminatorInput.type] as Question | undefined;
 	}
 
-	getQuestionsMetrics(params: IgetQuestionsMetricsParams): QuestionMetrics[] {
+	getQuestionsMetrics(params: IGetQuestionsMetricsParams): QuestionMetrics[] {
 		const sumRightAnswerCount = (rightAnswerCount?: number, isCorrect?: boolean): number =>
 			isCorrect ? (rightAnswerCount || 0) + 1 : 0;
 

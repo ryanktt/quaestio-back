@@ -4,6 +4,7 @@ import {
 	Questionnaire,
 	QuestionTrueOrFalse,
 	QuestionSingleChoice,
+	QuestionnaireMetrics,
 	QuestionMultipleChoice,
 	QuestionnaireQuizDocument,
 	QuestionnaireExamDocument,
@@ -145,7 +146,12 @@ export interface IFetchQuestionnairesParams {
 	user: AdminDocument;
 }
 
-export interface IgetQuestionsMetricsParams {
+export interface IGetQuestionsMetricsParams {
 	questionnaire: Questionnaire;
 	responses: Response[];
+}
+
+export interface IFetchQuestionnaireMetricsResponse {
+	questionnaire: Questionnaire;
+	metrics: QuestionnaireMetrics;
 }

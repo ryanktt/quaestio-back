@@ -5,7 +5,6 @@ import {
 	ICreateQuestionnaireParams,
 	IFetchQuestionnairesParams,
 	IUpdateQuestionnaireParams,
-	IGetQuestionsMetricsParams,
 } from './questionnaire.interface';
 import {
 	CreateQuestionnaireValidator,
@@ -13,13 +12,10 @@ import {
 	FetchQuestionnairesValidator,
 	FetchQuestionnaireValidator,
 	QuestionDiscriminatorInput,
-	QuestionMetrics,
 	QuestionInput,
-	QuestionTypes,
 	Question,
 } from './schema';
 
-import { AnswerTypes, MetricsMapRecord } from 'src/response';
 import { AppError, UtilsPromise } from '@utils/*';
 import { Injectable } from '@nestjs/common';
 import Joi from 'joi';
@@ -87,65 +83,5 @@ export class QuestionnaireHelper {
 		};
 
 		return map[questionDiscriminatorInput.type] as Question | undefined;
-	}
-
-	getQuestionsMetrics(params: IGetQuestionsMetricsParams): QuestionMetrics[] {
-		const sumRightAnswerCount = (rightAnswerCount?: number, isCorrect?: boolean): number =>
-			isCorrect ? (rightAnswerCount || 0) + 1 : 0;
-
-		const sumWrongAnswerCount = (wrongAnswerCount?: number, isCorrect?: boolean): number =>
-			isCorrect ? 0 : (wrongAnswerCount || 0) + 1;
-
-		const sumSelectedCount = (selectedCount?: number): number => (selectedCount || 0) + 1;
-
-		const sumAnswerCount = (answerCount?: number): number => (answerCount || 0) + 1;
-
-		const { responses, questionnaire } = params;
-		const questionsMetricsMap: MetricsMapRecord = {};
-
-		responses.forEach(({ answers }) =>
-			answers.forEach((answer: AnswerTypes) => {
-				questionsMetricsMap[answer.question] = { optionsMetrics: {} };
-				const metrics = questionsMetricsMap[answer.question];
-				metrics.rightAnswerCount = sumRightAnswerCount(metrics?.rightAnswerCount, answer?.correct);
-				metrics.wrongAnswerCount = sumWrongAnswerCount(metrics?.wrongAnswerCount, answer?.correct);
-				metrics.answerCount = sumAnswerCount(metrics?.answerCount);
-
-				if ('option' in answer && answer.option) {
-					metrics.optionsMetrics[answer.option] = {
-						selectedCount: sumSelectedCount(metrics.optionsMetrics?.[answer.option]?.selectedCount),
-					};
-				}
-				if ('options' in answer && answer.options) {
-					answer.options.forEach((option) => {
-						metrics.optionsMetrics[option] = {
-							selectedCount: sumSelectedCount(metrics.optionsMetrics?.[option]?.selectedCount),
-						};
-					});
-				}
-			}),
-		);
-
-		return questionnaire.questions.map((question: QuestionTypes) => {
-			const questionId = question._id.toString();
-			const metrics = questionsMetricsMap[questionId];
-			return {
-				questionId: questionId,
-				unansweredCount: responses.length - (metrics?.answerCount || 0),
-				rightAnswerCount: metrics?.rightAnswerCount || 0,
-				wrongAnswerCount: metrics?.wrongAnswerCount || 0,
-				answerCount: metrics?.answerCount || 0,
-				optionsMetrics:
-					'options' in question
-						? question.options.map((option) => {
-								const optionId = option._id.toString();
-								return {
-									selectedCount: metrics?.optionsMetrics?.[optionId]?.selectedCount || 0,
-									optionId,
-								};
-						  })
-						: undefined,
-			};
-		});
 	}
 }

@@ -2,25 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AnswerSingleChoice implements Answer {
+type Option {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
+  title: String!
   correct: Boolean
-  option: String
-}
-
-interface Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
+  feedbackAfterSubmit: String
 }
 
 """
@@ -28,73 +16,20 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-enum AnswerType {
-  MULTIPLE_CHOICE
-  SINGLE_CHOICE
-  TRUE_OR_FALSE
-  TEXT
-}
-
-type AnswerMultipleChoice implements Answer {
+type QuestionSingleChoice implements Question {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
-  options: [String!]
-}
-
-type AnswerTrueOrFalse implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
-  option: String
-}
-
-type AnswerText implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime!
-  correct: Boolean
-  text: String
-}
-
-type Response {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  questionnaire: Questionnaire!
-  answers: [Answer!]!
-  startedAt: DateTime!
-  completedAt: DateTime
-}
-
-interface Questionnaire {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  type: QuestionnaireType!
-  user: Admin!
+  type: QuestionType!
   title: String!
-  latest: Boolean!
-  sharedId: String!
-  questions: [Question!]!
-  metrics: QuestionnaireMetrics!
-}
-
-enum QuestionnaireType {
-  QuestionnaireSurvey
-  QuestionnaireExam
-  QuestionnaireQuiz
+  weight: Int
+  required: Boolean!
+  description: String
+  showCorrectAnswer: Boolean!
+  options: [Option!]!
+  randomizeOptions: Boolean!
+  wrongAnswerFeedback: String
+  rightAnswerFeedback: String
 }
 
 interface Question {
@@ -114,55 +49,6 @@ enum QuestionType {
   SINGLE_CHOICE
   TRUE_OR_FALSE
   TEXT
-}
-
-type PublicUpsertResponse {
-  authToken: String!
-  response: Response!
-}
-
-type Option {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  title: String!
-  correct: Boolean
-  feedbackAfterSubmit: String
-}
-
-type OptionMetrics {
-  optionId: String!
-  selectedCount: Int!
-}
-
-type QuestionMetrics {
-  questionId: String!
-  answerCount: Int!
-  rightAnswerCount: Int!
-  wrongAnswerCount: Int!
-  unansweredCount: Int!
-  optionsMetrics: [OptionMetrics!]
-}
-
-type QuestionnaireMetrics {
-  questionsMetrics: [QuestionMetrics!]!
-  responseCount: Int!
-}
-
-type QuestionSingleChoice implements Question {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  type: QuestionType!
-  title: String!
-  weight: Int
-  required: Boolean!
-  description: String
-  showCorrectAnswer: Boolean!
-  options: [Option!]!
-  randomizeOptions: Boolean!
-  wrongAnswerFeedback: String
-  rightAnswerFeedback: String
 }
 
 type QuestionMultipleChoice implements Question {
@@ -219,11 +105,28 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
-  metrics: QuestionnaireMetrics!
   timeLimit: Float
   passingGradePercent: Float
   maxRetryAmount: Float
   randomizeQuestions: Boolean!
+}
+
+interface Questionnaire {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionnaireType!
+  user: Admin!
+  title: String!
+  latest: Boolean!
+  sharedId: String!
+  questions: [Question!]!
+}
+
+enum QuestionnaireType {
+  QuestionnaireSurvey
+  QuestionnaireExam
+  QuestionnaireQuiz
 }
 
 interface SchemaBaseInterface {
@@ -242,7 +145,6 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
-  metrics: QuestionnaireMetrics!
 }
 
 type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
@@ -255,12 +157,82 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
-  metrics: QuestionnaireMetrics!
 }
 
-type FetchQuestionnaireMetricsResponse {
+type AnswerSingleChoice implements Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+  option: String
+}
+
+interface Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+}
+
+enum AnswerType {
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
+  TRUE_OR_FALSE
+  TEXT
+}
+
+type AnswerMultipleChoice implements Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+  options: [String!]
+}
+
+type AnswerTrueOrFalse implements Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+  option: String
+}
+
+type AnswerText implements Answer {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime!
+  correct: Boolean
+  text: String
+}
+
+type Response {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   questionnaire: Questionnaire!
-  metrics: QuestionnaireMetrics!
+  answers: [Answer!]!
+  startedAt: DateTime!
+  completedAt: DateTime
+}
+
+type PublicUpsertResponse {
+  authToken: String!
+  response: Response!
 }
 
 type RespondentLocation {
@@ -329,7 +301,6 @@ type Session {
 type Query {
   fetchAdmin(userId: String, email: String): Admin
   adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean): Questionnaire
-  adminFetchQuestionnaireMetrics(questionnaireId: String): FetchQuestionnaireMetricsResponse
   adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean): [Questionnaire!]!
 }
 

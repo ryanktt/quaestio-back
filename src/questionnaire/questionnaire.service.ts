@@ -5,8 +5,6 @@ import {
 	ICreateQuestionnaireParams,
 	IFetchQuestionnairesParams,
 	IUpdateQuestionnaireParams,
-	IFetchQuestionnaireMetricsParams,
-	IFetchQuestionnaireMetricsResponse,
 } from './questionnaire.interface';
 import {
 	QuestionnaireSurveyDocument,
@@ -127,30 +125,5 @@ export class QuestionnaireService {
 			questions,
 			title,
 		});
-	}
-
-	async fetchQuestionnaireMetrics(
-		params: IFetchQuestionnaireMetricsParams,
-	): Promise<IFetchQuestionnaireMetricsResponse> {
-		const { questionnaireId, user } = params;
-		await this.questionnaireHelper.validateFetchQuestionnaireParams(params);
-
-		const questionnaire = await this.questionnaireRepository.fetchQuestionnaire({
-			questionnaireId,
-			userId: user.id,
-		});
-
-		if (!questionnaire) {
-			throw new AppError({
-				code: EQuestionnaireErrorCode.QUESTIONNAIRE_NOT_FOUND,
-				message: 'questionnaire not found',
-			});
-		}
-
-		const responses = await this.responseRepository.fetchResponses({ questionnaireIds: [questionnaireId] });
-		const responseCount = responses.length;
-
-		const questionsMetrics = this.questionnaireHelper.getQuestionsMetrics({ responses, questionnaire });
-		return { questionnaire, metrics: { responseCount, questionsMetrics } };
 	}
 }

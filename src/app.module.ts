@@ -32,19 +32,11 @@ interface IEnvirolmentVariables {
 			useFactory: (
 				utilsArray: UtilsArray,
 				userRepository: UserRepository,
-				responseRepository: ResponseRepository,
-				questionnaireHelper: QuestionnaireHelper,
 				questionnaireRepository: QuestionnaireRepository,
 			) => ({
 				autoSchemaFile: 'schema.gql',
 				context: {
-					loaders: loaders(
-						utilsArray,
-						userRepository,
-						responseRepository,
-						questionnaireHelper,
-						questionnaireRepository,
-					),
+					loaders: loaders(utilsArray, userRepository, questionnaireRepository),
 				},
 			}),
 			inject: [UtilsArray, UserRepository, ResponseRepository, QuestionnaireHelper, QuestionnaireRepository],

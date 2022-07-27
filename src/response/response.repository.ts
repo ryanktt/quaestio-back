@@ -38,14 +38,15 @@ export class ResponseRepository {
 		startedAt,
 		answers,
 	}: IRepositoryUpsertResponseParams): Promise<ResponseDocument> {
-		const items = Array(100000).fill({ answers, questionnaire: questionnaireId, startedAt });
-		return this.responseSchema.insertMany(items).catch((err: Error) => {
-			throw new AppError({
-				code: EResponseErrorCode.CREATE_RESPONSE_ERROR,
-				message: 'fail to create new response',
-				originalError: err,
-			});
-		}) as unknown as Promise<ResponseDocument>;
+		return this.responseSchema
+			.create({ answers, questionnaire: questionnaireId, startedAt })
+			.catch((err: Error) => {
+				throw new AppError({
+					code: EResponseErrorCode.CREATE_RESPONSE_ERROR,
+					message: 'fail to create new response',
+					originalError: err,
+				});
+			}) as Promise<ResponseDocument>;
 	}
 
 	async save(response: ResponseDocument): Promise<ResponseDocument> {

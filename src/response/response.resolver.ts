@@ -25,7 +25,7 @@ export class ResponseResolver {
 		@Context('loaders') { questionnaireLoader }: ILoaders,
 		@Parent() response: Response,
 	): Promise<Questionnaire> {
-		return questionnaireLoader.load(response.questionnaire) as Promise<Questionnaire>;
+		return questionnaireLoader.load(response.questionnaire);
 	}
 
 	@Mutation(() => PublicUpsertResponse)

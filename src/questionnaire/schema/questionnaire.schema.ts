@@ -22,9 +22,9 @@ export class Option extends SchemaBase {
 	@Prop({ default: false })
 	feedbackAfterSubmit?: string;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// @Prop({ default: 0 })
-	// selectedCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	selectedCount: number;
 }
 
 export const OptionSchema = SchemaFactory.createForClass(Option);
@@ -65,21 +65,13 @@ export class Question extends SchemaBaseInterface {
 	@Prop({ required: true, default: false })
 	showCorrectAnswer: boolean;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// @Prop({ default: 0 })
-	// answerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	answerCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// @Prop({ default: 0 })
-	// rightAnswerCount: number;
-
-	// @Field(() => Int, { defaultValue: 0 })
-	// @Prop({ default: 0 })
-	// wrongAnswerCount: number;
-
-	// @Field(() => Int, { defaultValue: 0 })
-	// @Prop({ default: 0 })
-	// unansweredCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	unansweredCount: number;
 }
 
 export const QuestionSchema = SchemaFactory.createForClass(Question);
@@ -105,17 +97,19 @@ export class QuestionSingleChoice extends SchemaBase implements Question {
 	@Field({ defaultValue: false })
 	showCorrectAnswer: boolean;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// answerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	answerCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// rightAnswerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	unansweredCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// wrongAnswerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	rightAnswerCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// unansweredCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	wrongAnswerCount: number;
 
 	@Field(() => [Option])
 	@Prop({ required: true, type: [OptionSchema] })
@@ -157,17 +151,19 @@ export class QuestionMultipleChoice extends SchemaBase implements Question {
 	@Field({ defaultValue: false })
 	showCorrectAnswer: boolean;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// answerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	answerCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// rightAnswerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	unansweredCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// wrongAnswerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	rightAnswerCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// unansweredCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	wrongAnswerCount: number;
 
 	@Field(() => [Option])
 	@Prop({ required: true, type: [OptionSchema] })
@@ -209,17 +205,19 @@ export class QuestionTrueOrFalse extends SchemaBase implements Question {
 	@Field({ defaultValue: false })
 	showCorrectAnswer: boolean;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// answerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	answerCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// rightAnswerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	unansweredCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// wrongAnswerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	rightAnswerCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// unansweredCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	wrongAnswerCount: number;
 
 	@Field(() => [Option])
 	@Prop({ required: true, type: [OptionSchema] })
@@ -257,17 +255,11 @@ export class QuestionText extends SchemaBase implements Question {
 	@Field({ defaultValue: false })
 	showCorrectAnswer: boolean;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// answerCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	answerCount: number;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// rightAnswerCount: number;
-
-	// @Field(() => Int, { defaultValue: 0 })
-	// wrongAnswerCount: number;
-
-	// @Field(() => Int, { defaultValue: 0 })
-	// unansweredCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	unansweredCount: number;
 
 	@Field({ nullable: true })
 	@Prop({ default: 'teste feedback' })
@@ -313,6 +305,10 @@ export class Questionnaire extends SchemaBaseInterface {
 	@Field(() => [Question])
 	@Prop({ type: [QuestionSchema], required: true })
 	questions: Question[];
+
+	@Field(() => Int, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	responseCount: number;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -352,9 +348,8 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Prop({ required: true, default: false })
 	randomizeQuestions: boolean;
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// @Prop({ default: 0 })
-	// responseCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	responseCount: number;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -378,8 +373,8 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	@Field(() => [Question])
 	questions: Question[];
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// responseCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	responseCount: number;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -403,8 +398,8 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 	@Field(() => [Question])
 	questions: Question[];
 
-	// @Field(() => Int, { defaultValue: 0 })
-	// responseCount: number;
+	@Field(() => Int, { defaultValue: 0 })
+	responseCount: number;
 }
 
 export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);

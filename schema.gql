@@ -9,6 +9,7 @@ type Option {
   title: String!
   correct: Boolean
   feedbackAfterSubmit: String
+  selectedCount: Int!
 }
 
 """
@@ -26,6 +27,10 @@ type QuestionSingleChoice implements Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
+  answerCount: Int!
+  unansweredCount: Int!
+  rightAnswerCount: Int!
+  wrongAnswerCount: Int!
   options: [Option!]!
   randomizeOptions: Boolean!
   wrongAnswerFeedback: String
@@ -42,6 +47,8 @@ interface Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
+  answerCount: Int!
+  unansweredCount: Int!
 }
 
 enum QuestionType {
@@ -61,6 +68,10 @@ type QuestionMultipleChoice implements Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
+  answerCount: Int!
+  unansweredCount: Int!
+  rightAnswerCount: Int!
+  wrongAnswerCount: Int!
   options: [Option!]!
   randomizeOptions: Boolean!
   wrongAnswerFeedback: String
@@ -77,6 +88,10 @@ type QuestionTrueOrFalse implements Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
+  answerCount: Int!
+  unansweredCount: Int!
+  rightAnswerCount: Int!
+  wrongAnswerCount: Int!
   options: [Option!]!
   wrongAnswerFeedback: String
   rightAnswerFeedback: String
@@ -92,6 +107,8 @@ type QuestionText implements Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
+  answerCount: Int!
+  unansweredCount: Int!
   feedbackAfterSubmit: String
 }
 
@@ -105,6 +122,7 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  responseCount: Int!
   timeLimit: Float
   passingGradePercent: Float
   maxRetryAmount: Float
@@ -121,6 +139,7 @@ interface Questionnaire {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  responseCount: Int!
 }
 
 enum QuestionnaireType {
@@ -145,6 +164,7 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  responseCount: Int!
 }
 
 type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
@@ -157,6 +177,7 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  responseCount: Int!
 }
 
 type AnswerSingleChoice implements Answer {

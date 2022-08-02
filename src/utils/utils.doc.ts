@@ -24,7 +24,7 @@ export class UtilsDoc {
 			refDocsArr.forEach(({ refKey, doc }) => {
 				const docToValName = docToVal.constructor.modelName;
 
-				if (docToVal[refKey] !== doc.id) {
+				if (docToVal[refKey as keyof U] !== doc.id) {
 					throw new AppError({
 						message: `user does not have access to ${docToValName}`,
 						code: EGeneralErrorCode.ACCESS_DENIED,
@@ -34,7 +34,7 @@ export class UtilsDoc {
 		});
 	}
 
-	handleFieldUpdate<T extends DocumentType<AnyObj>, K extends keyof LeanDocument<T>>(params: {
+	handleFieldUpdate<T extends LeanDocument<DocumentType<AnyObj>>, K extends keyof T>(params: {
 		doc: T;
 		field: K;
 		value?: T[K] | null;

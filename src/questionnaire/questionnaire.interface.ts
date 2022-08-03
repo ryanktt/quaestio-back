@@ -79,12 +79,12 @@ export interface IRepositoryUpdateQuestionnareSurveyParams {
 
 export interface IRepositoryUpdateQuestionnareExamParams {
 	exam: QuestionnaireExamDocument;
-	passingGradePercent?: number;
 	randomizeQuestions?: boolean;
-	maxRetryAmount?: number;
 	questions?: Question[];
-	timeLimit?: number;
 	title?: string;
+	passingGradePercent?: number | null;
+	maxRetryAmount?: number | null;
+	timeLimit?: number | null;
 }
 
 export interface IRepositoryFetchQuestionnaireParams {
@@ -117,11 +117,11 @@ export interface IUpdateQuestionnaireParams {
 	questionnaireId: string;
 	user: AdminDocument;
 	questions?: QuestionDiscriminatorInput[];
-	passingGradePercent?: number;
 	randomizeQuestions?: boolean;
-	maxRetryAmount?: number;
-	timeLimit?: number;
 	title?: string;
+	passingGradePercent?: number | null;
+	maxRetryAmount?: number | null;
+	timeLimit?: number | null;
 }
 
 export interface IFetchQuestionnaireParams {

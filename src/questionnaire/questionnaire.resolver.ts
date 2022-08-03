@@ -156,9 +156,9 @@ export class QuestionnaireResolver {
 		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
 		questions?: QuestionDiscriminatorInput[],
 		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
-		@Args('passingGradePercent', { nullable: true }) passingGradePercent?: number,
-		@Args('maxRetryAmount', { nullable: true }) maxRetryAmount?: number,
-		@Args('timeLimit', { nullable: true }) timeLimit?: number,
+		@Args('passingGradePercent', { nullable: true }) passingGradePercent?: number | null,
+		@Args('maxRetryAmount', { nullable: true }) maxRetryAmount?: number | null,
+		@Args('timeLimit', { nullable: true }) timeLimit?: number | null,
 		@Args('title', { nullable: true }) title?: string,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.updateQuestionnaire({

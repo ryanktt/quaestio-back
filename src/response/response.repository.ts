@@ -8,6 +8,7 @@ import { ResponseDocument, ResponseModel, Response } from './schema';
 import { AppError, FilterType } from '@utils/*';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
+import { ClientSession } from 'mongoose';
 
 @Injectable()
 export class ResponseRepository {
@@ -33,24 +34,22 @@ export class ResponseRepository {
 			}) as Promise<Response[]>;
 	}
 
-	async create({
-		questionnaireId,
-		startedAt,
-		answers,
-	}: IRepositoryUpsertResponseParams): Promise<ResponseDocument> {
-		return this.responseSchema
-			.create({ answers, questionnaire: questionnaireId, startedAt })
-			.catch((err: Error) => {
-				throw new AppError({
-					code: EResponseErrorCode.CREATE_RESPONSE_ERROR,
-					message: 'fail to create new response',
-					originalError: err,
-				});
-			}) as Promise<ResponseDocument>;
+	async create(
+		{ questionnaireId, startedAt, answers }: IRepositoryUpsertResponseParams,
+		session?: ClientSession,
+	): Promise<ResponseDocument> {
+		const response = new this.responseSchema({ answers, questionnaire: questionnaireId, startedAt });
+		return response.save({ session }).catch((err: Error) => {
+			throw new AppError({
+				code: EResponseErrorCode.CREATE_RESPONSE_ERROR,
+				message: 'fail to create new response',
+				originalError: err,
+			});
+		}) as Promise<ResponseDocument>;
 	}
 
-	async save(response: ResponseDocument): Promise<ResponseDocument> {
-		return response.save().catch((originalError: Error) => {
+	async save(response: ResponseDocument, session?: ClientSession): Promise<ResponseDocument> {
+		return response.save({ session }).catch((originalError: Error) => {
 			throw new AppError({
 				code: EResponseErrorCode.SAVE_RESPONSE_ERROR,
 				message: 'fail to save response',

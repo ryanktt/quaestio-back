@@ -23,6 +23,7 @@ import {
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError, FilterType, UtilsDoc } from '@utils/*';
 import { InjectModel } from '@nestjs/mongoose';
+import { ClientSession } from 'mongoose';
 
 @Injectable()
 export class QuestionnaireRepository {
@@ -217,11 +218,10 @@ export class QuestionnaireRepository {
 		});
 	}
 
-	async updateSurvey({
-		questions,
-		survey,
-		title,
-	}: IRepositoryUpdateQuestionnareSurveyParams): Promise<QuestionnaireSurveyDocument> {
+	async updateSurvey(
+		{ questions, survey, title }: IRepositoryUpdateQuestionnareSurveyParams,
+		session?: ClientSession,
+	): Promise<QuestionnaireSurveyDocument> {
 		const updatedSurvey = new this.questionnaireSurveySchema({
 			createdAt: survey.createdAt,
 			questions: survey.questions,
@@ -246,7 +246,7 @@ export class QuestionnaireRepository {
 					message: 'fail to update questionnaire survey',
 				});
 			}
-		});
+		}, session);
 	}
 
 	async updateExam({

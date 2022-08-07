@@ -16,7 +16,6 @@ import {
 import { QuestionnaireHelper } from './questionnaire.helper';
 import { QuestionnaireRepository } from './questionnaire.repository';
 
-import { ResponseRepository } from 'src/response';
 import { Injectable } from '@nestjs/common';
 import { AppError } from '@utils/*';
 
@@ -25,7 +24,6 @@ export class QuestionnaireService {
 	constructor(
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly questionnaireHelper: QuestionnaireHelper,
-		private readonly responseRepository: ResponseRepository,
 	) {}
 
 	async fetchQuestionnaire(params: IFetchQuestionnaireParams): Promise<Questionnaire | undefined> {

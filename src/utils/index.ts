@@ -7,3 +7,4 @@ export * from './utils.error';
 export * from './utils.array';
 export * from './utils.date';
 export * from './utils.doc';
+export * from './utils.aws';

@@ -1,5 +1,6 @@
 import {
 	EResponseErrorCode,
+	IRepositoryFetchResponseParams,
 	IRepositoryFetchResponsesParams,
 	IRepositoryUpsertResponseParams,
 } from './response.interface';
@@ -34,6 +35,37 @@ export class ResponseRepository {
 			}) as Promise<Response[]>;
 	}
 
+	async fetchById(responseId?: string): Promise<ResponseDocument | undefined> {
+		if (!responseId) return;
+		const response = (await this.responseSchema
+			.findById(responseId)
+			.exec()
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EResponseErrorCode.FETCH_RESPONSE_ERROR,
+					message: 'fail to fetch response by id',
+					originalError,
+				});
+			})) as ResponseDocument | null;
+		return response ? response : undefined;
+	}
+
+	async fetchResponse({
+		questionnaireId,
+		responseId,
+	}: IRepositoryFetchResponseParams): Promise<ResponseDocument> {
+		return this.responseSchema
+			.findOne({ _id: responseId, questionnaire: questionnaireId })
+			.lean()
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EResponseErrorCode.FETCH_RESPONSE_ERROR,
+					message: 'fail to fetch response',
+					originalError,
+				});
+			}) as Promise<ResponseDocument>;
+	}
+
 	async create(
 		{ questionnaireId, startedAt, answers }: IRepositoryUpsertResponseParams,
 		session?: ClientSession,
@@ -56,20 +88,5 @@ export class ResponseRepository {
 				originalError,
 			});
 		}) as Promise<ResponseDocument>;
-	}
-
-	async fetchById(responseId?: string): Promise<ResponseDocument | undefined> {
-		if (!responseId) return;
-		const response = (await this.responseSchema
-			.findById(responseId)
-			.exec()
-			.catch((originalError: Error) => {
-				throw new AppError({
-					code: EResponseErrorCode.FETCH_RESPONSE_ERROR,
-					message: 'fail to fetch response by id',
-					originalError,
-				});
-			})) as ResponseDocument | null;
-		return response ? response : undefined;
 	}
 }

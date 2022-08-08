@@ -3,9 +3,9 @@ import { ResponseService } from './response.service';
 import { Response } from './schema';
 
 import { Resolver, ResolveField, Parent, Context, Mutation, Args, ObjectType, Field } from '@nestjs/graphql';
+import { ILoaders } from '@graphql/graphql.data-loaders';
 import { Questionnaire } from '@modules/questionnaire';
 import { IPublicContext } from '@modules/session';
-import { ILoaders } from 'src/app.loaders';
 
 @ObjectType()
 class PublicUpsertResponse {

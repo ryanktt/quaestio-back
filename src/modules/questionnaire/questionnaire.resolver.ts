@@ -9,9 +9,9 @@ import { QuestionnaireService } from './questionnaire.service';
 
 import { ResolveField, Resolver, Mutation, Context, Parent, Query, Args } from '@nestjs/graphql';
 import { EQuestionnaireType } from './questionnaire.interface';
+import { ILoaders } from '@graphql/graphql.data-loaders';
 import { Admin, AdminDocument } from '@modules/user';
 import { IAdminContext } from '@modules/session';
-import { ILoaders } from 'src/app.loaders';
 import { Role } from '@utils/*';
 
 @Resolver(() => Questionnaire)

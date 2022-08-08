@@ -21,7 +21,8 @@
 		"noFallthroughCasesInSwitch": false,
 		"paths": {
 			"@utils/*": ["src/utils"],
-			"@modules/*": ["src/modules/*"]
+			"@modules/*": ["src/modules/*"],
+			"@graphql/*": ["src/graphql/*"]
 		}
 	},
 	"include": ["src/**/*.ts"],

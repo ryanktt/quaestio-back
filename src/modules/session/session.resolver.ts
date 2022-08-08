@@ -1,7 +1,7 @@
 import { Session } from './session.schema';
 
 import { Resolver, ResolveField, Parent, Context } from '@nestjs/graphql';
-import { ILoaders } from 'src/app.loaders';
+import { ILoaders } from '@graphql/graphql.data-loaders';
 import { User } from '@modules/user';
 
 @Resolver(() => Session)

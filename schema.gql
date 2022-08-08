@@ -329,49 +329,13 @@ type Mutation {
   userlogOut: LogOutResponse!
   publicSignUp(password: String!, email: String!, name: String!): Admin!
   publicSignIn(password: String!, email: String!): SignInResponse!
-  publicUpsertResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): PublicUpsertResponse!
   adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!
   adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireSurvey!
   adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float): QuestionnaireExam!
   adminUpdateQuestionnaireQuiz(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], title: String): QuestionnaireQuiz!
   adminUpdateQuestionnaireSurvey(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], title: String): QuestionnaireSurvey!
   adminUpdateQuestionnaireExam(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float): QuestionnaireExam!
-}
-
-input AnswerDiscriminatorInput {
-  type: AnswerType!
-  answerMultipleChoice: AnswerMultipleChoiceInput
-  answerSingleChoice: AnswerSingleChoiceInput
-  answerTrueOrFalse: AnswerTrueOrFalseInput
-  answerText: AnswerTextInput
-}
-
-input AnswerMultipleChoiceInput {
-  type: AnswerType!
-  questionId: String!
-  answeredAt: DateTime
-  optionIds: [String!]
-}
-
-input AnswerSingleChoiceInput {
-  type: AnswerType!
-  questionId: String!
-  answeredAt: DateTime
-  optionId: String
-}
-
-input AnswerTrueOrFalseInput {
-  type: AnswerType!
-  questionId: String!
-  answeredAt: DateTime
-  optionId: String
-}
-
-input AnswerTextInput {
-  type: AnswerType!
-  questionId: String!
-  answeredAt: DateTime
-  text: String
+  publicUpsertResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): PublicUpsertResponse!
 }
 
 input QuestionDiscriminatorInput {
@@ -434,4 +398,40 @@ input QuestionTextInput {
   description: String
   showCorrectAnswer: Boolean = false
   feedbackAfterSubmit: String
+}
+
+input AnswerDiscriminatorInput {
+  type: AnswerType!
+  answerMultipleChoice: AnswerMultipleChoiceInput
+  answerSingleChoice: AnswerSingleChoiceInput
+  answerTrueOrFalse: AnswerTrueOrFalseInput
+  answerText: AnswerTextInput
+}
+
+input AnswerMultipleChoiceInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime
+  optionIds: [String!]
+}
+
+input AnswerSingleChoiceInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime
+  optionId: String
+}
+
+input AnswerTrueOrFalseInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime
+  optionId: String
+}
+
+input AnswerTextInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime
+  text: String
 }

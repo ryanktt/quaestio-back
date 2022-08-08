@@ -6,6 +6,7 @@ import { ESessionErrorCode } from '@modules/session';
 export enum EGeneralErrorCode {
 	VALIDATION_FIELD = 'VALIDATION_FIELD',
 	ACCESS_DENIED = 'ACCESS_DENIED',
+	AWS_SEND_TO_KINESIS_ERROR = 'AWS_SEND_TO_KINESIS_ERROR',
 }
 
 type EErrorCode =

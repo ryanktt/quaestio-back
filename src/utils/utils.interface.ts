@@ -5,3 +5,9 @@ export type ObjKeyValueMatchTypes<T, U> = {
 }[keyof T];
 
 export type ObjKeyTypes<T> = ObjKeyValueMatchTypes<T, string | number | symbol | ObjectId>;
+
+export interface IAWSSendToKinesis {
+	payload: Record<string, unknown>;
+	streamName: string;
+	key: string;
+}

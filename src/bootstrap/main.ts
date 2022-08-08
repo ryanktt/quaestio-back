@@ -1,6 +1,6 @@
 import rateLimit from 'express-rate-limit';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from '../app.module';
 import requestIp from 'request-ip';
 
 async function bootstrap(): Promise<void> {

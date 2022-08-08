@@ -5,7 +5,7 @@ import { AdminDocument } from './admin.schema';
 import { UserHelper } from '../user.helper';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { SessionHelper, SessionRepository } from 'src/session';
+import { SessionHelper, SessionRepository } from '@modules/session';
 import { AppError } from '@utils/*';
 
 @Injectable()

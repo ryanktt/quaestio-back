@@ -1,8 +1,8 @@
 import { AnswerDiscriminatorInput, Answer } from './schema';
 
 import { registerEnumType } from '@nestjs/graphql';
-import { Questionnaire } from 'src/questionnaire';
-import { RespondentDocument } from 'src/user';
+import { Questionnaire } from '@modules/questionnaire';
+import { RespondentDocument } from '@modules/user';
 
 export enum EAnswerType {
 	MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',

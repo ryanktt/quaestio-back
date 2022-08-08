@@ -11,9 +11,9 @@ import { QuestionnaireHelper } from './questionnaire.helper';
 
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ResponseModule } from 'src/response';
+import { ResponseModule } from '@modules/response';
 import { UtilsModule } from '@utils/*';
-import { UserModule } from 'src/user';
+import { UserModule } from '@modules/user';
 
 @Module({
 	imports: [

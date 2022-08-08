@@ -15,8 +15,8 @@ import {
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError, UtilsPromise } from '@utils/*';
-import { QuestionTypes } from 'src/questionnaire';
-import { SessionHelper } from 'src/session';
+import { QuestionTypes } from '@modules/questionnaire';
+import { SessionHelper } from '@modules/session';
 import Joi from 'joi';
 
 @Injectable()

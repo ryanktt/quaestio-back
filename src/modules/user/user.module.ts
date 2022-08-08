@@ -8,7 +8,7 @@ import { UserHelper } from './user.helper';
 import { forwardRef, Module } from '@nestjs/common';
 import { UtilsArray, UtilsPromise } from '@utils/*';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SessionModule } from 'src/session';
+import { SessionModule } from '@modules/session';
 
 @Module({
 	imports: [

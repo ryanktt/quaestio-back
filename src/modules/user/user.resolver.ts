@@ -1,7 +1,7 @@
 import { User } from './user.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Field } from '@nestjs/graphql';
-import { IUserContext, Session, SessionService } from 'src/session';
+import { IUserContext, Session, SessionService } from '@modules/session';
 import { forwardRef, Inject } from '@nestjs/common';
 import { Role } from '@utils/*';
 

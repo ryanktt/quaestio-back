@@ -2,7 +2,7 @@ import { AdminService } from './admin.service';
 import { Admin } from './admin.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
-import { IPublicContext, Session } from 'src/session';
+import { IPublicContext, Session } from '@modules/session';
 import { Role } from '@utils/*';
 
 @ObjectType()

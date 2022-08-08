@@ -3,8 +3,8 @@ import { ResponseService } from './response.service';
 import { Response } from './schema';
 
 import { Resolver, ResolveField, Parent, Context, Mutation, Args, ObjectType, Field } from '@nestjs/graphql';
-import { Questionnaire } from 'src/questionnaire';
-import { IPublicContext } from 'src/session';
+import { Questionnaire } from '@modules/questionnaire';
+import { IPublicContext } from '@modules/session';
 import { ILoaders } from 'src/app.loaders';
 
 @ObjectType()

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
-import { SessionGuard, SessionModule } from './session';
-import { QuestionnaireHelper, QuestionnaireModule, QuestionnaireRepository } from './questionnaire';
-import { ResponseModule, ResponseRepository } from './response';
-import { UserRepository, UserModule } from './user';
+import { SessionGuard, SessionModule } from './modules/session';
+import { QuestionnaireHelper, QuestionnaireModule, QuestionnaireRepository } from './modules/questionnaire';
+import { ResponseModule, ResponseRepository } from './modules/response';
+import { UserRepository, UserModule } from './modules/user';
 import { UtilsArray, UtilsModule } from './utils';
 import { loaders } from './app.loaders';
 

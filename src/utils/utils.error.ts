@@ -1,7 +1,7 @@
-import { EUserErrorCode, ERespondentErrorCode } from 'src/user';
-import { EQuestionnaireErrorCode } from 'src/questionnaire';
-import { EResponseErrorCode } from 'src/response';
-import { ESessionErrorCode } from 'src/session';
+import { EUserErrorCode, ERespondentErrorCode } from '@modules/user';
+import { EQuestionnaireErrorCode } from '@modules/questionnaire';
+import { EResponseErrorCode } from '@modules/response';
+import { ESessionErrorCode } from '@modules/session';
 
 export enum EGeneralErrorCode {
 	VALIDATION_FIELD = 'VALIDATION_FIELD',

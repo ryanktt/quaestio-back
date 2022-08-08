@@ -1,4 +1,4 @@
-import { SessionDocument } from 'src/session';
+import { SessionDocument } from '@modules/session';
 
 import { AdminDocument } from './admin.schema';
 

@@ -1,7 +1,9 @@
+org: ryanktt
+app: questionnaire-lambda
 service: questionnaire-lambda
 
 plugins:
-  - 'serverless-plugin-typescript'
+  - serverless-plugin-typescript
   - serverless-plugin-optimize
   - serverless-offline
 
@@ -11,7 +13,7 @@ provider:
 
 functions:
   main:
-    handler: src/lambda.handler
+    handler: src/bootstrap/lambda.handler
     events:
       - http:
           method: any

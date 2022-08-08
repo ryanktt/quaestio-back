@@ -21,7 +21,7 @@
 		"noFallthroughCasesInSwitch": false,
 		"paths": {
 			"@utils/*": ["src/utils"],
-			"@shared/*": ["src/shared/*"]
+			"@modules/*": ["src/modules/*"]
 		}
 	},
 	"include": ["src/**/*.ts"],

@@ -1,6 +1,6 @@
 import { SessionDocument } from './session.schema';
 
-import { AdminDocument, RespondentDocument, UserDocument } from 'src/user';
+import { AdminDocument, RespondentDocument, UserDocument } from '@modules/user';
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum ESessionErrorCode {

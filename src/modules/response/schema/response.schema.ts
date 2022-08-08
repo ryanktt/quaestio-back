@@ -4,7 +4,7 @@ import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
-import { Questionnaire } from 'src/questionnaire';
+import { Questionnaire } from '@modules/questionnaire';
 
 @InterfaceType({
 	isAbstract: true,

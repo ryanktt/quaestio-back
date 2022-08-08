@@ -3,9 +3,9 @@ import { ResponseRepository } from './response.repository';
 import { Answer, ResponseDocument } from './schema';
 import { ResponseHelper } from './response.helper';
 
-import { EQuestionnaireErrorCode, QuestionnaireRepository } from 'src/questionnaire';
+import { EQuestionnaireErrorCode, QuestionnaireRepository } from '@modules/questionnaire';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { SessionHelper } from 'src/session';
+import { SessionHelper } from '@modules/session';
 import { AppError } from '@utils/*';
 
 @Injectable()

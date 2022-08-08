@@ -4,10 +4,10 @@ import { ResponseService } from './response.service';
 import { ResponseHelper } from './response.helper';
 import { ResponseSchema } from './schema';
 
-import { QuestionnaireModule } from 'src/questionnaire';
+import { QuestionnaireModule } from '@modules/questionnaire';
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SessionModule } from 'src/session';
+import { SessionModule } from '@modules/session';
 import { UtilsPromise } from '@utils/*';
 
 @Module({

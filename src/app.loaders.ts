@@ -1,5 +1,5 @@
-import { questionnaireLoader, QuestionnaireRepository } from './questionnaire';
-import { userLoader, UserRepository } from 'src/user';
+import { questionnaireLoader, QuestionnaireRepository } from '@modules/questionnaire';
+import { userLoader, UserRepository } from '@modules/user';
 import { UtilsArray } from './utils';
 
 export interface ILoaders {

@@ -5,7 +5,7 @@ import { SessionService } from './session.service';
 
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { EUserRole } from 'src/user';
+import { EUserRole } from '@modules/user';
 import { AppError } from '@utils/*';
 
 @Injectable()

@@ -5,7 +5,7 @@ import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import { Admin } from 'src/user';
+import { Admin } from '@modules/user';
 
 @ObjectType()
 @Schema()

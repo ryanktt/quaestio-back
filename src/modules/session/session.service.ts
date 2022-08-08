@@ -3,7 +3,7 @@ import { ESessionErrorCode } from './session.interface';
 import { SessionDocument } from './session.schema';
 import { SessionHelper } from './session.helper';
 
-import { EUserErrorCode, UserDocument, UserRepository } from 'src/user';
+import { EUserErrorCode, UserDocument, UserRepository } from '@modules/user';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError } from 'src/utils/utils.error';
 import moment from 'moment';

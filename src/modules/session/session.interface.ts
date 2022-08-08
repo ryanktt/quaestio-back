@@ -2,6 +2,7 @@ import { SessionDocument } from './session.schema';
 
 import { AdminDocument, RespondentDocument, UserDocument } from '@modules/user';
 import { registerEnumType } from '@nestjs/graphql';
+import { AnswerTypes } from '@modules/response';
 
 export enum ESessionErrorCode {
 	SESSION_IS_NOT_ACTIVE = 'SESSION_IS_NOT_ACTIVE',
@@ -28,10 +29,14 @@ export interface IUpdateSessionParams {
 	active: boolean;
 }
 
-export interface IJwtPayload {
+export interface IJWTPublicPayload {
+	guestRespondentId?: string;
+}
+
+export type IJwtPayload = {
 	sessionId: string;
 	userId: string;
-}
+};
 
 export interface IPublicContext {
 	userAgent: string;
@@ -53,3 +58,9 @@ export interface IRespondentContext extends IPublicContext {
 	session: SessionDocument;
 	user: RespondentDocument;
 }
+
+export type ISendQuestionnaireResponseToKinesis = {
+	guestRespondentId?: string;
+	questionnaireId: string;
+	answers: AnswerTypes[];
+};

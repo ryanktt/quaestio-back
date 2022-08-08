@@ -136,10 +136,6 @@ export class Response extends SchemaBase {
 	@Prop({ type: String, ref: 'Questionnaire', required: true })
 	questionnaire: string;
 
-	// @Field(() => Respondent)
-	// @Prop({ type: String, ref: 'Respondent', required: true })
-	// user: string;
-
 	@Field(() => [Answer])
 	@Prop({ type: [AnswerSchema], required: true })
 	answers: Answer[];
@@ -155,6 +151,14 @@ export class Response extends SchemaBase {
 	@Field({ nullable: true })
 	@Prop()
 	completedAt?: Date;
+
+	// @Field(() => Respondent)
+	// @Prop({ type: String, ref: 'Respondent', required: true })
+	// user: string;
+
+	@Field({ nullable: true })
+	@Prop()
+	guestRespondentId?: string;
 }
 
 export const ResponseSchema = SchemaFactory.createForClass(Response);

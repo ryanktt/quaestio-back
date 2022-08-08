@@ -1,8 +1,7 @@
-import { AnswerDiscriminatorInput } from './schema/response.input';
 import { ResponseService } from './response.service';
-import { Response } from './schema';
+import { AnswerDiscriminatorInput, Response } from './schema';
 
-import { Resolver, ResolveField, Parent, Context, Mutation, Args, ObjectType, Field } from '@nestjs/graphql';
+import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation } from '@nestjs/graphql';
 import { ILoaders } from '@graphql/graphql.data-loaders';
 import { Questionnaire } from '@modules/questionnaire';
 import { IPublicContext } from '@modules/session';
@@ -11,14 +10,17 @@ import { IPublicContext } from '@modules/session';
 class PublicUpsertResponse {
 	@Field()
 	authToken: string;
-
-	@Field(() => Response)
-	response: Response;
 }
 
 @Resolver(() => Response)
 export class ResponseResolver {
 	constructor(private readonly responseService: ResponseService) {}
+
+	// remover
+	@ResolveField(() => Response)
+	itself(@Parent() response: Response): Response {
+		return response;
+	}
 
 	@ResolveField(() => Questionnaire)
 	async questionnaire(
@@ -29,11 +31,11 @@ export class ResponseResolver {
 	}
 
 	@Mutation(() => PublicUpsertResponse)
-	async publicUpsertResponse(
+	async publicUpsertSurveyResponse(
 		@Context('req') { authToken }: IPublicContext,
 		@Args('answers', { type: () => [AnswerDiscriminatorInput] }) answers: AnswerDiscriminatorInput[],
 		@Args('questionnaireId') questionnaireId: string,
 	): Promise<PublicUpsertResponse> {
-		return this.responseService.publicUpsertResponse({ answers, questionnaireId, authToken });
+		return this.responseService.publicUpsertSurveyResponse({ answers, questionnaireId, authToken });
 	}
 }

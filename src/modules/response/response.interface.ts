@@ -1,7 +1,7 @@
 import { AnswerDiscriminatorInput, Answer } from './schema';
 
-import { registerEnumType } from '@nestjs/graphql';
 import { Questionnaire } from '@modules/questionnaire';
+import { registerEnumType } from '@nestjs/graphql';
 import { RespondentDocument } from '@modules/user';
 
 export enum EAnswerType {
@@ -33,6 +33,11 @@ export interface IRepositoryFetchResponsesParams {
 	responseIds?: string[];
 }
 
+export interface IRepositoryFetchResponseParams {
+	questionnaireId?: string;
+	responseId?: string;
+}
+
 export interface IRepositoryUpdateResponseParams {
 	response: RespondentDocument;
 	completedAt?: Date;
@@ -61,15 +66,3 @@ export interface ICorrectAnswers {
 	questionnaire: Questionnaire;
 	answers: Answer[];
 }
-
-export type MetricsLoaderCtx = { questionnaire: Questionnaire };
-export type MetricsMapRecord = Record<
-	string,
-	{
-		answerCount?: number;
-		rightAnswerCount?: number;
-		wrongAnswerCount?: number;
-		unansweredCount?: number;
-		optionsMetrics: Record<string, { selectedCount: number }>;
-	}
->;

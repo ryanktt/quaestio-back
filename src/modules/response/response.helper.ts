@@ -13,16 +13,18 @@ import {
 	Answer,
 } from './schema';
 
+import { IJWTPublicPayload, ISendQuestionnaireResponseToKinesis, SessionHelper } from '@modules/session';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AppError, UtilsPromise } from '@utils/*';
+import { AppError, UtilsPromise, UtilsAWS } from '@utils/*';
 import { QuestionTypes } from '@modules/questionnaire';
-import { SessionHelper } from '@modules/session';
+import { v4 as uuidv4 } from 'uuid';
 import Joi from 'joi';
 
 @Injectable()
 export class ResponseHelper {
 	constructor(
 		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
+		@Inject(forwardRef(() => UtilsAWS)) private readonly utilsAWS: UtilsAWS,
 		private readonly utilsPromise: UtilsPromise,
 	) {}
 
@@ -147,11 +149,19 @@ export class ResponseHelper {
 		});
 	}
 
-	async getGuestRespondentJwtPayload(authToken?: string): Promise<{ responseId: string } | undefined> {
+	async getGuestRespondentJwtPayload(authToken?: string): Promise<IJWTPublicPayload | undefined> {
 		if (!authToken) return;
 		const payload = await this.sessionHelper
 			.validateAndGetJwtPublicPayload(authToken)
 			.catch((err) => console.error(err));
-		return typeof payload === 'object' && 'responseId' in payload ? payload : undefined;
+		return typeof payload === 'object' ? payload : undefined;
+	}
+
+	async sendQuestionnaireResponseToKinesis(payload: ISendQuestionnaireResponseToKinesis): Promise<void> {
+		await this.utilsAWS.sendToKineses({
+			streamName: 'questionnaire-create-response-stream',
+			key: uuidv4(),
+			payload,
+		});
 	}
 }

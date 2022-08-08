@@ -3,10 +3,11 @@ import { ResponseRepository } from './response.repository';
 import { Answer, ResponseDocument } from './schema';
 import { ResponseHelper } from './response.helper';
 
-import { EQuestionnaireErrorCode, QuestionnaireRepository } from '@modules/questionnaire';
+import { EQuestionnaireErrorCode, EQuestionnaireType, QuestionnaireRepository } from '@modules/questionnaire';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { SessionHelper } from '@modules/session';
 import { AppError } from '@utils/*';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ResponseService {
@@ -18,7 +19,7 @@ export class ResponseService {
 		private readonly responseHelper: ResponseHelper,
 	) {}
 
-	async upsertResponse(params: IUpsertResponseParams): Promise<ResponseDocument> {
+	async upsertQuestionnaireExamResponse(params: IUpsertResponseParams): Promise<ResponseDocument> {
 		const { answers: answerDiscriminatorInputArray, questionnaireId, responseId } = params;
 		await this.responseHelper.validateUpsertResponseParams(params);
 
@@ -27,7 +28,7 @@ export class ResponseService {
 		});
 
 		const questionnaire = await this.questionnaireRepository.fetchById(questionnaireId);
-		if (!questionnaire) {
+		if (!questionnaire || questionnaire.type !== EQuestionnaireType.QuestionnaireExam) {
 			throw new AppError({
 				code: EQuestionnaireErrorCode.QUESTIONNAIRE_NOT_FOUND,
 				message: 'questionnaire not found',
@@ -36,6 +37,8 @@ export class ResponseService {
 
 		this.responseHelper.validateAnswers({ answers, questionnaire });
 		this.responseHelper.correctAnswers({ answers, questionnaire });
+
+		// update questionnaireMetrics
 
 		const response = await this.responseRepository.fetchById(responseId);
 		if (!response) {
@@ -46,21 +49,28 @@ export class ResponseService {
 		}
 	}
 
-	async publicUpsertResponse({
+	async publicUpsertSurveyResponse({
+		answers: answerDiscriminatorInputArray,
 		questionnaireId,
 		authToken,
-		answers,
-	}: IPublicUpsertResponseParams): Promise<{ response: ResponseDocument; authToken: string }> {
-		const payload = await this.responseHelper.getGuestRespondentJwtPayload(authToken);
+	}: IPublicUpsertResponseParams): Promise<{ authToken: string }> {
+		const answers = answerDiscriminatorInputArray.map((input) => {
+			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as Answer;
+		});
 
-		const responseId = typeof payload === 'object' ? payload.responseId : undefined;
-		const response = await this.upsertResponse({ answers, questionnaireId, responseId });
+		const jwtPayload = await this.responseHelper.getGuestRespondentJwtPayload(authToken);
+		const guestRespondentId = jwtPayload ? jwtPayload.guestRespondentId : undefined;
 
-		if (!payload) {
-			const tokenExpDate = this.sessionHelper.getExpirationDate();
-			authToken = this.sessionHelper.signJwtToken({ responseId: response.id }, tokenExpDate);
+		if (!guestRespondentId) {
+			authToken = this.sessionHelper.signPublicUpsertResponseToken({ guestRespondentId: uuidv4() });
 		}
 
-		return { response, authToken: authToken || '' };
+		await this.responseHelper.sendQuestionnaireResponseToKinesis({
+			guestRespondentId,
+			questionnaireId,
+			answers,
+		});
+
+		return { authToken: authToken || '' };
 	}
 }

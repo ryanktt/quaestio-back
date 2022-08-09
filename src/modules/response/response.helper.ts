@@ -159,7 +159,7 @@ export class ResponseHelper {
 
 	async sendQuestionnaireResponseToKinesis(payload: ISendQuestionnaireResponseToKinesis): Promise<void> {
 		await this.utilsAWS.sendToKineses({
-			streamName: 'questionnaire-create-response-stream',
+			streamName: 'questionnaire-upsert-response-stream',
 			key: uuidv4(),
 			payload,
 		});

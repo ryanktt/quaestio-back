@@ -59,10 +59,11 @@ export class ResponseService {
 		});
 
 		const jwtPayload = await this.responseHelper.getGuestRespondentJwtPayload(authToken);
-		const guestRespondentId = jwtPayload ? jwtPayload.guestRespondentId : undefined;
+		let guestRespondentId = jwtPayload?.guestRespondentId;
 
 		if (!guestRespondentId) {
-			authToken = this.sessionHelper.signPublicUpsertResponseToken({ guestRespondentId: uuidv4() });
+			guestRespondentId = uuidv4();
+			authToken = this.sessionHelper.signPublicUpsertResponseToken({ guestRespondentId });
 		}
 
 		await this.responseHelper.sendQuestionnaireResponseToKinesis({

@@ -60,7 +60,7 @@ export interface IRespondentContext extends IPublicContext {
 }
 
 export type ISendQuestionnaireResponseToKinesis = {
-	guestRespondentId?: string;
+	guestRespondentId: string;
 	questionnaireId: string;
 	answers: AnswerTypes[];
 };

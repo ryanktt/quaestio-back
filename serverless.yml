@@ -1,6 +1,6 @@
 org: ryanktt
-app: questionnaire-lambda
-service: questionnaire-lambda
+app: questionnaire-app
+service: questionnaire-app
 
 plugins:
   - serverless-plugin-typescript
@@ -10,11 +10,23 @@ plugins:
 provider:
   name: aws
   runtime: nodejs14.x
+  region: us-east-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - kinesis:GetRecords
+            - kinesis:GetShardIterator
+            - kinesis:DescribeStream
+            - kinesis:ListStreams
+            - kinesis:PutRecord
+            - kinesis:PutRecords
+          Resource: arn:aws:kinesis:us-east-1:874738831934:stream/questionnaire-upsert-response-stream
 
 functions:
-  main:
-    handler: src/bootstrap/lambda.handler
+  questionnaire-response-upsertion-consumer:
+    handler: src/bootstrap/response-upsertion-consumer/lambda.handler
     events:
-      - http:
-          method: any
-          path: /graphql
+      - stream:
+          arn: arn:aws:kinesis:us-east-1:874738831934:stream/questionnaire-upsert-response-stream

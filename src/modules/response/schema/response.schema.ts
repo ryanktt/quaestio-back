@@ -138,7 +138,7 @@ export class Response extends SchemaBase {
 
 	@Field(() => [Answer])
 	@Prop({ type: [AnswerSchema], required: true })
-	answers: Answer[];
+	answers: AnswerTypes[];
 
 	// @Field()
 	// @Prop({ required: true })

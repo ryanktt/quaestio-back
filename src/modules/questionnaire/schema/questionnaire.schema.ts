@@ -371,7 +371,7 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	latest: boolean;
 
 	@Field(() => [Question])
-	questions: Question[];
+	questions: QuestionTypes[];
 
 	@Field(() => Int, { defaultValue: 0 })
 	responseCount: number;

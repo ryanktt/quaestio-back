@@ -11,7 +11,7 @@ import {
 	QuestionnaireExamDocument,
 	QuestionnaireQuizDocument,
 	Questionnaire,
-	Question,
+	QuestionTypes,
 } from './schema';
 import { QuestionnaireHelper } from './questionnaire.helper';
 import { QuestionnaireRepository } from './questionnaire.repository';
@@ -54,7 +54,7 @@ export class QuestionnaireService {
 		await this.questionnaireHelper.validateCreateQuestionnaireParams(params);
 
 		const questions = questionDiscriminatorInputArray.map((input) => {
-			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as Question;
+			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as QuestionTypes;
 		});
 
 		if (type === EQuestionnaireType.QuestionnaireQuiz) {
@@ -94,7 +94,7 @@ export class QuestionnaireService {
 		}
 
 		const questions = questionDiscriminatorInputArray?.map((input) => {
-			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as Question;
+			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as QuestionTypes;
 		});
 
 		if (type === EQuestionnaireType.QuestionnaireQuiz) {

@@ -1,6 +1,7 @@
 import {
 	Question,
 	QuestionText,
+	QuestionTypes,
 	QuestionTrueOrFalse,
 	QuestionSingleChoice,
 	QuestionMultipleChoice,
@@ -53,7 +54,7 @@ export type IQuestionTypes =
 	| QuestionText;
 
 export interface IRepositoryCreateQuestionnareParams {
-	questions: Question[];
+	questions: QuestionTypes[];
 	userId: string;
 	title: string;
 }
@@ -67,13 +68,13 @@ export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCre
 
 export interface IRepositoryUpdateQuestionnareQuizParams {
 	quiz: QuestionnaireQuizDocument;
-	questions?: Question[];
+	questions?: QuestionTypes[];
 	title?: string;
 }
 
 export interface IRepositoryUpdateQuestionnareSurveyParams {
 	survey: QuestionnaireSurveyDocument;
-	questions?: Question[];
+	questions?: QuestionTypes[];
 	title?: string;
 }
 

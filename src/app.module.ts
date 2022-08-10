@@ -7,7 +7,7 @@ import { UserModule } from './modules/user';
 import { UtilsModule } from './utils';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import GraphQLModule from '@graphql/graphql.module.config';
+import GraphQLModule from '@graphql/graphql.module-config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';

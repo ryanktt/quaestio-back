@@ -26,7 +26,7 @@ provider:
 
 functions:
   questionnaire-response-upsertion-consumer:
-    handler: src/bootstrap/response-upsertion-consumer/lambda.handler
+    handler: src/bootstrap/consumers/questionnaire-response-upsertion/lambda.handler
     events:
       - stream:
           arn: arn:aws:kinesis:us-east-1:874738831934:stream/questionnaire-upsert-response-stream

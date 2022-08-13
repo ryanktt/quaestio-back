@@ -5,7 +5,7 @@ interface ICorrectAnswers {
 	questionnaire: QuestionnaireTypes;
 }
 
-export function correctAnswers({ answers, questionnaire }: ICorrectAnswers): void {
+export function correctQuestionnaireAnswers({ answers, questionnaire }: ICorrectAnswers): void {
 	const isOptionCorrect = (optionId: string, correctOpIds: string[]): boolean =>
 		correctOpIds.includes(optionId);
 
@@ -31,10 +31,12 @@ export function correctAnswers({ answers, questionnaire }: ICorrectAnswers): voi
 
 		if ('option' in answer && answer.option) {
 			answer.correct = isOptionCorrect(answer.option, correctOptionIds);
-		} else if ('options' in answer) {
-			answer.correct = isOptionsCorrect(answer.options || [], correctOptionIds);
+		} else if ('options' in answer && answer.options && answer.options.length > 0) {
+			answer.correct = isOptionsCorrect(answer.options, correctOptionIds);
 		} else if ('text' in answer) {
 			answer.correct = true;
 		}
+
+		if (answer.correct === undefined) answer.answeredAt = undefined;
 	});
 }

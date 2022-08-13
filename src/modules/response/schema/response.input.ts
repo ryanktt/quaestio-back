@@ -10,7 +10,7 @@ export class AnswerInput {
 	@Field()
 	questionId: string;
 
-	@Field(() => Date, { nullable: true })
+	@Field(() => Date, { defaultValue: new Date() })
 	answeredAt: Date;
 }
 

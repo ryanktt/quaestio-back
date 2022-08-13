@@ -1,6 +1,6 @@
 import { IUpsertResponseParams, IPublicUpsertResponseParams } from './response.interface';
+import { AnswerTypes, ResponseDocument } from './schema';
 import { ResponseRepository } from './response.repository';
-import { Answer, ResponseDocument } from './schema';
 import { ResponseHelper } from './response.helper';
 
 import { EQuestionnaireErrorCode, EQuestionnaireType, QuestionnaireRepository } from '@modules/questionnaire';
@@ -24,7 +24,7 @@ export class ResponseService {
 		await this.responseHelper.validateUpsertResponseParams(params);
 
 		const answers = answerDiscriminatorInputArray.map((input) => {
-			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as Answer;
+			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as AnswerTypes;
 		});
 
 		const questionnaire = await this.questionnaireRepository.fetchById(questionnaireId);
@@ -55,7 +55,7 @@ export class ResponseService {
 		authToken,
 	}: IPublicUpsertResponseParams): Promise<{ authToken: string }> {
 		const answers = answerDiscriminatorInputArray.map((input) => {
-			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as Answer;
+			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as AnswerTypes;
 		});
 
 		const jwtPayload = await this.responseHelper.getGuestRespondentJwtPayload(authToken);
@@ -66,7 +66,7 @@ export class ResponseService {
 			authToken = this.sessionHelper.signPublicUpsertResponseToken({ guestRespondentId });
 		}
 
-		await this.responseHelper.sendQuestionnaireResponseToKinesis({
+		await this.responseHelper.invokeUpsertQuestionnaireResponseLambda({
 			guestRespondentId,
 			questionnaireId,
 			answers,

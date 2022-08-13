@@ -9,7 +9,15 @@ export enum EGeneralErrorCode {
 	AWS_SEND_TO_KINESIS_ERROR = 'AWS_SEND_TO_KINESIS_ERROR',
 }
 
-type EErrorCode =
+export const EErrorCode = {
+	...EGeneralErrorCode,
+	...EQuestionnaireErrorCode,
+	...ERespondentErrorCode,
+	...EResponseErrorCode,
+	...ESessionErrorCode,
+	...EUserErrorCode,
+};
+export type EErrorCode =
 	| EGeneralErrorCode
 	| EQuestionnaireErrorCode
 	| ERespondentErrorCode

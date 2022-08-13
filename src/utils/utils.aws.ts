@@ -25,4 +25,15 @@ export class UtilsAWS {
 				});
 			});
 	}
+
+	async invokeLambda(payload: Record<string, unknown>): Promise<void> {
+		const lambda = new AWS.Lambda({ region: 'us-east-1', endpoint: 'http://localhost:3002' });
+		await lambda
+			.invoke({
+				FunctionName: 'questionnaire-app-dev-upsert-questionnaire-response-consumer',
+				Payload: JSON.stringify(payload),
+			})
+			.promise()
+			.catch((err) => console.error(err));
+	}
 }

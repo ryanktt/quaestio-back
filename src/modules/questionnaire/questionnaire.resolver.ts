@@ -29,7 +29,7 @@ export class QuestionnaireResolver {
 	@Role('Admin')
 	@Query(() => Questionnaire, { nullable: true })
 	async adminFetchQuestionnaire(
-		@Context('req') { user }: IAdminContext,
+		@Context() { user }: IAdminContext,
 		@Args('questionnaireSharedId', { nullable: true }) questionnaireSharedId?: string,
 		@Args('questionnaireId', { nullable: true }) questionnaireId?: string,
 		@Args('latest', { nullable: true }) latest?: boolean,
@@ -45,7 +45,7 @@ export class QuestionnaireResolver {
 	@Role('Admin')
 	@Query(() => [Questionnaire])
 	async adminFetchQuestionnaires(
-		@Context('req') { user }: IAdminContext,
+		@Context() { user }: IAdminContext,
 		@Args('questionnaireSharedIds', { type: () => [String], nullable: true })
 		questionnaireSharedIds?: string[],
 		@Args('questionnaireIds', { type: () => [String], nullable: true }) questionnaireIds?: string[],
@@ -62,7 +62,7 @@ export class QuestionnaireResolver {
 	@Role('Admin')
 	@Mutation(() => QuestionnaireQuiz)
 	async adminCreateQuestionnaireQuiz(
-		@Context('req') { user }: IAdminContext,
+		@Context() { user }: IAdminContext,
 		@Args('questions', { type: () => [QuestionDiscriminatorInput] }) questions: QuestionDiscriminatorInput[],
 		@Args('title') title: string,
 	): Promise<QuestionnaireQuiz> {
@@ -77,7 +77,7 @@ export class QuestionnaireResolver {
 	@Role('Admin')
 	@Mutation(() => QuestionnaireSurvey)
 	async adminCreateQuestionnaireSurvey(
-		@Context('req') { user }: IAdminContext,
+		@Context() { user }: IAdminContext,
 		@Args('questions', { type: () => [QuestionDiscriminatorInput] }) questions: QuestionDiscriminatorInput[],
 		@Args('title') title: string,
 	): Promise<QuestionnaireSurvey> {
@@ -92,7 +92,7 @@ export class QuestionnaireResolver {
 	@Role('Admin')
 	@Mutation(() => QuestionnaireExam)
 	async adminCreateQuestionnaireExam(
-		@Context('req') { user }: IAdminContext,
+		@Context() { user }: IAdminContext,
 		@Args('questions', { type: () => [QuestionDiscriminatorInput] }) questions: QuestionDiscriminatorInput[],
 		@Args('title') title: string,
 		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
@@ -115,7 +115,7 @@ export class QuestionnaireResolver {
 	@Role('Admin')
 	@Mutation(() => QuestionnaireQuiz)
 	async adminUpdateQuestionnaireQuiz(
-		@Context('req') { user }: IAdminContext,
+		@Context() { user }: IAdminContext,
 		@Args('questionnaireId') questionnaireId: string,
 		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
 		questions?: QuestionDiscriminatorInput[],
@@ -133,7 +133,7 @@ export class QuestionnaireResolver {
 	@Role('Admin')
 	@Mutation(() => QuestionnaireSurvey)
 	async adminUpdateQuestionnaireSurvey(
-		@Context('req') { user }: IAdminContext,
+		@Context() { user }: IAdminContext,
 		@Args('questionnaireId') questionnaireId: string,
 		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
 		questions?: QuestionDiscriminatorInput[],
@@ -151,7 +151,7 @@ export class QuestionnaireResolver {
 	@Role('Admin')
 	@Mutation(() => QuestionnaireExam)
 	async adminUpdateQuestionnaireExam(
-		@Context('req') { user }: IAdminContext,
+		@Context() { user }: IAdminContext,
 		@Args('questionnaireId') questionnaireId: string,
 		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
 		questions?: QuestionDiscriminatorInput[],

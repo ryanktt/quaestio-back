@@ -20,7 +20,7 @@ export class UserResolver {
 
 	@Role('User')
 	@Mutation(() => LogOutResponse)
-	async userlogOut(@Context('req') { user, session }: IUserContext): Promise<LogOutResponse> {
+	async userlogOut(@Context() { user, session }: IUserContext): Promise<LogOutResponse> {
 		await this.sessionService.deactivateSession(session);
 		return { session, user };
 	}

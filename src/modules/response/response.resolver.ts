@@ -32,7 +32,7 @@ export class ResponseResolver {
 
 	@Mutation(() => PublicUpsertResponse)
 	async publicUpsertSurveyResponse(
-		@Context('req') { authToken }: IPublicContext,
+		@Context() { authToken }: IPublicContext,
 		@Args('answers', { type: () => [AnswerDiscriminatorInput] }) answers: AnswerDiscriminatorInput[],
 		@Args('questionnaireId') questionnaireId: string,
 	): Promise<PublicUpsertResponse> {

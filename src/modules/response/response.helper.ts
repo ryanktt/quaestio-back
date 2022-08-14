@@ -13,7 +13,12 @@ import {
 	Answer,
 } from './schema';
 
-import { IJWTPublicPayload, ISendQuestionnaireResponseToKinesis, SessionHelper } from '@modules/session';
+import {
+	IInvokeUpsertQuestionnaireResponseLambda,
+	ISendQuestionnaireResponseToKinesis,
+	IJWTPublicPayload,
+	SessionHelper,
+} from '@modules/session';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError, UtilsPromise, UtilsAWS } from '@utils/*';
 import { QuestionTypes } from '@modules/questionnaire';
@@ -163,5 +168,11 @@ export class ResponseHelper {
 			key: uuidv4(),
 			payload,
 		});
+	}
+
+	async invokeUpsertQuestionnaireResponseLambda(
+		payload: IInvokeUpsertQuestionnaireResponseLambda,
+	): Promise<void> {
+		await this.utilsAWS.invokeLambda(payload);
 	}
 }

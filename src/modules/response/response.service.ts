@@ -66,7 +66,7 @@ export class ResponseService {
 			authToken = this.sessionHelper.signPublicUpsertResponseToken({ guestRespondentId });
 		}
 
-		await this.responseHelper.invokeUpsertQuestionnaireResponseLambda({
+		await this.responseHelper.sendQuestionnaireResponseToKinesis({
 			guestRespondentId,
 			questionnaireId,
 			answers,

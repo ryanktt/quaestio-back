@@ -1,29 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { QuestionnaireModule, QuestionnaireRepository } from '@modules/questionnaire';
-import { UserRepository, UserModule } from '@modules/user';
-import { UtilsArray, UtilsModule } from '@utils/*';
+import { IGraphqlContext, getParamsAsObjFromInjectionArgs } from './graphql.interface';
 import { loaders } from './graphql.data-loaders';
-import { getClientIp } from 'request-ip';
 
+import { QuestionnaireModule, QuestionnaireRepository } from '@modules/questionnaire';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { IGraphqlContext } from './graphql.interface';
+import { UserModule, UserRepository } from '@modules/user';
+import { UtilsArray, UtilsModule } from '@utils/*';
 import { GraphQLModule } from '@nestjs/graphql';
+import { getClientIp } from 'request-ip';
 import { Request } from 'express';
 
 export default GraphQLModule.forRootAsync<ApolloDriverConfig>({
 	driver: ApolloDriver,
-	useFactory: (
-		utilsArray: UtilsArray,
-		userRepository: UserRepository,
-		questionnaireRepository: QuestionnaireRepository,
-	) => ({
+	useFactory: (...args) => ({
 		autoSchemaFile: 'schema.gql',
 		context: (context): IGraphqlContext => {
+			const injectedArgs = getParamsAsObjFromInjectionArgs(...(args as Record<string, unknown>[]));
 			const headers = context.req.headers as { 'user-agent': string; auth: string };
 			const clientIp = getClientIp(context.req as Request) as string;
 
 			return {
-				loaders: loaders(utilsArray, userRepository, questionnaireRepository),
+				loaders: loaders(injectedArgs),
 				userAgent: headers['user-agent'],
 				authToken: headers.auth,
 				clientIp,

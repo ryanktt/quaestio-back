@@ -2,8 +2,8 @@ import { ResponseService } from './response.service';
 import { AnswerDiscriminatorInput, Response } from './schema';
 
 import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation } from '@nestjs/graphql';
-import { ILoaders } from '@graphql/graphql.data-loaders';
 import { Questionnaire } from '@modules/questionnaire';
+import { ILoaders } from '@graphql/graphql.interface';
 import { IPublicContext } from '@modules/session';
 
 @ObjectType()

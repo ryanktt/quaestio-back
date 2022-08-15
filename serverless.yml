@@ -10,23 +10,13 @@ plugins:
 provider:
   name: aws
   runtime: nodejs14.x
-  region: us-east-1
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - kinesis:GetRecords
-            - kinesis:GetShardIterator
-            - kinesis:DescribeStream
-            - kinesis:ListStreams
-            - kinesis:PutRecord
-            - kinesis:PutRecords
-          Resource: arn:aws:kinesis:us-east-1:874738831934:stream/questionnaire-upsert-response-stream
+  stage: ${opt:stage, "local"}
+  region: ${opt:region, "us-east-1"}
+  environment: ${file(./serverless-env.js):${self:provider.stage}}
 
 functions:
-  questionnaire-response-upsertion-consumer:
-    handler: src/bootstrap/consumers/questionnaire-response-upsertion/lambda.handler
+  upsert-questionnaire-response-consumer:
+    handler: src/bootstrap/consumers/upsert-questionnaire-response/lambda.handler
     events:
       - stream:
           arn: arn:aws:kinesis:us-east-1:874738831934:stream/questionnaire-upsert-response-stream

@@ -9,5 +9,13 @@ export type ObjKeyTypes<T> = ObjKeyValueMatchTypes<T, string | number | symbol |
 export interface IAWSSendToKinesis {
 	payload: Record<string, unknown>;
 	streamName: string;
+	region: string;
 	key: string;
+}
+
+export interface IInvokeLambda {
+	functionName: string;
+	payload: Record<string, unknown>;
+	endpoint: string;
+	region: string;
 }

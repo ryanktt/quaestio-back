@@ -1,4 +1,4 @@
-import { IAWSSendToKinesis } from './utils.interface';
+import { IAWSSendToKinesis, IInvokeLambda } from './utils.interface';
 
 import { AppError, EGeneralErrorCode } from './utils.error';
 import { Injectable } from '@nestjs/common';
@@ -6,8 +6,8 @@ import AWS from 'aws-sdk';
 
 @Injectable()
 export class UtilsAWS {
-	async sendToKineses({ payload, key, streamName }: IAWSSendToKinesis): Promise<void> {
-		const kinesis = new AWS.Kinesis({ region: 'us-east-1' });
+	async sendToKineses({ payload, key, streamName, region }: IAWSSendToKinesis): Promise<void> {
+		const kinesis = new AWS.Kinesis({ region });
 		const params = {
 			Data: JSON.stringify(payload),
 			StreamName: streamName,
@@ -26,14 +26,20 @@ export class UtilsAWS {
 			});
 	}
 
-	async invokeLambda(payload: Record<string, unknown>): Promise<void> {
-		const lambda = new AWS.Lambda({ region: 'us-east-1', endpoint: 'http://localhost:3002' });
+	async invokeLambda({ functionName, endpoint, region, payload }: IInvokeLambda): Promise<void> {
+		const lambda = new AWS.Lambda({ region, endpoint });
 		await lambda
 			.invoke({
-				FunctionName: 'questionnaire-app-dev-upsert-questionnaire-response-consumer',
+				FunctionName: functionName,
 				Payload: JSON.stringify(payload),
 			})
 			.promise()
-			.catch((err) => console.error(err));
+			.catch((err) => {
+				throw new AppError({
+					originalError: err instanceof Error ? err : undefined,
+					code: EGeneralErrorCode.AWS_INVOKE_LAMBDA_ERROR,
+					message: 'fail to invoke aws lambda function',
+				});
+			});
 	}
 }

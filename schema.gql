@@ -186,7 +186,7 @@ type AnswerSingleChoice implements Answer {
   updatedAt: DateTime!
   type: AnswerType!
   question: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   correct: Boolean
   option: String
 }
@@ -197,7 +197,7 @@ interface Answer {
   updatedAt: DateTime!
   type: AnswerType!
   question: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   correct: Boolean
 }
 
@@ -214,7 +214,7 @@ type AnswerMultipleChoice implements Answer {
   updatedAt: DateTime!
   type: AnswerType!
   question: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   correct: Boolean
   options: [String!]
 }
@@ -225,7 +225,7 @@ type AnswerTrueOrFalse implements Answer {
   updatedAt: DateTime!
   type: AnswerType!
   question: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   correct: Boolean
   option: String
 }
@@ -236,7 +236,7 @@ type AnswerText implements Answer {
   updatedAt: DateTime!
   type: AnswerType!
   question: String!
-  answeredAt: DateTime!
+  answeredAt: DateTime
   correct: Boolean
   text: String
 }
@@ -412,27 +412,27 @@ input AnswerDiscriminatorInput {
 input AnswerMultipleChoiceInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime
+  answeredAt: DateTime = "2022-08-15T03:28:22.147Z"
   optionIds: [String!]
 }
 
 input AnswerSingleChoiceInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime
+  answeredAt: DateTime = "2022-08-15T03:28:22.147Z"
   optionId: String
 }
 
 input AnswerTrueOrFalseInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime
+  answeredAt: DateTime = "2022-08-15T03:28:22.147Z"
   optionId: String
 }
 
 input AnswerTextInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime
+  answeredAt: DateTime = "2022-08-15T03:28:22.147Z"
   text: String
 }

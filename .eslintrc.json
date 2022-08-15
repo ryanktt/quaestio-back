@@ -5,11 +5,11 @@
 	},
 	"extends": ["eslint:recommended", "prettier"],
 	"plugins": ["prettier"],
-	"rules": {},
 	"root": true,
-	"ignorePatterns": [".eslintrc.json"],
+	"ignorePatterns": [".eslintrc.json", "**/*.js"],
 	"overrides": [
 		{
+			"files": ["*.ts"],
 			"extends": [
 				"plugin:@typescript-eslint/recommended-requiring-type-checking",
 				"plugin:@typescript-eslint/recommended"
@@ -18,7 +18,6 @@
 			"parserOptions": {
 				"project": "tsconfig.json"
 			},
-			"files": ["*.ts"],
 			"plugins": ["@typescript-eslint"],
 			"rules": {
 				"@typescript-eslint/no-explicit-any": "error",

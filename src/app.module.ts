@@ -12,8 +12,27 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 
-interface IEnvirolmentVariables {
+export interface IEnvirolmentVariables {
+	STAGE: string;
+	JWT_SECRET: string;
 	MONGO_URI: string;
+
+	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_KINESIS_STREAM_NAME: string;
+	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_FUNCTION_NAME: string;
+	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_ENDPOINT: string;
+	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION: string;
+}
+
+export function isLocal(): boolean {
+	return process.env.STAGE === 'local';
+}
+
+export function isDevelopment(): boolean {
+	return process.env.STAGE === 'dev';
+}
+
+export function isProduction(): boolean {
+	return process.env.STAGE === 'prod';
 }
 
 @Module({
@@ -26,7 +45,7 @@ interface IEnvirolmentVariables {
 			inject: [ConfigService],
 		}),
 		GraphQLModule,
-		ConfigModule.forRoot(),
+		ConfigModule.forRoot({ isGlobal: true }),
 
 		QuestionnaireModule,
 		ResponseModule,

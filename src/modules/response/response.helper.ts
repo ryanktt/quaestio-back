@@ -22,6 +22,8 @@ import {
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppError, UtilsPromise, UtilsAWS } from '@utils/*';
 import { QuestionTypes } from '@modules/questionnaire';
+import { IEnvirolmentVariables } from 'src/app.module';
+import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import Joi from 'joi';
 
@@ -30,6 +32,7 @@ export class ResponseHelper {
 	constructor(
 		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
 		@Inject(forwardRef(() => UtilsAWS)) private readonly utilsAWS: UtilsAWS,
+		private readonly configService: ConfigService<IEnvirolmentVariables>,
 		private readonly utilsPromise: UtilsPromise,
 	) {}
 
@@ -163,16 +166,27 @@ export class ResponseHelper {
 	}
 
 	async sendQuestionnaireResponseToKinesis(payload: ISendQuestionnaireResponseToKinesis): Promise<void> {
+		const streamName = this.configService.get<string>(
+			'AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_KINESIS_STREAM_NAME',
+			'',
+		);
+		const region = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION', '');
+
 		await this.utilsAWS.sendToKineses({
-			streamName: 'questionnaire-upsert-response-stream',
 			key: uuidv4(),
+			streamName,
 			payload,
+			region,
 		});
 	}
 
 	async invokeUpsertQuestionnaireResponseLambda(
 		payload: IInvokeUpsertQuestionnaireResponseLambda,
 	): Promise<void> {
-		await this.utilsAWS.invokeLambda(payload);
+		const funcName = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_FUNCTION_NAME', '');
+		const endpoint = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_ENDPOINT', '');
+		const region = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION', '');
+
+		await this.utilsAWS.invokeLambda({ endpoint, functionName: funcName, region, payload });
 	}
 }

@@ -6,6 +6,7 @@ import { ResponseHelper } from './response.helper';
 import { EQuestionnaireErrorCode, EQuestionnaireType, QuestionnaireRepository } from '@modules/questionnaire';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { SessionHelper } from '@modules/session';
+import { isLocal } from 'src/app.module';
 import { AppError } from '@utils/*';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -65,12 +66,19 @@ export class ResponseService {
 			guestRespondentId = uuidv4();
 			authToken = this.sessionHelper.signPublicUpsertResponseToken({ guestRespondentId });
 		}
-
-		await this.responseHelper.sendQuestionnaireResponseToKinesis({
-			guestRespondentId,
-			questionnaireId,
-			answers,
-		});
+		if (isLocal()) {
+			await this.responseHelper.invokeUpsertQuestionnaireResponseLambda({
+				guestRespondentId,
+				questionnaireId,
+				answers,
+			});
+		} else {
+			await this.responseHelper.sendQuestionnaireResponseToKinesis({
+				guestRespondentId,
+				questionnaireId,
+				answers,
+			});
+		}
 
 		return { authToken: authToken || '' };
 	}

@@ -2,8 +2,9 @@ import { AdminService } from './admin.service';
 import { Admin } from './admin.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
-import { IPublicContext, Session } from '@modules/session';
-import { Role } from '@utils/*';
+import { IPublicContext } from '@modules/session/session.interface';
+import { Session } from '@modules/session/session.schema';
+import { Role } from '@utils/utils.decorators';
 
 @ObjectType()
 class SignInResponse {

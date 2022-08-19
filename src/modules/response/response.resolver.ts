@@ -2,9 +2,9 @@ import { ResponseService } from './response.service';
 import { AnswerDiscriminatorInput, Response } from './schema';
 
 import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation } from '@nestjs/graphql';
-import { Questionnaire } from '@modules/questionnaire';
+import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
+import { IPublicContext } from '@modules/session/session.interface';
 import { ILoaders } from '@graphql/graphql.interface';
-import { IPublicContext } from '@modules/session';
 
 @ObjectType()
 class PublicUpsertResponse {

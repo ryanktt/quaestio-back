@@ -1,8 +1,10 @@
 import { SessionDocument } from './session.schema';
 
-import { AdminDocument, RespondentDocument, UserDocument } from '@modules/user';
+import { RespondentDocument } from '@modules/user/respondent/respondent.schema';
+import { AnswerTypes } from '@modules/response/schema/response.schema';
+import { AdminDocument } from '@modules/user/admin/admin.schema';
+import { UserDocument } from '@modules/user/user.schema';
 import { registerEnumType } from '@nestjs/graphql';
-import { AnswerTypes } from '@modules/response';
 
 export enum ESessionErrorCode {
 	SESSION_IS_NOT_ACTIVE = 'SESSION_IS_NOT_ACTIVE',

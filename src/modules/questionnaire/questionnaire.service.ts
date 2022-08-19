@@ -16,8 +16,8 @@ import {
 import { QuestionnaireHelper } from './questionnaire.helper';
 import { QuestionnaireRepository } from './questionnaire.repository';
 
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
-import { AppError } from '@utils/*';
 
 @Injectable()
 export class QuestionnaireService {

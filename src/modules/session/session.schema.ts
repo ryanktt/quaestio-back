@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { DocumentType, SchemaBase } from '@utils/*';
+import { DocumentType, SchemaBase } from '@utils/utils.schema';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { User } from '@modules/user/user.schema';
 import { Model } from 'mongoose';
-import { User } from '@modules/user';
 
 @ObjectType()
 @Schema()

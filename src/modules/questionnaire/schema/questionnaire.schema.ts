@@ -1,11 +1,11 @@
 import { EQuestionType, EQuestionnaireType } from '../questionnaire.interface';
 
-import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
+import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
 import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
+import { Admin } from '@modules/user/admin/admin.schema';
 import { v4 as uuidv4 } from 'uuid';
-import { Admin } from '@modules/user';
 
 @ObjectType()
 @Schema()
@@ -42,7 +42,7 @@ export const OptionSchema = SchemaFactory.createForClass(Option);
 @Schema({ discriminatorKey: 'type', timestamps: true })
 export class Question extends SchemaBaseInterface {
 	@Field(() => EQuestionType)
-	@Prop({ required: true, enum: EQuestionType })
+	@Prop({ type: String, required: true, enum: EQuestionType })
 	type: EQuestionType;
 
 	@Field()
@@ -283,7 +283,7 @@ export type QuestionTypes =
 @Schema({ discriminatorKey: 'type' })
 export class Questionnaire extends SchemaBaseInterface {
 	@Field(() => EQuestionnaireType)
-	@Prop({ enum: EQuestionnaireType, required: true })
+	@Prop({ type: String, enum: EQuestionnaireType, required: true })
 	readonly type: EQuestionnaireType;
 
 	@Field(() => Admin)

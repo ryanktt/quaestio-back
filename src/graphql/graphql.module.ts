@@ -2,11 +2,14 @@
 import { IGraphqlContext, getParamsAsObjFromInjectionArgs } from './graphql.interface';
 import { loaders } from './graphql.data-loaders';
 
-import { QuestionnaireModule, QuestionnaireRepository } from '@modules/questionnaire';
+import { QuestionnaireRepository } from '@modules/questionnaire/questionnaire.repository';
+import { QuestionnaireModule } from '@modules/questionnaire/questionnaire.module';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { UserModule, UserRepository } from '@modules/user';
-import { UtilsArray, UtilsModule } from '@utils/*';
+import { UserRepository } from '@modules/user/user.repository';
+import { UserModule } from '@modules/user/user.module';
+import { UtilsModule } from '@utils/utils.module';
 import { GraphQLModule } from '@nestjs/graphql';
+import { UtilsArray } from '@utils/utils.array';
 import { getClientIp } from 'request-ip';
 import { Request } from 'express';
 

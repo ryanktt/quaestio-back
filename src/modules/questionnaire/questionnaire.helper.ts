@@ -16,7 +16,8 @@ import {
 	Question,
 } from './schema';
 
-import { AppError, UtilsPromise } from '@utils/*';
+import { UtilsPromise } from '@utils/utils.promise';
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import Joi from 'joi';
 

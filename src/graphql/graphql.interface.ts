@@ -1,6 +1,8 @@
-import { QuestionnaireRepository, questionnaireLoader } from '@modules/questionnaire';
-import { UserRepository, userLoader } from '@modules/user';
-import { UtilsArray } from '@utils/*';
+import { QuestionnaireRepository } from '@modules/questionnaire/questionnaire.repository';
+import { questionnaireLoader } from '@modules/questionnaire/questionnaire.loader';
+import { UserRepository } from '@modules/user/user.repository';
+import { userLoader } from '@modules/user/user.loader';
+import { UtilsArray } from '@utils/utils.array';
 
 export interface ILoaders {
 	questionnaireLoader: ReturnType<typeof questionnaireLoader>;

@@ -1,8 +1,8 @@
 import { AnswerDiscriminatorInput, Answer } from './schema';
 
-import { Questionnaire } from '@modules/questionnaire';
+import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { registerEnumType } from '@nestjs/graphql';
-import { RespondentDocument } from '@modules/user';
+// import { RespondentDocument } from '@modules/user';
 
 export enum EAnswerType {
 	MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
@@ -38,12 +38,12 @@ export interface IRepositoryFetchResponseParams {
 	responseId?: string;
 }
 
-export interface IRepositoryUpdateResponseParams {
-	response: RespondentDocument;
-	completedAt?: Date;
-	answers?: Answer[];
-	startedAt?: Date;
-}
+// export interface IRepositoryUpdateResponseParams {
+// 	response: RespondentDocument;
+// 	completedAt?: Date;
+// 	answers?: Answer[];
+// 	startedAt?: Date;
+// }
 
 export interface IUpsertResponseParams {
 	answers: AnswerDiscriminatorInput[];

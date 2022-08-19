@@ -1,7 +1,7 @@
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { Questionnaire } from './schema';
 
-import { UtilsArray } from '@utils/*';
+import { UtilsArray } from '@utils/utils.array';
 import DataLoader from 'dataloader';
 
 export function questionnaireLoader(

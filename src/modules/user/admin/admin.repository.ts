@@ -3,8 +3,8 @@ import { ICreateAdminParams } from './admin.interface';
 import { EUserErrorCode } from '../user.interface';
 
 import { InjectModel } from '@nestjs/mongoose';
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
-import { AppError } from '@utils/*';
 
 @Injectable()
 export class AdminRepository {

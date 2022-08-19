@@ -8,11 +8,11 @@ import {
 import { QuestionnaireService } from './questionnaire.service';
 
 import { ResolveField, Resolver, Mutation, Context, Parent, Query, Args } from '@nestjs/graphql';
+import { Admin, AdminDocument } from '@modules/user/admin/admin.schema';
+import { IAdminContext } from '@modules/session/session.interface';
 import { EQuestionnaireType } from './questionnaire.interface';
 import { ILoaders } from '@graphql/graphql.interface';
-import { Admin, AdminDocument } from '@modules/user';
-import { IAdminContext } from '@modules/session';
-import { Role } from '@utils/*';
+import { Role } from '@utils/utils.decorators';
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {

@@ -21,8 +21,10 @@ import {
 } from './questionnaire.interface';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AppError, FilterType, UtilsDoc } from '@utils/*';
+import { FilterType } from '@utils/utils.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import { AppError } from '@utils/utils.error';
+import { UtilsDoc } from '@utils/utils.doc';
 import { ClientSession } from 'mongoose';
 
 @Injectable()

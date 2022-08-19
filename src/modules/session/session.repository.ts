@@ -1,9 +1,9 @@
-import { ESessionErrorCode, ICreateSessionParams, IUpdateSessionParams } from './session.interface';
+import { ESessionErrorCode, IUpdateSessionParams } from './session.interface';
 import { SessionDocument, SessionModel } from './session.schema';
 
 import { InjectModel } from '@nestjs/mongoose';
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
-import { AppError } from '@utils/*';
 
 @Injectable()
 export class SessionRepository {
@@ -21,19 +21,6 @@ export class SessionRepository {
 				});
 			})) as SessionDocument | null;
 		return session ? session : undefined;
-	}
-
-	async create(params: ICreateSessionParams): Promise<SessionDocument> {
-		const { expiresAt, ip, userId, userAgent, active } = params;
-		return this.sessionSchema
-			.create({ expiresAt, ip, user: userId, userAgent, active })
-			.catch((err: Error) => {
-				throw new AppError({
-					code: ESessionErrorCode.CREATE_SESSION_ERROR,
-					message: 'fail to create new session',
-					originalError: err,
-				});
-			}) as Promise<SessionDocument>;
 	}
 
 	async update({ active, session }: IUpdateSessionParams): Promise<SessionDocument> {

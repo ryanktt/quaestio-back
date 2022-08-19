@@ -1,7 +1,7 @@
 import { EUserRole } from '../user.interface';
 import { User } from '../user.schema';
 
-import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
+import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
 import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Model } from 'mongoose';

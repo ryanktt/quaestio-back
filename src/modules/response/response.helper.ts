@@ -17,23 +17,25 @@ import {
 	IInvokeUpsertQuestionnaireResponseLambda,
 	ISendQuestionnaireResponseToKinesis,
 	IJWTPublicPayload,
-	SessionHelper,
-} from '@modules/session';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AppError, UtilsPromise, UtilsAWS } from '@utils/*';
-import { QuestionTypes } from '@modules/questionnaire';
+} from '@modules/session/session.interface';
+import { ResponseQuestionnaireHelper } from '../shared/response-questionnaire/response-questionnaire.helper';
+import { QuestionTypes } from '@modules/questionnaire/schema/questionnaire.schema';
 import { IEnvirolmentVariables } from 'src/app.module';
+import { UtilsPromise } from '@utils/utils.promise';
 import { ConfigService } from '@nestjs/config';
+import { AppError } from '@utils/utils.error';
+import { UtilsAWS } from '@utils/utils.aws';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import Joi from 'joi';
 
 @Injectable()
 export class ResponseHelper {
 	constructor(
-		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
-		@Inject(forwardRef(() => UtilsAWS)) private readonly utilsAWS: UtilsAWS,
+		private readonly responseQuestHelper: ResponseQuestionnaireHelper,
 		private readonly configService: ConfigService<IEnvirolmentVariables>,
 		private readonly utilsPromise: UtilsPromise,
+		private readonly utilsAWS: UtilsAWS,
 	) {}
 
 	async validateUpsertResponseParams(params: IUpsertResponseParams): Promise<void> {
@@ -159,7 +161,7 @@ export class ResponseHelper {
 
 	async getGuestRespondentJwtPayload(authToken?: string): Promise<IJWTPublicPayload | undefined> {
 		if (!authToken) return;
-		const payload = await this.sessionHelper
+		const payload = await this.responseQuestHelper
 			.validateAndGetJwtPublicPayload(authToken)
 			.catch((err) => console.error(err));
 		return typeof payload === 'object' ? payload : undefined;

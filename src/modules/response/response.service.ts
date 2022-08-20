@@ -1,21 +1,21 @@
 import { IUpsertResponseParams, IPublicUpsertResponseParams } from './response.interface';
-import { AnswerTypes, ResponseDocument } from './schema';
 import { ResponseRepository } from './response.repository';
+import { AnswerTypes, ResponseDocument } from './schema';
 import { ResponseHelper } from './response.helper';
 
-import { EQuestionnaireErrorCode, EQuestionnaireType, QuestionnaireRepository } from '@modules/questionnaire';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { SessionHelper } from '@modules/session';
+import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
+import { ResponseQuestionnaireHelper } from '@modules/shared/response-questionnaire/response-questionnaire.helper';
+import { EQuestionnaireErrorCode, EQuestionnaireType } from '@modules/questionnaire/questionnaire.interface';
+import { AppError } from '@utils/utils.error';
+import { Injectable } from '@nestjs/common';
 import { isLocal } from 'src/app.module';
-import { AppError } from '@utils/*';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ResponseService {
 	constructor(
-		@Inject(forwardRef(() => QuestionnaireRepository))
-		private readonly questionnaireRepository: QuestionnaireRepository,
-		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
+		private readonly responseQuestionnaireRepository: ResponseQuestionnaireRepository,
+		private readonly responseQuestionnaireHelper: ResponseQuestionnaireHelper,
 		private readonly responseRepository: ResponseRepository,
 		private readonly responseHelper: ResponseHelper,
 	) {}
@@ -28,7 +28,7 @@ export class ResponseService {
 			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as AnswerTypes;
 		});
 
-		const questionnaire = await this.questionnaireRepository.fetchById(questionnaireId);
+		const questionnaire = await this.responseQuestionnaireRepository.fetchById(questionnaireId);
 		if (!questionnaire || questionnaire.type !== EQuestionnaireType.QuestionnaireExam) {
 			throw new AppError({
 				code: EQuestionnaireErrorCode.QUESTIONNAIRE_NOT_FOUND,
@@ -64,7 +64,7 @@ export class ResponseService {
 
 		if (!guestRespondentId) {
 			guestRespondentId = uuidv4();
-			authToken = this.sessionHelper.signPublicUpsertResponseToken({ guestRespondentId });
+			authToken = this.responseQuestionnaireHelper.signPublicUpsertResponseToken({ guestRespondentId });
 		}
 		if (isLocal()) {
 			await this.responseHelper.invokeUpsertQuestionnaireResponseLambda({

@@ -6,8 +6,9 @@ import {
 } from './response.interface';
 import { ResponseDocument, ResponseModel, Response } from './schema';
 
-import { AppError, FilterType } from '@utils/*';
+import { FilterType } from '@utils/utils.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { ClientSession } from 'mongoose';
 

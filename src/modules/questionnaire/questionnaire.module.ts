@@ -9,11 +9,9 @@ import { QuestionnaireResolver } from './questionnaire.resolver';
 import { QuestionnaireService } from './questionnaire.service';
 import { QuestionnaireHelper } from './questionnaire.helper';
 
-import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ResponseModule } from '@modules/response';
-import { UtilsModule } from '@utils/*';
-import { UserModule } from '@modules/user';
+import { UtilsModule } from '@utils/utils.module';
+import { Module } from '@nestjs/common';
 
 @Module({
 	imports: [
@@ -28,9 +26,7 @@ import { UserModule } from '@modules/user';
 				],
 			},
 		]),
-		forwardRef(() => ResponseModule),
-		forwardRef(() => UtilsModule),
-		forwardRef(() => UserModule),
+		UtilsModule,
 	],
 	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 	exports: [QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],

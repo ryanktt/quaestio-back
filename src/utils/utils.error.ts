@@ -1,7 +1,7 @@
-import { EUserErrorCode, ERespondentErrorCode } from '@modules/user';
-import { EQuestionnaireErrorCode } from '@modules/questionnaire';
-import { EResponseErrorCode } from '@modules/response';
-import { ESessionErrorCode } from '@modules/session';
+import { EQuestionnaireErrorCode } from '@modules/questionnaire/questionnaire.interface';
+import { EUserErrorCode, ERespondentErrorCode } from '@modules/user/user.interface';
+import { EResponseErrorCode } from '@modules/response/response.interface';
+import { ESessionErrorCode } from '@modules/session/session.interface';
 
 export enum EGeneralErrorCode {
 	ACCESS_DENIED = 'ACCESS_DENIED',

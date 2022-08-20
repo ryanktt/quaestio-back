@@ -4,15 +4,16 @@ import { EUserErrorCode } from '../user.interface';
 import { AdminDocument } from './admin.schema';
 import { UserHelper } from '../user.helper';
 
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { SessionHelper, SessionRepository } from '@modules/session';
-import { AppError } from '@utils/*';
+import { UserSessionRepository } from '@modules/shared/user-session/user-session.repository';
+import { UserSessionHelper } from '@modules/shared/user-session/user-session.helper';
+import { AppError } from '@utils/utils.error';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AdminService {
 	constructor(
-		@Inject(forwardRef(() => SessionRepository)) private readonly sessionRepository: SessionRepository,
-		@Inject(forwardRef(() => SessionHelper)) private readonly sessionHelper: SessionHelper,
+		private readonly userSessionRepository: UserSessionRepository,
+		private readonly userSessionHelper: UserSessionHelper,
 		private readonly adminRepository: AdminRepository,
 		private readonly userHelper: UserHelper,
 	) {}
@@ -74,15 +75,15 @@ export class AdminService {
 			});
 		}
 
-		const sessionExpDate = this.sessionHelper.getExpirationDate();
-		const session = await this.sessionRepository.create({
+		const sessionExpDate = this.userSessionHelper.getExpirationDate();
+		const session = await this.userSessionRepository.createSession({
 			expiresAt: sessionExpDate,
 			userId: user.id,
 			userAgent,
 			ip,
 		});
 
-		const authToken = this.sessionHelper.signJwtToken(
+		const authToken = this.userSessionHelper.signJwtToken(
 			{ userId: user.id, sessionId: session.id },
 			sessionExpDate,
 		);

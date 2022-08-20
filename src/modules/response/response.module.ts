@@ -4,18 +4,16 @@ import { ResponseService } from './response.service';
 import { ResponseHelper } from './response.helper';
 import { ResponseSchema } from './schema';
 
-import { QuestionnaireModule } from '@modules/questionnaire';
-import { forwardRef, Module } from '@nestjs/common';
+import { ResponseQuestionnaireModule } from '../shared/response-questionnaire/response-questionnaire.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SessionModule } from '@modules/session';
-import { UtilsModule } from '@utils/*';
+import { UtilsModule } from '@utils/utils.module';
+import { Module } from '@nestjs/common';
 
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: 'Response', schema: ResponseSchema }]),
-		forwardRef(() => QuestionnaireModule),
-		forwardRef(() => SessionModule),
-		forwardRef(() => UtilsModule),
+		ResponseQuestionnaireModule,
+		UtilsModule,
 	],
 	providers: [ResponseRepository, ResponseHelper, ResponseService, ResponseResolver],
 	exports: [ResponseRepository, ResponseHelper, ResponseService],

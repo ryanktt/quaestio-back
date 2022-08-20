@@ -1,4 +1,6 @@
 import { registerEnumType } from '@nestjs/graphql';
+export * from './respondent/respondent.interface';
+export * from './admin/admin.interface';
 
 export enum EUserErrorCode {
 	USER_SIGNUP_INVALID_PARAMS = 'USER_SIGNUP_INVALID_PARAMS',

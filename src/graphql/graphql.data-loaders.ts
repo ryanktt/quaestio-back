@@ -1,6 +1,6 @@
+import { questionnaireLoader } from '@modules/questionnaire/questionnaire.loader';
 import { IGraphqlInjectionParams } from './graphql.interface';
-import { questionnaireLoader } from '@modules/questionnaire';
-import { userLoader } from '@modules/user';
+import { userLoader } from '@modules/user/user.loader';
 
 export interface ILoaders {
 	questionnaireLoader: ReturnType<typeof questionnaireLoader>;

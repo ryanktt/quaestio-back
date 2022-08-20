@@ -11,8 +11,8 @@ import {
 	QuestionnaireSurveyDocument,
 } from './schema';
 
+import { AdminDocument } from '@modules/user/admin/admin.schema';
 import { registerEnumType } from '@nestjs/graphql';
-import { AdminDocument } from '@modules/user';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',

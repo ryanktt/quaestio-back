@@ -5,9 +5,9 @@ import { SessionService } from './session.service';
 
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { EUserRole } from '@modules/user';
+import { AppError } from '@utils/utils.error';
+import { EUserRole } from '@modules/user/user.interface';
 import { Reflector } from '@nestjs/core';
-import { AppError } from '@utils/*';
 
 @Injectable()
 export class SessionGuard implements CanActivate {

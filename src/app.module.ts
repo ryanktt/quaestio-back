@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
-import { SessionGuard, SessionModule } from './modules/session';
-import { QuestionnaireModule } from './modules/questionnaire';
-import { ResponseModule } from './modules/response';
-import { UserModule } from './modules/user';
-import { UtilsModule } from './utils';
+import { ResponseQuestionnaireModule } from './modules/shared/response-questionnaire/response-questionnaire.module';
+import { UserSessionModule } from './modules/shared/user-session/user-session.module';
+import { QuestionnaireModule } from './modules/questionnaire/questionnaire.module';
+import { ResponseModule } from './modules/response/response.module';
+import { SessionModule } from './modules/session/session.module';
+import { SessionGuard } from './modules/session/session.guard';
+import { UserModule } from './modules/user/user.module';
+import { UtilsModule } from './utils/utils.module';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import GraphQLModule from '@graphql/graphql.module';
@@ -47,7 +50,9 @@ export function isProduction(): boolean {
 		GraphQLModule,
 		ConfigModule.forRoot({ isGlobal: true }),
 
+		ResponseQuestionnaireModule,
 		QuestionnaireModule,
+		UserSessionModule,
 		ResponseModule,
 		SessionModule,
 		UtilsModule,

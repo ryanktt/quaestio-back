@@ -1,7 +1,8 @@
 import { EUserErrorCode } from './user.interface';
 
 import PasswordValidator from 'password-validator';
-import { AppError, UtilsPromise } from '@utils/*';
+import { UtilsPromise } from '@utils/utils.promise';
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
 import validator from 'validator';

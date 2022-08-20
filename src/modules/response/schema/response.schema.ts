@@ -1,10 +1,10 @@
 import { EAnswerType } from '../response.interface';
 
-import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/*';
+import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
+import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
-import { Questionnaire } from '@modules/questionnaire';
 
 @InterfaceType({
 	isAbstract: true,
@@ -21,7 +21,7 @@ import { Questionnaire } from '@modules/questionnaire';
 })
 export class Answer extends SchemaBaseInterface {
 	@Field(() => EAnswerType)
-	@Prop({ required: true, enum: EAnswerType })
+	@Prop({ type: String, required: true, enum: EAnswerType })
 	type: EAnswerType;
 
 	@Field(() => String)

@@ -1,7 +1,7 @@
 import { EUserRole } from './user.interface';
 
+import { DocumentType, SchemaBaseInterface } from '@utils/utils.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { DocumentType, SchemaBaseInterface } from '@utils/*';
 import { Field, InterfaceType } from '@nestjs/graphql';
 import { Model } from 'mongoose';
 
@@ -12,7 +12,7 @@ import { Model } from 'mongoose';
 @Schema({ discriminatorKey: 'role' })
 export class User extends SchemaBaseInterface {
 	@Field(() => EUserRole)
-	@Prop({ enum: EUserRole, required: true })
+	@Prop({ type: String, enum: EUserRole, required: true })
 	role: EUserRole;
 
 	@Field()

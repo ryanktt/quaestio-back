@@ -2,8 +2,8 @@ import { ERespondentErrorCode, ICreateRespondentParams } from './respondent.inte
 import { RespondentDocument, RespondentModel } from './respondent.schema';
 
 import { InjectModel } from '@nestjs/mongoose';
+import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
-import { AppError } from '@utils/*';
 
 @Injectable()
 export class RespondentRepository {

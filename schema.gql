@@ -412,27 +412,27 @@ input AnswerDiscriminatorInput {
 input AnswerMultipleChoiceInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime = "2022-08-19T04:00:59.979Z"
+  answeredAt: DateTime = "2022-08-20T00:00:46.634Z"
   optionIds: [String!]
 }
 
 input AnswerSingleChoiceInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime = "2022-08-19T04:00:59.979Z"
+  answeredAt: DateTime = "2022-08-20T00:00:46.634Z"
   optionId: String
 }
 
 input AnswerTrueOrFalseInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime = "2022-08-19T04:00:59.979Z"
+  answeredAt: DateTime = "2022-08-20T00:00:46.634Z"
   optionId: String
 }
 
 input AnswerTextInput {
   type: AnswerType!
   questionId: String!
-  answeredAt: DateTime = "2022-08-19T04:00:59.979Z"
+  answeredAt: DateTime = "2022-08-20T00:00:46.634Z"
   text: String
 }

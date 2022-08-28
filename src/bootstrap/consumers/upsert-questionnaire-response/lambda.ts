@@ -9,7 +9,7 @@ let cache: { mongoClient: MongoClient };
 
 async function bootstrap(): Promise<{ mongoClient: MongoClient }> {
 	const mongoClient = await MongoClient.connect(MONGO_URI).catch((err: Error) => {
-		throw new Error(`fail to connect to mongodb. error: ${err.message} ${MONGO_URI}`);
+		throw new Error(`fail to connect to mongodb. error: ${err.message}`);
 	});
 
 	return { mongoClient };

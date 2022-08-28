@@ -115,7 +115,7 @@ class AnswerText extends SchemaBase implements Answer {
 	question: string;
 
 	@Field({ nullable: true })
-	answeredAt: Date;
+	answeredAt?: Date;
 
 	@Field({ nullable: true })
 	correct?: boolean;

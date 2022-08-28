@@ -5,7 +5,7 @@ interface IValidateAnswers {
 	questionnaire: QuestionnaireTypes;
 }
 
-export function validateQuestionnaireAnswers(params: IValidateAnswers): void {
+export function validateResponseAnswers(params: IValidateAnswers): void {
 	const { answers, questionnaire } = params;
 	const questionMap: Record<string, { required: boolean; verified: boolean; type: EQuestionType }> = {};
 	questionnaire.questions.forEach(

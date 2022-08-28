@@ -1,8 +1,4 @@
-import {
-	updateQuestionnaireMetrics,
-	correctQuestionnaireAnswers,
-	validateQuestionnaireAnswers,
-} from '../helpers';
+import { updateQuestionnaireMetrics, correctQuestionnaireAnswers, validateResponseAnswers } from '../helpers';
 import { IUpsertResponsePayload, QuestionnaireTypes } from '../types/types';
 import { MongoClient, ObjectId } from 'mongodb';
 
@@ -32,7 +28,7 @@ export async function upsertQuestionnaireResponse({
 		throw new Error('questionnaire not found');
 	}
 
-	validateQuestionnaireAnswers({ answers, questionnaire });
+	validateResponseAnswers({ answers, questionnaire });
 	correctQuestionnaireAnswers({ answers, questionnaire });
 	updateQuestionnaireMetrics({ answers, questionnaire });
 

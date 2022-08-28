@@ -1,5 +1,6 @@
-import { AnswerDiscriminatorInput, Answer } from './schema';
+import { AnswerDiscriminatorInput, Answer, AnswerTypes } from './schema';
 
+import { QuestionnaireTypes } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
 import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { registerEnumType } from '@nestjs/graphql';
 // import { RespondentDocument } from '@modules/user';
@@ -65,4 +66,9 @@ export interface IValidateAnswers {
 export interface ICorrectAnswers {
 	questionnaire: Questionnaire;
 	answers: Answer[];
+}
+
+export interface IUpdateQuestionnaireMetrics {
+	answers: AnswerTypes[];
+	questionnaire: QuestionnaireTypes;
 }

@@ -4,6 +4,7 @@ import {
 	IValidateAnswers,
 	EResponseErrorCode,
 	IUpsertResponseParams,
+	IUpdateQuestionnaireMetrics,
 } from './response.interface';
 import {
 	AnswerDiscriminatorInput,
@@ -20,6 +21,7 @@ import {
 } from '@modules/session/session.interface';
 import { ResponseQuestionnaireHelper } from '../shared/response-questionnaire/response-questionnaire.helper';
 import { QuestionTypes } from '@modules/questionnaire/schema/questionnaire.schema';
+import { EQuestionType } from '@modules/questionnaire/questionnaire.interface';
 import { IEnvirolmentVariables } from 'src/app.module';
 import { UtilsPromise } from '@utils/utils.promise';
 import { ConfigService } from '@nestjs/config';
@@ -81,27 +83,32 @@ export class ResponseHelper {
 		return answer as Answer;
 	}
 
-	validateAnswers({ answers, questionnaire }: IValidateAnswers): void {
-		const questionMap: Record<string, { required: boolean; verified: boolean }> = {};
+	validateAnswers(params: IValidateAnswers): void {
+		const { answers, questionnaire } = params;
+		const questionMap: Record<string, { required: boolean; verified: boolean; type: EQuestionType }> = {};
 		questionnaire.questions.forEach(
-			(question) => (questionMap[question._id.toString()] = { required: question.required, verified: false }),
+			(question) =>
+				(questionMap[question._id.toString()] = {
+					required: question.required,
+					verified: false,
+					type: question.type,
+				}),
 		);
 
 		answers.forEach((answer: AnswerTypes) => {
 			const questionId = answer.question.toString();
-
 			if (!(questionId in questionMap)) {
-				throw new AppError({
-					message: 'the question does not exist',
-					code: EResponseErrorCode.INVALID_ANSWER,
-				});
+				throw new Error('the question does not exist');
 			}
 
-			if (questionMap[questionId].verified) {
-				throw new AppError({
-					message: 'answer submitted multiple times for the same question',
-					code: EResponseErrorCode.INVALID_ANSWER,
-				});
+			const question = questionMap[questionId];
+
+			if ((question.type as string) !== (answer.type as string)) {
+				throw new Error('the question type is different than the answer type');
+			}
+
+			if (question.verified) {
+				throw new Error('answer submitted multiple times for the same question');
 			}
 
 			let isAnswered = false;
@@ -116,10 +123,7 @@ export class ResponseHelper {
 			}
 
 			if (questionMap[questionId].required && !isAnswered) {
-				throw new AppError({
-					message: 'question is required but either no option was selected or no text was filled',
-					code: EResponseErrorCode.INVALID_ANSWER,
-				});
+				throw new Error('question is required but either no option was selected or no text was filled');
 			}
 			questionMap[questionId].verified = true;
 		});
@@ -151,12 +155,68 @@ export class ResponseHelper {
 
 			if ('option' in answer && answer.option) {
 				answer.correct = isOptionCorrect(answer.option, correctOptionIds);
-			} else if ('options' in answer) {
-				answer.correct = isOptionsCorrect(answer.options || [], correctOptionIds);
+			} else if ('options' in answer && answer.options && answer.options.length > 0) {
+				answer.correct = isOptionsCorrect(answer.options, correctOptionIds);
 			} else if ('text' in answer) {
 				answer.correct = true;
 			}
+
+			if (answer.correct === undefined) answer.answeredAt = undefined;
 		});
+	}
+
+	updateQuestionnaireMetrics({ answers, questionnaire }: IUpdateQuestionnaireMetrics): void {
+		const questionMap: Record<string, { isCorrect?: boolean; isAnswered: boolean }> = {};
+		const answeredOptionIds: string[] = [];
+		const { questions } = questionnaire;
+
+		answers.forEach((answer: AnswerTypes) => {
+			const questionId = answer.question;
+			if (answer.correct)
+				questionMap[questionId] = {
+					isAnswered: answer.answeredAt ? true : false,
+					isCorrect: answer.correct,
+				};
+
+			if ('option' in answer && answer.option) {
+				answeredOptionIds.push(answer.option);
+			} else if ('options' in answer && answer.options && answer.options.length > 0) {
+				answer.options.forEach((option) => answeredOptionIds.push(option));
+			}
+		});
+
+		questionnaire.questions = questions.map((question) => {
+			const isCorrect = questionMap?.[question._id.toString()]?.isCorrect;
+			const isAnswered = questionMap?.[question._id.toString()]?.isAnswered;
+
+			if (typeof isCorrect !== 'boolean' && !isAnswered) {
+				question.unansweredCount++;
+				return question;
+			}
+
+			question.answerCount++;
+			if ('options' in question) {
+				if (isCorrect) {
+					question.rightAnswerCount++;
+				} else {
+					question.wrongAnswerCount++;
+				}
+
+				const { options } = question;
+				question.options = options.map((option) => {
+					if (answeredOptionIds.includes(option._id.toString())) {
+						option.selectedCount++;
+					}
+					return option;
+				});
+			}
+
+			return question;
+		});
+
+		if (questions.length > 0) {
+			questionnaire.responseCount++;
+		}
 	}
 
 	async getGuestRespondentJwtPayload(authToken?: string): Promise<IJWTPublicPayload | undefined> {

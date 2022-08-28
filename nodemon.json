@@ -1,5 +1,5 @@
 {
 	"watch": ["src"],
 	"ext": "ts",
-	"exec": "webpack --config webpack.config.js --watch"
+	"exec": "sls offline --allowCache"
 }

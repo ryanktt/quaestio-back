@@ -3,7 +3,7 @@ app: questionnaire-app
 service: questionnaire-app
 
 plugins:
-  - serverless-plugin-typescript
+  - serverless-webpack
   - serverless-plugin-optimize
   - serverless-offline
 
@@ -14,7 +14,20 @@ provider:
   region: ${opt:region, "us-east-1"}
   environment: ${file(./serverless-env.js):${self:provider.stage}}
 
+custom:
+  webpack:
+    webpackConfig: './webpack.config.js'
+  serverless-offline:
+    httpPort: 4000
+    noPrependStageInUrl: true
+
 functions:
+  main:
+    handler: src/bootstrap/lambda.handler
+    events:
+      - http:
+          path: 'graphql'
+          method: any
   upsert-questionnaire-response-consumer:
     handler: src/bootstrap/consumers/upsert-questionnaire-response/lambda.handler
     events:

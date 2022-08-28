@@ -1,33 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
-import { eventContext } from 'aws-serverless-express/middleware';
-import { createServer, proxy } from 'aws-serverless-express';
-import { Handler, Context } from 'aws-lambda';
-import { Server } from 'http';
+import { Handler, Context, Callback } from 'aws-lambda';
 
-import { ExpressAdapter } from '@nestjs/platform-express';
+import serverlessExpress from '@vendia/serverless-express';
+import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
-import express from 'express';
 
-const binaryMimeTypes: string[] = [];
-
-let cachedServer: Server;
-
-async function bootstrapServer(): Promise<Server> {
-	if (!cachedServer) {
-		const expressApp = express();
-		const nestApp = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
-		nestApp.use(eventContext());
-		await nestApp.init();
-		cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
-	}
-	return cachedServer;
+interface ICache {
+	server: Handler;
+	app: INestApplication;
 }
 
-export const handler: Handler = async (event: any, context: Context) => {
-	cachedServer = await bootstrapServer();
+let cache: ICache;
 
-	return proxy(cachedServer, event, context, 'PROMISE').promise;
+async function bootstrapServer(): Promise<ICache> {
+	const app = await NestFactory.create(AppModule);
+	await app.init();
+	const expressApp = app.getHttpAdapter().getInstance();
+	const server = serverlessExpress({ app: expressApp });
+
+	return { server, app };
+}
+
+export const handler: Handler = async (event: any, context: Context, cb: Callback) => {
+	if (!cache) {
+		cache = await bootstrapServer();
+	}
+
+	return cache.server(event, context, cb);
 };

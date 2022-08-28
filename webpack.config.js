@@ -1,49 +1,43 @@
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const { RunScriptWebpackPlugin } = require('run-script-webpack-plugin');
-const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
-const { HotModuleReplacementPlugin } = require('webpack');
-var nodeExternals = require('webpack-node-externals');
+const nodeExternals = require('webpack-node-externals');
+const slsw = require('serverless-webpack');
 const path = require('path');
+const isLocal = slsw.lib.webpack.isLocal;
 
-const isDev = (process.env.STAGE = 'dev' || process.env.STAGE === 'local');
+class CompilationLoggerPlugin {
+	apply(compiler) {
+		compiler.hooks.compilation.tap('CompilationLoggerPlugin', () => {
+			console.log(`Compilation Done ${new Date().toLocaleString()}`);
+		});
+	}
+}
 
-module.exports = () => {
-	return {
-		target: 'node14',
-		context: __dirname,
-		entry: [...(isDev ? ['webpack/hot/poll?100'] : []), './src/bootstrap/main.ts'],
-		mode: isDev ? 'development' : 'production',
-		devtool: 'eval-source-map',
-
-		module: {
-			rules: [
-				{
-					test: /\.tsx?$/,
-					loader: 'ts-loader',
-					include: [path.resolve(__dirname, 'src')],
-				},
-			],
-		},
-		externals: [nodeExternals(isDev ? { allowlist: ['webpack/hot/poll?100'] } : {})],
-		resolve: {
-			plugins: [new TsconfigPathsPlugin({ configFile: 'tsconfig.json' })],
-			extensions: ['.ts', '.js', '.tsx'],
-		},
-		plugins: [
-			...(isDev
-				? [new CircularDependencyPlugin(), new HotModuleReplacementPlugin(), new ForkTsCheckerWebpackPlugin()]
-				: []),
-			new NodePolyfillPlugin(),
-
-			new RunScriptWebpackPlugin({ name: 'main.js', autoRestart: false }),
-		],
-		output: {
-			filename: 'main.js',
-			library: {
-				type: 'commonjs',
+module.exports = {
+	target: 'node14',
+	entry: slsw.lib.entries,
+	mode: isLocal ? 'development' : 'production',
+	devtool: isLocal ? 'eval-source-map' : 'source-map',
+	module: {
+		rules: [
+			{
+				test: /\.tsx?$/,
+				loader: 'ts-loader',
+				include: [path.resolve(__dirname, 'src')],
 			},
+		],
+	},
+	externals: [nodeExternals()],
+	plugins: [new NodePolyfillPlugin(), new CompilationLoggerPlugin()],
+	resolve: {
+		plugins: [new TsconfigPathsPlugin({ configFile: 'tsconfig.json' })],
+		extensions: ['.ts', '.js', '.tsx'],
+	},
+	output: {
+		filename: '[name].js',
+		path: path.join(__dirname, '.build'),
+		library: {
+			type: 'commonjs',
 		},
-	};
+	},
 };

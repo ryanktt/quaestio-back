@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
+import '@nestjs/platform-express';
+import 'apollo-server';
+
 import { ResponseQuestionnaireModule } from './modules/shared/response-questionnaire/response-questionnaire.module';
 import { UserSessionModule } from './modules/shared/user-session/user-session.module';
 import { QuestionnaireModule } from './modules/questionnaire/questionnaire.module';
@@ -22,6 +25,7 @@ export interface IEnvirolmentVariables {
 
 	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_KINESIS_STREAM_NAME: string;
 	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_FUNCTION_NAME: string;
+	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_QUEUE_URL: string;
 	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_ENDPOINT: string;
 	AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION: string;
 }

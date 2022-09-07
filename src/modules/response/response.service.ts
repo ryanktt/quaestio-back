@@ -73,7 +73,7 @@ export class ResponseService {
 				answers,
 			});
 		} else {
-			await this.responseHelper.sendQuestionnaireResponseToKinesis({
+			await this.responseHelper.sendQuestionnaireResponseToSQS({
 				guestRespondentId,
 				questionnaireId,
 				answers,

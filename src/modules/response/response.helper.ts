@@ -17,6 +17,7 @@ import {
 import {
 	IInvokeUpsertQuestionnaireResponseLambda,
 	ISendQuestionnaireResponseToKinesis,
+	ISendQuestionnaireResponseToSQS,
 	IJWTPublicPayload,
 } from '@modules/session/session.interface';
 import { ResponseQuestionnaireHelper } from '../shared/response-questionnaire/response-questionnaire.helper';
@@ -242,6 +243,13 @@ export class ResponseHelper {
 		});
 	}
 
+	async sendQuestionnaireResponseToSQS(payload: ISendQuestionnaireResponseToSQS): Promise<void> {
+		const queueUrl = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_QUEUE_URL', '');
+		const region = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION', '');
+
+		await this.utilsAWS.sendToSQS({ queueUrl, payload, region });
+	}
+
 	async invokeUpsertQuestionnaireResponseLambda(
 		payload: IInvokeUpsertQuestionnaireResponseLambda,
 	): Promise<void> {
@@ -249,6 +257,11 @@ export class ResponseHelper {
 		const endpoint = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_ENDPOINT', '');
 		const region = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION', '');
 
-		await this.utilsAWS.invokeLambda({ endpoint, functionName: funcName, region, payload });
+		await this.utilsAWS.invokeLambda({
+			payload: { Records: [{ body: payload }] },
+			functionName: funcName,
+			endpoint,
+			region,
+		});
 	}
 }

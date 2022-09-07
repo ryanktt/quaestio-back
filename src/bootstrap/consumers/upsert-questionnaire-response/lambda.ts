@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import 'reflect-metadata';
 import { upsertQuestionnaireResponse } from './services/upsert-questionnaire-response';
-import { Handler, KinesisStreamEvent } from 'aws-lambda';
 import { IUpsertResponsePayload } from './types/types';
+import { SQSHandler } from 'aws-lambda';
 import { MongoClient } from 'mongodb';
+import { mapSeries } from 'bluebird';
 
 const MONGO_URI = process.env.MONGO_URI || '';
 let cache: { mongoClient: MongoClient };
@@ -15,17 +17,15 @@ async function bootstrap(): Promise<{ mongoClient: MongoClient }> {
 	return { mongoClient };
 }
 
-export const handler: Handler = async (event: KinesisStreamEvent | IUpsertResponsePayload): Promise<void> => {
+export const handler: SQSHandler = async (event) => {
 	if (!cache) {
 		cache = await bootstrap();
 	}
 
 	const { mongoClient } = cache;
 
-	let payload = event as IUpsertResponsePayload;
-	if ('Records' in event) {
-		payload = JSON.parse(Buffer.from(event.Records[0].kinesis.data, 'base64').toString());
-	}
-
-	await upsertQuestionnaireResponse({ mongoClient, payload });
+	await mapSeries(event.Records, async (record) => {
+		const payload = JSON.parse(record.body) as IUpsertResponsePayload;
+		await upsertQuestionnaireResponse({ mongoClient, payload });
+	});
 };

@@ -67,6 +67,12 @@ export type ISendQuestionnaireResponseToKinesis = {
 	answers: AnswerTypes[];
 };
 
+export type ISendQuestionnaireResponseToSQS = {
+	guestRespondentId: string;
+	questionnaireId: string;
+	answers: AnswerTypes[];
+};
+
 export type IInvokeUpsertQuestionnaireResponseLambda = {
 	guestRespondentId: string;
 	questionnaireId: string;

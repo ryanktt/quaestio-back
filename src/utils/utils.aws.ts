@@ -1,4 +1,4 @@
-import { IAWSSendToKinesis, IInvokeLambda } from './utils.interface';
+import { IAWSSendToKinesis, IAWSSendToSQS, IInvokeLambda } from './utils.interface';
 
 import { AppError, EGeneralErrorCode } from './utils.error';
 import { Injectable } from '@nestjs/common';
@@ -22,6 +22,24 @@ export class UtilsAWS {
 					originalError: err instanceof Error ? err : undefined,
 					code: EGeneralErrorCode.AWS_SEND_TO_KINESIS_ERROR,
 					message: 'fail to send data to aws kinesis stream',
+				});
+			});
+	}
+
+	async sendToSQS({ region, payload, queueUrl }: IAWSSendToSQS): Promise<void> {
+		const sqs = new AWS.SQS({
+			apiVersion: '2012-11-05',
+			region,
+		});
+
+		await sqs
+			.sendMessage({ MessageBody: JSON.stringify(payload), QueueUrl: queueUrl })
+			.promise()
+			.catch((err) => {
+				throw new AppError({
+					originalError: err instanceof Error ? err : undefined,
+					code: EGeneralErrorCode.AWS_SEND_TO_SQS_ERROR,
+					message: 'fail to send data to aws sqs',
 				});
 			});
 	}

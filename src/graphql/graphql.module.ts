@@ -10,13 +10,14 @@ import { UserModule } from '@modules/user/user.module';
 import { UtilsModule } from '@utils/utils.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UtilsArray } from '@utils/utils.array';
+import { isLocal } from 'src/app.module';
 import { getClientIp } from 'request-ip';
 import { Request } from 'express';
 
 export default GraphQLModule.forRootAsync<ApolloDriverConfig>({
 	driver: ApolloDriver,
 	useFactory: (...args) => ({
-		autoSchemaFile: 'schema.gql',
+		autoSchemaFile: isLocal() ? 'schema.gql' : true,
 		context: (context): IGraphqlContext => {
 			const injectedArgs = getParamsAsObjFromInjectionArgs(...(args as Record<string, unknown>[]));
 			const headers = context.req.headers as { 'user-agent': string; auth: string };

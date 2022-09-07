@@ -1,7 +1,7 @@
 # compiled output
 /node_modules
-.build-serverless
 .build
+.webpack
 
 # Logs
 logs

@@ -1,5 +1,4 @@
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const slsw = require('serverless-webpack');
 const path = require('path');
@@ -15,27 +14,36 @@ class CompilationLoggerPlugin {
 
 module.exports = {
 	target: 'node14',
+	context: __dirname,
 	entry: slsw.lib.entries,
 	mode: isLocal ? 'development' : 'production',
-	devtool: isLocal ? 'eval-source-map' : 'source-map',
+	devtool: isLocal ? 'eval' : 'source-map',
 	module: {
 		rules: [
 			{
 				test: /\.tsx?$/,
 				loader: 'ts-loader',
-				include: [path.resolve(__dirname, 'src')],
+				exclude: [
+					[
+						path.resolve(__dirname, 'node_modules'),
+						path.resolve(__dirname, '.serverless'),
+						path.resolve(__dirname, '.webpack'),
+						path.resolve(__dirname, '.build'),
+					],
+				],
 			},
 		],
 	},
 	externals: [nodeExternals()],
-	plugins: [new NodePolyfillPlugin(), new CompilationLoggerPlugin()],
+	plugins: [new CompilationLoggerPlugin()],
+	optimization: { minimize: false },
 	resolve: {
 		plugins: [new TsconfigPathsPlugin({ configFile: 'tsconfig.json' })],
 		extensions: ['.ts', '.js', '.tsx'],
 	},
 	output: {
 		filename: '[name].js',
-		path: path.join(__dirname, '.build'),
+		path: path.join(__dirname, '.webpack'),
 		library: {
 			type: 'commonjs',
 		},

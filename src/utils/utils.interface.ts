@@ -13,6 +13,12 @@ export interface IAWSSendToKinesis {
 	key: string;
 }
 
+export interface IAWSSendToSQS {
+	payload: Record<string, unknown>;
+	queueUrl: string;
+	region: string;
+}
+
 export interface IInvokeLambda {
 	functionName: string;
 	payload: Record<string, unknown>;

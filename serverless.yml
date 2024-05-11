@@ -25,12 +25,13 @@ custom:
     includeModules: true
     packager: yarn
   serverless-offline:
-    httpPort: 4000
+    httpPort: 5000
     noPrependStageInUrl: true
 
 functions:
   main:
     handler: src/bootstrap/lambda.handler
+    timeout: 900
     events:
       - http:
           path: 'graphql'
@@ -38,4 +39,6 @@ functions:
 
   upsert-questionnaire-response-consumer:
     handler: src/bootstrap/consumers/upsert-questionnaire-response/lambda.handler
-    events: arn:aws:sqs:us-east-1:874738831934:${self:provider.stage}-questionnaire-app-upsert-questionnaire-response-queue
+    events:
+      - sqs:
+          arn: arn:aws:sqs:us-east-1:874738831934:${self:provider.stage}-questionnaire-app-upsert-questionnaire-response-queue

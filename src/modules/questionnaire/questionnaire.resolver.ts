@@ -8,22 +8,22 @@ import {
 import { QuestionnaireService } from './questionnaire.service';
 
 import { ResolveField, Resolver, Mutation, Context, Parent, Query, Args } from '@nestjs/graphql';
+import { UserSessionRepository } from '@modules/shared/user-session/user-session.repository';
 import { Admin, AdminDocument } from '@modules/user/admin/admin.schema';
 import { IAdminContext } from '@modules/session/session.interface';
 import { EQuestionnaireType } from './questionnaire.interface';
-import { ILoaders } from '@graphql/graphql.interface';
 import { Role } from '@utils/utils.decorators';
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {
-	constructor(private readonly questionnaireService: QuestionnaireService) {}
+	constructor(
+		private readonly questionnaireService: QuestionnaireService,
+		private readonly userSessionRepository: UserSessionRepository
+	) { }
 
 	@ResolveField(() => Admin)
-	async user(
-		@Context('loaders') { userLoader }: ILoaders,
-		@Parent() questionnaire: Questionnaire,
-	): Promise<AdminDocument> {
-		return userLoader.load(questionnaire.user) as Promise<AdminDocument>;
+	async user(@Parent() questionnaire: Questionnaire): Promise<AdminDocument> {
+		return this.userSessionRepository.userLoader().load(questionnaire.user) as Promise<AdminDocument>;
 	}
 
 	@Role('Admin')

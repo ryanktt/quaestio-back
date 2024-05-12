@@ -1,18 +1,21 @@
 import { ESessionErrorCode, ICreateSessionParams } from '@modules/session/session.interface';
 import { SessionDocument, SessionModel } from '@modules/session/session.schema';
-import { UserDocument, UserModel } from '@modules/user/user.schema';
+import { User, UserDocument, UserModel } from '@modules/user/user.schema';
 import { EUserErrorCode } from '@modules/user/user.interface';
+import { UtilsArray } from '@utils/utils.array';
 
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import DataLoader from 'dataloader';
 
 @Injectable()
 export class UserSessionRepository {
 	constructor(
 		@InjectModel('Session') private readonly sessionSchema: SessionModel,
 		@InjectModel('User') private readonly userSchema: UserModel,
-	) {}
+		private readonly utilsArray: UtilsArray,
+	) { }
 
 	async createSession(params: ICreateSessionParams): Promise<SessionDocument> {
 		const { expiresAt, ip, userId, userAgent, active } = params;
@@ -53,5 +56,25 @@ export class UserSessionRepository {
 				});
 			})) as UserDocument | null;
 		return user ? user : undefined;
+	}
+
+	async fetchUserByIds(userIds: string[]): Promise<User[]> {
+		return this.userSchema
+			.find({ _id: { $in: userIds } })
+			.lean()
+			.catch((err: Error) => {
+				throw new AppError({
+					code: EUserErrorCode.FETCH_USERS_ERROR,
+					message: 'fail to fetch users by ids',
+					originalError: err,
+				});
+			}) as Promise<User[]>;
+	}
+
+	userLoader(): DataLoader<string, User, string> {
+		return new DataLoader<string, User>(async (ids: string[]) => {
+			const users = await this.fetchUserByIds(ids);
+			return this.utilsArray.getObjectsSortedByIds(users, '_id', ids);
+		});
 	}
 }

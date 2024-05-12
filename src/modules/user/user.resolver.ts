@@ -1,8 +1,10 @@
 import { User } from './user.schema';
-
-import { Resolver } from '@nestjs/graphql';
+import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
 
 @Resolver(() => User)
 export class UserResolver {
-	constructor() {}
+	@ResolveField(() => User)
+	self(@Parent() user: User): User {
+		return user;
+	}
 }

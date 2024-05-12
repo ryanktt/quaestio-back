@@ -10,6 +10,7 @@
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start:lambda": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix && sls offline",
+		"start": "nodemon --exec",
 		"start:dev": "sls offline --allowCache",
 		"start:lambda:dev": "sls offline --allowCache",
 		"start:debug": "nest start --debug --watch",

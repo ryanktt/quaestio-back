@@ -1,10 +1,10 @@
-import { ResponseService } from './response.service';
 import { AnswerDiscriminatorInput, Response } from './schema';
+import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
+import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
+import { ResponseService } from './response.service';
 
 import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation } from '@nestjs/graphql';
-import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { IPublicContext } from '@modules/session/session.interface';
-import { ILoaders } from '@graphql/graphql.interface';
 
 @ObjectType()
 class PublicUpsertResponse {
@@ -14,20 +14,20 @@ class PublicUpsertResponse {
 
 @Resolver(() => Response)
 export class ResponseResolver {
-	constructor(private readonly responseService: ResponseService) {}
+	constructor(
+		private readonly responseService: ResponseService,
+		private readonly responseQuestRepository: ResponseQuestionnaireRepository
+	) { }
 
-	// remover
+	// calls itself to define type in schema.gql so i dont get: '"Response" defined in resolvers, but not in schema.'
 	@ResolveField(() => Response)
-	itself(@Parent() response: Response): Response {
+	self(@Parent() response: Response): Response {
 		return response;
 	}
 
 	@ResolveField(() => Questionnaire)
-	async questionnaire(
-		@Context('loaders') { questionnaireLoader }: ILoaders,
-		@Parent() response: Response,
-	): Promise<Questionnaire> {
-		return questionnaireLoader.load(response.questionnaire);
+	async questionnaire(@Parent() response: Response): Promise<Questionnaire> {
+		return this.responseQuestRepository.questionnaireLoader().load(response.questionnaire);
 	}
 
 	@Mutation(() => PublicUpsertResponse)

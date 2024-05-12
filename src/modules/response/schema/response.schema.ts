@@ -1,7 +1,6 @@
 import { EAnswerType } from '../response.interface';
 
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
-import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
@@ -132,7 +131,6 @@ export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrue
 @ObjectType()
 @Schema()
 export class Response extends SchemaBase {
-	@Field(() => Questionnaire)
 	@Prop({ type: String, ref: 'Questionnaire', required: true })
 	questionnaire: string;
 
@@ -155,10 +153,6 @@ export class Response extends SchemaBase {
 	// @Field(() => Respondent)
 	// @Prop({ type: String, ref: 'Respondent', required: true })
 	// user: string;
-
-	@Field({ nullable: true })
-	@Prop()
-	guestRespondentId?: string;
 }
 
 export const ResponseSchema = SchemaFactory.createForClass(Response);

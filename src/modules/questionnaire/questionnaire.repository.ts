@@ -35,7 +35,7 @@ export class QuestionnaireRepository {
 		@InjectModel('QuestionnaireQuiz') private readonly questionnaireQuizSchema: QuestionnaireQuizModel,
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
 		private readonly utilsDoc: UtilsDoc,
-	) {}
+	) { }
 
 	async fetchQuestionnaires({
 		questionnaireSharedIds,
@@ -84,19 +84,6 @@ export class QuestionnaireRepository {
 				});
 			})) as QuestionnaireDocument | null;
 		return questionnaire ? questionnaire : undefined;
-	}
-
-	async fetchByIds(questionnaireIds: string[]): Promise<Questionnaire[]> {
-		return this.questionnaireSchema
-			.find({ _id: { $in: questionnaireIds } })
-			.lean()
-			.catch((originalError: Error) => {
-				throw new AppError({
-					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
-					message: 'fail to fetch questionnaires by ids',
-					originalError,
-				});
-			}) as Promise<Questionnaire[]>;
 	}
 
 	async fetchById(questionnaireId: string): Promise<QuestionnaireDocument | undefined> {

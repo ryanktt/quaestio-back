@@ -3,7 +3,8 @@
 	"editor.formatOnSave": true,
 	"files.autoSave": "off",
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": true
+		"source.fixAll.eslint": "explicit"
 	},
-	"eslint.validate": ["typescript"]
+	"eslint.validate": ["typescript"],
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

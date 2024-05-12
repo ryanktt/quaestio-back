@@ -14,17 +14,6 @@ export class User extends SchemaBaseInterface {
 	@Field(() => EUserRole)
 	@Prop({ type: String, enum: EUserRole, required: true })
 	role: EUserRole;
-
-	@Field()
-	@Prop({ required: true })
-	name: string;
-
-	@Field()
-	@Prop({ required: true })
-	email: string;
-
-	@Prop({ required: true })
-	password: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

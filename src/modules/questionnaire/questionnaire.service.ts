@@ -24,7 +24,7 @@ export class QuestionnaireService {
 	constructor(
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly questionnaireHelper: QuestionnaireHelper,
-	) {}
+	) { }
 
 	async fetchQuestionnaire(params: IFetchQuestionnaireParams): Promise<Questionnaire | undefined> {
 		const { questionnaireSharedId, questionnaireId, latest, user } = params;
@@ -50,7 +50,7 @@ export class QuestionnaireService {
 	}
 
 	async createQuestionnaire(params: ICreateQuestionnaireParams): Promise<Questionnaire> {
-		const { questions: questionDiscriminatorInputArray, title, type, user } = params;
+		const { questions: questionDiscriminatorInputArray, requireEmail, requireName, title, type, user } = params;
 		await this.questionnaireHelper.validateCreateQuestionnaireParams(params);
 
 		const questions = questionDiscriminatorInputArray.map((input) => {
@@ -58,10 +58,10 @@ export class QuestionnaireService {
 		});
 
 		if (type === EQuestionnaireType.QuestionnaireQuiz) {
-			return this.questionnaireRepository.createQuiz({ questions, title, userId: user.id });
+			return this.questionnaireRepository.createQuiz({ questions, requireEmail, requireName, title, userId: user.id });
 		}
 		if (type === EQuestionnaireType.QuestionnaireSurvey) {
-			return this.questionnaireRepository.createSurvey({ questions, title, userId: user.id });
+			return this.questionnaireRepository.createSurvey({ questions, requireEmail, requireName, title, userId: user.id });
 		}
 
 		const { passingGradePercent, randomizeQuestions, maxRetryAmount, timeLimit } = params;
@@ -70,6 +70,8 @@ export class QuestionnaireService {
 			randomizeQuestions,
 			userId: user.id,
 			maxRetryAmount,
+			requireEmail,
+			requireName,
 			timeLimit,
 			questions,
 			title,

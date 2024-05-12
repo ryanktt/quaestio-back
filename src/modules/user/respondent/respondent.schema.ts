@@ -31,17 +31,17 @@ export class Respondent extends SchemaBase implements User {
 	@Field(() => EUserRole)
 	role: EUserRole.Respondent;
 
-	@Field()
+	@Field({ nullable: true })
+	@Prop()
 	name: string;
 
-	@Field()
+	@Field({ nullable: true })
+	@Prop()
 	email: string;
 
 	@Field(() => RespondentLocation, { nullable: true })
 	@Prop({ type: RespondentLocation })
 	location?: RespondentLocation;
-
-	password: string;
 }
 
 export const RespondentSchema = SchemaFactory.createForClass(Respondent);

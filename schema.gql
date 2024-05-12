@@ -7,9 +7,9 @@ type Admin implements User & SchemaBaseInterface {
   createdAt: DateTime!
   updatedAt: DateTime!
   role: UserType!
+  self: User!
   name: String!
   email: String!
-  itself: User!
 }
 
 interface User {
@@ -17,9 +17,7 @@ interface User {
   createdAt: DateTime!
   updatedAt: DateTime!
   role: UserType!
-  name: String!
-  email: String!
-  itself: User!
+  self: User!
 }
 
 """
@@ -149,6 +147,8 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionnaireType!
+  requireEmail: Boolean!
+  requireName: Boolean!
   user: Admin!
   title: String!
   latest: Boolean!
@@ -166,6 +166,8 @@ interface Questionnaire {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionnaireType!
+  requireEmail: Boolean!
+  requireName: Boolean!
   user: Admin!
   title: String!
   latest: Boolean!
@@ -185,6 +187,8 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionnaireType!
+  requireEmail: Boolean!
+  requireName: Boolean!
   user: Admin!
   title: String!
   latest: Boolean!
@@ -198,6 +202,8 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionnaireType!
+  requireEmail: Boolean!
+  requireName: Boolean!
   user: Admin!
   title: String!
   latest: Boolean!
@@ -285,7 +291,7 @@ type Response {
   answers: [Answer!]!
   startedAt: DateTime!
   completedAt: DateTime
-  itself: Response!
+  self: Response!
   questionnaire: Questionnaire!
 }
 
@@ -310,9 +316,9 @@ type Respondent implements User & SchemaBaseInterface {
   createdAt: DateTime!
   updatedAt: DateTime!
   role: UserType!
-  name: String!
-  email: String!
-  itself: User!
+  self: User!
+  name: String
+  email: String
   location: RespondentLocation
 }
 
@@ -329,12 +335,12 @@ type Query {
 }
 
 type Mutation {
-  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireQuiz!
-  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, title: String!): QuestionnaireSurvey!
-  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float): QuestionnaireExam!
-  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], title: String): QuestionnaireQuiz!
-  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], title: String): QuestionnaireSurvey!
-  adminUpdateQuestionnaireExam(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float): QuestionnaireExam!
+  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!): QuestionnaireQuiz!
+  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!): QuestionnaireSurvey!
+  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float): QuestionnaireExam!
+  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireQuiz!
+  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireSurvey!
+  adminUpdateQuestionnaireExam(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float, requireEmail: Boolean, requireName: Boolean): QuestionnaireExam!
   publicUpsertSurveyResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): PublicUpsertResponse!
   userlogOut: LogOutResponse!
   publicSignUp(password: String!, email: String!, name: String!): Admin!

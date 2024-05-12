@@ -116,12 +116,14 @@ export class QuestionnaireRepository {
 	}
 
 	async createQuiz({
+		requireEmail,
+		requireName,
 		questions,
 		userId,
 		title,
 	}: IRepositoryCreateQuestionnareParams): Promise<QuestionnaireQuizDocument> {
 		return this.questionnaireQuizSchema
-			.create({ title, questions, user: userId })
+			.create({ requireEmail, requireName, title, questions, user: userId })
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_QUIZ_ERROR,
@@ -132,12 +134,14 @@ export class QuestionnaireRepository {
 	}
 
 	async createSurvey({
+		requireEmail,
+		requireName,
 		questions,
 		userId,
 		title,
 	}: IRepositoryCreateQuestionnareParams): Promise<QuestionnaireSurveyDocument> {
 		return this.questionnaireSurveySchema
-			.create({ title, questions, user: userId })
+			.create({ requireEmail, requireName, title, questions, user: userId })
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.CREATE_QUESTIONNAIRE_SURVEY_ERROR,
@@ -151,6 +155,8 @@ export class QuestionnaireRepository {
 		passingGradePercent,
 		randomizeQuestions,
 		maxRetryAmount,
+		requireEmail,
+		requireName,
 		questions,
 		timeLimit,
 		userId,
@@ -162,6 +168,8 @@ export class QuestionnaireRepository {
 				randomizeQuestions,
 				maxRetryAmount,
 				user: userId,
+				requireEmail,
+				requireName,
 				timeLimit,
 				questions,
 				title,
@@ -176,11 +184,15 @@ export class QuestionnaireRepository {
 	}
 
 	async updateQuiz({
+		requireEmail,
+		requireName,
 		questions,
 		title,
 		quiz,
 	}: IRepositoryUpdateQuestionnareQuizParams): Promise<QuestionnaireQuizDocument> {
 		const updatedQuiz = new this.questionnaireQuizSchema({
+			requireEmail: quiz.requireEmail,
+			requireName: quiz.requireName,
 			createdAt: quiz.createdAt,
 			questions: quiz.questions,
 			sharedId: quiz.sharedId,
@@ -189,6 +201,18 @@ export class QuestionnaireRepository {
 			updatedAt: new Date(),
 		}) as QuestionnaireQuizDocument;
 
+		this.utilsDoc.handleFieldUpdate({
+			doc: updatedQuiz,
+			field: 'requireEmail',
+			value: requireEmail,
+			defaultValue: true,
+		});
+		this.utilsDoc.handleFieldUpdate({
+			doc: updatedQuiz,
+			field: 'requireName',
+			value: requireName,
+			defaultValue: false,
+		});
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'questions', value: questions });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'title', value: title });
 
@@ -208,10 +232,12 @@ export class QuestionnaireRepository {
 	}
 
 	async updateSurvey(
-		{ questions, survey, title }: IRepositoryUpdateQuestionnareSurveyParams,
+		{ requireEmail, requireName, questions, survey, title }: IRepositoryUpdateQuestionnareSurveyParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireSurveyDocument> {
 		const updatedSurvey = new this.questionnaireSurveySchema({
+			requireEmail: survey.requireEmail,
+			requireName: survey.requireName,
 			createdAt: survey.createdAt,
 			questions: survey.questions,
 			sharedId: survey.sharedId,
@@ -220,6 +246,18 @@ export class QuestionnaireRepository {
 			updatedAt: new Date(),
 		}) as QuestionnaireSurveyDocument;
 
+		this.utilsDoc.handleFieldUpdate({
+			doc: updatedSurvey,
+			field: 'requireEmail',
+			value: requireEmail,
+			defaultValue: true,
+		});
+		this.utilsDoc.handleFieldUpdate({
+			doc: updatedSurvey,
+			field: 'requireName',
+			value: requireName,
+			defaultValue: false,
+		});
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'questions', value: questions });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'title', value: title });
 
@@ -242,6 +280,8 @@ export class QuestionnaireRepository {
 		passingGradePercent,
 		randomizeQuestions,
 		maxRetryAmount,
+		requireEmail,
+		requireName,
 		questions,
 		timeLimit,
 		title,
@@ -251,6 +291,8 @@ export class QuestionnaireRepository {
 			maxRetryAmount: exam.maxRetryAmount,
 			passingGradePercent: exam.passingGradePercent,
 			randomizeQuestions: exam.randomizeQuestions,
+			requireEmail: exam.requireEmail,
+			requireName: exam.requireName,
 			timeLimit: exam.timeLimit,
 			createdAt: exam.createdAt,
 			questions: exam.questions,
@@ -269,6 +311,18 @@ export class QuestionnaireRepository {
 			doc: updatedExam,
 			field: 'randomizeQuestions',
 			value: randomizeQuestions,
+		});
+		this.utilsDoc.handleFieldUpdate({
+			doc: updatedExam,
+			field: 'requireEmail',
+			value: requireEmail,
+			defaultValue: true,
+		});
+		this.utilsDoc.handleFieldUpdate({
+			doc: updatedExam,
+			field: 'requireName',
+			value: requireName,
+			defaultValue: false,
 		});
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'maxRetryAmount', value: maxRetryAmount });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'timeLimit', value: timeLimit });

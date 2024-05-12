@@ -286,6 +286,14 @@ export class Questionnaire extends SchemaBaseInterface {
 	@Prop({ type: String, enum: EQuestionnaireType, required: true })
 	readonly type: EQuestionnaireType;
 
+	@Field({ defaultValue: true })
+	@Prop({ required: true, default: true })
+	requireEmail: boolean;
+
+	@Field({ defaultValue: false })
+	@Prop({ required: true, default: false })
+	requireName: boolean;
+
 	@Field(() => Admin)
 	@Prop({ type: String, ref: 'User', required: true })
 	user: string;
@@ -316,6 +324,12 @@ export class Questionnaire extends SchemaBaseInterface {
 export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
 	readonly type: EQuestionnaireType.QuestionnaireExam;
+
+	@Field({ defaultValue: true })
+	requireEmail: boolean;
+
+	@Field({ defaultValue: false })
+	requireName: boolean;
 
 	@Field(() => Admin)
 	user: string;
@@ -358,6 +372,12 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
 	readonly type: EQuestionnaireType.QuestionnaireSurvey;
 
+	@Field({ defaultValue: true })
+	requireEmail: boolean;
+
+	@Field({ defaultValue: false })
+	requireName: boolean;
+
 	@Field(() => Admin)
 	user: string;
 
@@ -382,6 +402,12 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
 	readonly type: EQuestionnaireType.QuestionnaireQuiz;
+
+	@Field({ defaultValue: true })
+	requireEmail: boolean;
+
+	@Field({ defaultValue: false })
+	requireName: boolean;
 
 	@Field(() => Admin)
 	user: string;

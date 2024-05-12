@@ -57,6 +57,8 @@ export interface IRepositoryCreateQuestionnareParams {
 	questions: QuestionTypes[];
 	userId: string;
 	title: string;
+	requireEmail?: boolean,
+	requireName?: boolean,
 }
 
 export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
@@ -69,12 +71,16 @@ export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCre
 export interface IRepositoryUpdateQuestionnareQuizParams {
 	quiz: QuestionnaireQuizDocument;
 	questions?: QuestionTypes[];
+	requireEmail?: boolean,
+	requireName?: boolean,
 	title?: string;
 }
 
 export interface IRepositoryUpdateQuestionnareSurveyParams {
 	survey: QuestionnaireSurveyDocument;
 	questions?: QuestionTypes[];
+	requireEmail?: boolean,
+	requireName?: boolean,
 	title?: string;
 }
 
@@ -86,6 +92,8 @@ export interface IRepositoryUpdateQuestionnareExamParams {
 	passingGradePercent?: number | null;
 	maxRetryAmount?: number | null;
 	timeLimit?: number | null;
+	requireEmail?: boolean,
+	requireName?: boolean,
 }
 
 export interface IRepositoryFetchQuestionnaireParams {
@@ -110,6 +118,8 @@ export interface ICreateQuestionnaireParams {
 	passingGradePercent?: number;
 	randomizeQuestions?: boolean;
 	maxRetryAmount?: number;
+	requireEmail?: boolean,
+	requireName?: boolean,
 	timeLimit?: number;
 }
 
@@ -122,6 +132,8 @@ export interface IUpdateQuestionnaireParams {
 	title?: string;
 	passingGradePercent?: number | null;
 	maxRetryAmount?: number | null;
+	requireEmail?: boolean | null,
+	requireName?: boolean | null,
 	timeLimit?: number | null;
 }
 

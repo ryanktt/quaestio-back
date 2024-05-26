@@ -11,6 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { ClientSession } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ResponseRepository {
@@ -56,7 +57,7 @@ export class ResponseRepository {
 		responseId,
 	}: IRepositoryFetchResponseParams): Promise<ResponseDocument> {
 		return this.responseSchema
-			.findOne({ _id: responseId, questionnaire: questionnaireId })
+			.findOne({ _id: new ObjectId(responseId), questionnaire: new ObjectId(questionnaireId) })
 			.lean()
 			.catch((originalError: Error) => {
 				throw new AppError({

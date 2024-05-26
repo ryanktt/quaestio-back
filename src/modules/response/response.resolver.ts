@@ -16,8 +16,8 @@ class PublicUpsertResponse {
 export class ResponseResolver {
 	constructor(
 		private readonly responseService: ResponseService,
-		private readonly responseQuestRepository: ResponseQuestionnaireRepository
-	) { }
+		private readonly responseQuestRepository: ResponseQuestionnaireRepository,
+	) {}
 
 	// calls itself to define type in schema.gql so i dont get: '"Response" defined in resolvers, but not in schema.'
 	@ResolveField(() => Response)
@@ -27,15 +27,30 @@ export class ResponseResolver {
 
 	@ResolveField(() => Questionnaire)
 	async questionnaire(@Parent() response: Response): Promise<Questionnaire> {
-		return this.responseQuestRepository.questionnaireLoader().load(response.questionnaire);
+		return this.responseQuestRepository.questionnaireLoader().load(response.questionnaire.toString());
 	}
 
 	@Mutation(() => PublicUpsertResponse)
-	async publicUpsertSurveyResponse(
-		@Context() { authToken }: IPublicContext,
+	publicUpsertQuestionnaireResponse(
+		@Context() { authToken, clientIp, userAgent }: IPublicContext,
 		@Args('answers', { type: () => [AnswerDiscriminatorInput] }) answers: AnswerDiscriminatorInput[],
 		@Args('questionnaireId') questionnaireId: string,
+		@Args('completedAt') completedAt: Date,
+		@Args('startedAt') startedAt: Date,
+		@Args('email', { nullable: true }) email: string,
+		@Args('name', { nullable: true }) name: string,
 	): Promise<PublicUpsertResponse> {
-		return this.responseService.publicUpsertSurveyResponse({ answers, questionnaireId, authToken });
+		console.log(authToken);
+		return this.responseService.publicUpsertQuestionnaireResponse({
+			questionnaireId,
+			ip: clientIp,
+			completedAt,
+			startedAt,
+			authToken,
+			userAgent,
+			answers,
+			email,
+			name,
+		});
 	}
 }

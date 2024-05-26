@@ -17,7 +17,7 @@ export class ResponseQuestionnaireHelper {
 	JWT_SECRET = this.configService.get<string>('JWT_SECRET', 'jwtSecret');
 
 	async validateAndGetJwtPublicPayload(token: string): Promise<IJWTPublicPayload> {
-		return this.utilsPromise.promisify(() => jwt.verify(token, 'JWT Secret') as IJWTPublicPayload);
+		return this.utilsPromise.promisify(() => jwt.verify(token, this.JWT_SECRET) as IJWTPublicPayload);
 	}
 
 	async getGuestRespondentJwtPayload(authToken?: string): Promise<IJWTPublicPayload | undefined> {
@@ -27,7 +27,7 @@ export class ResponseQuestionnaireHelper {
 	}
 
 	signPublicUpsertResponseToken(payload: IJWTPublicPayload, expiresAt?: Date): string {
-		return jwt.sign(payload, this.JWT_SECRET, {
+		return jwt.sign({ ...payload }, this.JWT_SECRET, {
 			...(expiresAt ? { expiresIn: this.utilsDate.getDateInMs(expiresAt) } : {}),
 		});
 	}

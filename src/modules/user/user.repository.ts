@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserRepository {
-	constructor(@InjectModel('User') private readonly userSchema: UserModel) { }
+	constructor(@InjectModel('User') private readonly userSchema: UserModel) {}
 
 	async fetchById(userId: string): Promise<UserDocument | undefined> {
 		const user = (await this.userSchema

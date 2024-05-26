@@ -4,6 +4,7 @@ import {
 	QuestionnaireQuizSchema,
 	QuestionnaireSurveySchema,
 } from './schema';
+import { QuestionnaireMetricsSchema } from './schema/questionnaire-metrics';
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { QuestionnaireResolver } from './questionnaire.resolver';
 import { QuestionnaireService } from './questionnaire.service';
@@ -17,6 +18,10 @@ import { Module } from '@nestjs/common';
 @Module({
 	imports: [
 		MongooseModule.forFeature([
+			{
+				name: 'QuestionnaireMetrics',
+				schema: QuestionnaireMetricsSchema,
+			},
 			{
 				name: 'Questionnaire',
 				schema: QuestionnaireSchema,
@@ -33,4 +38,4 @@ import { Module } from '@nestjs/common';
 	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 	exports: [QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 })
-export class QuestionnaireModule { }
+export class QuestionnaireModule {}

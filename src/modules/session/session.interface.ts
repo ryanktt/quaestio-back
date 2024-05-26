@@ -30,9 +30,8 @@ export interface IUpdateSessionParams {
 	session: SessionDocument;
 	active: boolean;
 }
-
 export interface IJWTPublicPayload {
-	guestRespondentId?: string;
+	respondentId: string;
 }
 
 export type IJwtPayload = {
@@ -42,7 +41,7 @@ export type IJwtPayload = {
 
 export interface IPublicContext {
 	userAgent: string;
-	authToken: string;
+	authToken?: string;
 	clientIp: string;
 }
 
@@ -62,19 +61,21 @@ export interface IRespondentContext extends IPublicContext {
 }
 
 export type ISendQuestionnaireResponseToKinesis = {
-	guestRespondentId: string;
+	respondentId: string;
 	questionnaireId: string;
 	answers: AnswerTypes[];
 };
 
 export type ISendQuestionnaireResponseToSQS = {
-	guestRespondentId: string;
 	questionnaireId: string;
 	answers: AnswerTypes[];
+	userAgent: string;
+	ip: string;
+	completedAt: Date;
+	startedAt: Date;
+	respondentToken?: string;
+	email?: string;
+	name?: string;
 };
 
-export type IInvokeUpsertQuestionnaireResponseLambda = {
-	guestRespondentId: string;
-	questionnaireId: string;
-	answers: AnswerTypes[];
-};
+export type IInvokeUpsertQuestionnaireResponseLambda = ISendQuestionnaireResponseToSQS;

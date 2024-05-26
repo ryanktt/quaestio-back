@@ -10,7 +10,9 @@ import { UserResolver } from './user.resolver';
 import { UserSchema } from './user.schema';
 import { UserHelper } from './user.helper';
 
+import { ResponseQuestionnaireModule } from '@modules/shared/response-questionnaire/response-questionnaire.module';
 import { UserSessionModule } from '@modules/shared/user-session/user-session.module';
+import { RespondentResolver } from './respondent/respondent.resolver';
 import { UtilsPromise } from '@utils/utils.promise';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UtilsArray } from '@utils/utils.array';
@@ -29,12 +31,14 @@ import { Module } from '@nestjs/common';
 			},
 		]),
 		UserSessionModule,
+		ResponseQuestionnaireModule,
 	],
 	providers: [
 		UserRepository,
 		UserResolver,
 		UserHelper,
 		RespondentRepository,
+		RespondentResolver,
 		RespondentHelper,
 		AdminRepository,
 		AdminResolver,
@@ -46,6 +50,7 @@ import { Module } from '@nestjs/common';
 		UserRepository,
 		UserHelper,
 		RespondentRepository,
+		RespondentResolver,
 		RespondentHelper,
 		AdminRepository,
 		AdminResolver,

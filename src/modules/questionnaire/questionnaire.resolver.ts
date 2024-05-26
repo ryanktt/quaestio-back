@@ -4,26 +4,35 @@ import {
 	QuestionnaireQuiz,
 	QuestionnaireSurvey,
 	QuestionDiscriminatorInput,
+	QuestionMethodInput,
 } from './schema';
+import { QuestionnaireMetrics } from './schema/questionnaire-metrics';
 import { QuestionnaireService } from './questionnaire.service';
 
 import { ResolveField, Resolver, Mutation, Context, Parent, Query, Args } from '@nestjs/graphql';
 import { UserSessionRepository } from '@modules/shared/user-session/user-session.repository';
-import { Admin, AdminDocument } from '@modules/user/admin/admin.schema';
+import { QuestionnaireRepository } from './questionnaire.repository';
 import { IAdminContext } from '@modules/session/session.interface';
 import { EQuestionnaireType } from './questionnaire.interface';
+import { Admin } from '@modules/user/admin/admin.schema';
 import { Role } from '@utils/utils.decorators';
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {
 	constructor(
+		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly questionnaireService: QuestionnaireService,
-		private readonly userSessionRepository: UserSessionRepository
-	) { }
+		private readonly userSessionRepository: UserSessionRepository,
+	) {}
 
 	@ResolveField(() => Admin)
-	async user(@Parent() questionnaire: Questionnaire): Promise<AdminDocument> {
-		return this.userSessionRepository.userLoader().load(questionnaire.user) as Promise<AdminDocument>;
+	async user(@Parent() questionnaire: Questionnaire): Promise<Admin> {
+		return this.userSessionRepository.userLoader().load(questionnaire.user.toString()) as Promise<Admin>;
+	}
+
+	@ResolveField(() => QuestionnaireMetrics)
+	async metrics(@Parent() questionnaire: Questionnaire): Promise<QuestionnaireMetrics> {
+		return this.questionnaireRepository.questionnaireMetricsLoader().load(questionnaire._id.toString());
 	}
 
 	@Role('Admin')
@@ -129,8 +138,8 @@ export class QuestionnaireResolver {
 	async adminUpdateQuestionnaireQuiz(
 		@Context() { user }: IAdminContext,
 		@Args('questionnaireId') questionnaireId: string,
-		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
-		questions?: QuestionDiscriminatorInput[],
+		@Args('questionMethods', { type: () => [QuestionMethodInput], nullable: true })
+		questionMethods?: QuestionMethodInput[],
 		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
 		@Args('requireName', { nullable: true }) requireName?: boolean,
 		@Args('title', { nullable: true }) title?: string,
@@ -138,9 +147,9 @@ export class QuestionnaireResolver {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireQuiz,
 			questionnaireId,
+			questionMethods,
 			requireEmail,
 			requireName,
-			questions,
 			title,
 			user,
 		}) as Promise<QuestionnaireQuiz>;
@@ -151,8 +160,8 @@ export class QuestionnaireResolver {
 	async adminUpdateQuestionnaireSurvey(
 		@Context() { user }: IAdminContext,
 		@Args('questionnaireId') questionnaireId: string,
-		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
-		questions?: QuestionDiscriminatorInput[],
+		@Args('questionMethods', { type: () => [QuestionMethodInput], nullable: true })
+		questionMethods?: QuestionMethodInput[],
 		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
 		@Args('requireName', { nullable: true }) requireName?: boolean,
 		@Args('title', { nullable: true }) title?: string,
@@ -160,9 +169,9 @@ export class QuestionnaireResolver {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireSurvey,
 			questionnaireId,
+			questionMethods,
 			requireEmail,
 			requireName,
-			questions,
 			title,
 			user,
 		}) as Promise<QuestionnaireSurvey>;
@@ -173,8 +182,8 @@ export class QuestionnaireResolver {
 	async adminUpdateQuestionnaireExam(
 		@Context() { user }: IAdminContext,
 		@Args('questionnaireId') questionnaireId: string,
-		@Args('questions', { type: () => [QuestionDiscriminatorInput], nullable: true })
-		questions?: QuestionDiscriminatorInput[],
+		@Args('questionMethods', { type: () => [QuestionMethodInput], nullable: true })
+		questionMethods?: QuestionMethodInput[],
 		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
 		@Args('passingGradePercent', { type: () => Number, nullable: true }) passingGradePercent?: number | null,
 		@Args('maxRetryAmount', { type: () => Number, nullable: true }) maxRetryAmount?: number | null,
@@ -188,10 +197,10 @@ export class QuestionnaireResolver {
 			passingGradePercent,
 			randomizeQuestions,
 			questionnaireId,
+			questionMethods,
 			maxRetryAmount,
 			requireEmail,
 			requireName,
-			questions,
 			timeLimit,
 			title,
 			user,

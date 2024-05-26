@@ -1,4 +1,4 @@
-import { EQuestionnaireType, EQuestionType } from '../questionnaire.interface';
+import { EQuestionnaireType, EQuestionType, EQuestionMethodType } from '../questionnaire.interface';
 
 import Joi from 'joi';
 
@@ -77,6 +77,22 @@ export const QuestionDiscriminatorInputValidator = Joi.object().keys({
 	}),
 });
 
+export const QuestionMethodValidator = Joi.object().keys({
+	type: Joi.string()
+		.valid(...Object.values(EQuestionMethodType))
+		.required(),
+	questionId: Joi.string().when('type', {
+		is: Joi.string().valid(EQuestionMethodType.DELETE, EQuestionMethodType.UPDATE),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
+	questionDiscriminator: QuestionDiscriminatorInputValidator.when('type', {
+		is: Joi.string().valid(EQuestionMethodType.CREATE, EQuestionMethodType.UPDATE),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
+});
+
 export const CreateQuestionnaireValidator = Joi.object().keys({
 	type: Joi.string()
 		.valid(...Object.values(EQuestionnaireType))
@@ -87,6 +103,8 @@ export const CreateQuestionnaireValidator = Joi.object().keys({
 	passingGradePercent: Joi.number(),
 	randomizeQuestions: Joi.boolean(),
 	maxRetryAmount: Joi.number(),
+	requireEmail: Joi.boolean(),
+	requireName: Joi.boolean(),
 	timeLimit: Joi.number(),
 });
 
@@ -97,10 +115,12 @@ export const UpdateQuestionnaireValidator = Joi.object().keys({
 	questionnaireId: Joi.string().required(),
 	user: Joi.object().required(),
 	title: Joi.string().trim().max(250),
-	questions: Joi.array().items(QuestionDiscriminatorInputValidator),
+	questionMethods: Joi.array().items(QuestionMethodValidator),
 	randomizeQuestions: Joi.boolean().default(false),
 	passingGradePercent: Joi.number().allow(null),
 	maxRetryAmount: Joi.number().allow(null),
+	requireEmail: Joi.boolean().allow(null),
+	requireName: Joi.boolean().allow(null),
 	timeLimit: Joi.number().allow(null),
 });
 

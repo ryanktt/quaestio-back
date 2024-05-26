@@ -13,7 +13,7 @@ export class UtilsDoc {
 	constructor(
 		@InjectConnection() private readonly connection: Connection,
 		private readonly utilsPromise: UtilsPromise,
-	) { }
+	) {}
 
 	async validateUserDocAccess<T extends DocumentType<AnyObj>, U extends DocumentType<AnyObj>>(
 		docToVal: U | undefined,

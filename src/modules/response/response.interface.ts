@@ -46,16 +46,16 @@ export interface IRepositoryFetchResponseParams {
 // 	startedAt?: Date;
 // }
 
-export interface IUpsertResponseParams {
-	answers: AnswerDiscriminatorInput[];
+export interface IPublicUpsertQuestResponseParams {
 	questionnaireId: string;
-	responseId?: string;
-}
-
-export interface IPublicUpsertResponseParams {
 	answers: AnswerDiscriminatorInput[];
-	questionnaireId: string;
+	userAgent: string;
+	ip: string;
+	completedAt: Date;
+	startedAt: Date;
 	authToken?: string;
+	email?: string;
+	name?: string;
 }
 
 export interface IValidateAnswers {

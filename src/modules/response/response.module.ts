@@ -18,4 +18,4 @@ import { Module } from '@nestjs/common';
 	providers: [ResponseRepository, ResponseHelper, ResponseService, ResponseResolver],
 	exports: [ResponseRepository, ResponseHelper, ResponseService],
 })
-export class ResponseModule { }
+export class ResponseModule {}

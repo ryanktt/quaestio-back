@@ -2,6 +2,94 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type OptionMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  selectedCount: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type QuestionSingleChoiceMetrics implements QuestionMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  answerCount: Int!
+  unansweredCount: Int!
+  options: [OptionMetrics!]!
+  rightAnswerCount: Int!
+  wrongAnswerCount: Int!
+}
+
+interface QuestionMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  answerCount: Int!
+  unansweredCount: Int!
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
+  TRUE_OR_FALSE
+  TEXT
+}
+
+type QuestionMultipleChoiceMetrics implements QuestionMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  answerCount: Int!
+  unansweredCount: Int!
+  options: [OptionMetrics!]!
+  rightAnswerCount: Int!
+  wrongAnswerCount: Int!
+}
+
+type QuestionTrueOrFalseMetrics implements QuestionMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  answerCount: Int!
+  unansweredCount: Int!
+  options: [OptionMetrics!]!
+  rightAnswerCount: Int!
+  wrongAnswerCount: Int!
+}
+
+type QuestionTextMetrics implements QuestionMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  answerCount: Int!
+  unansweredCount: Int!
+}
+
+type QuestionnaireMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  totalResponseCount: Int!
+  totalAttemptCount: Int!
+  totalAnswerTime: Int!
+  avgAnswerTime: Int!
+  avgAttempCount: Int!
+  questionMetrics: [QuestionMetrics!]!
+
+  """A JSON string of the questionnaire metrics map (by location)"""
+  byLocationMap: String
+}
+
 type Admin implements User & SchemaBaseInterface {
   _id: String!
   createdAt: DateTime!
@@ -19,11 +107,6 @@ interface User {
   role: UserType!
   self: User!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 enum UserType {
   Respondent
@@ -44,7 +127,6 @@ type Option {
   title: String!
   correct: Boolean
   feedbackAfterSubmit: String
-  selectedCount: Int!
 }
 
 type QuestionSingleChoice implements Question {
@@ -57,10 +139,6 @@ type QuestionSingleChoice implements Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
-  answerCount: Int!
-  unansweredCount: Int!
-  rightAnswerCount: Int!
-  wrongAnswerCount: Int!
   options: [Option!]!
   randomizeOptions: Boolean!
   wrongAnswerFeedback: String
@@ -77,15 +155,6 @@ interface Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
-  answerCount: Int!
-  unansweredCount: Int!
-}
-
-enum QuestionType {
-  MULTIPLE_CHOICE
-  SINGLE_CHOICE
-  TRUE_OR_FALSE
-  TEXT
 }
 
 type QuestionMultipleChoice implements Question {
@@ -98,10 +167,6 @@ type QuestionMultipleChoice implements Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
-  answerCount: Int!
-  unansweredCount: Int!
-  rightAnswerCount: Int!
-  wrongAnswerCount: Int!
   options: [Option!]!
   randomizeOptions: Boolean!
   wrongAnswerFeedback: String
@@ -118,10 +183,6 @@ type QuestionTrueOrFalse implements Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
-  answerCount: Int!
-  unansweredCount: Int!
-  rightAnswerCount: Int!
-  wrongAnswerCount: Int!
   options: [Option!]!
   wrongAnswerFeedback: String
   rightAnswerFeedback: String
@@ -137,8 +198,6 @@ type QuestionText implements Question {
   required: Boolean!
   description: String
   showCorrectAnswer: Boolean!
-  answerCount: Int!
-  unansweredCount: Int!
   feedbackAfterSubmit: String
 }
 
@@ -147,6 +206,7 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionnaireType!
+  metrics: QuestionnaireMetrics!
   requireEmail: Boolean!
   requireName: Boolean!
   user: Admin!
@@ -154,7 +214,6 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
-  responseCount: Int!
   timeLimit: Float
   passingGradePercent: Float
   maxRetryAmount: Float
@@ -166,6 +225,7 @@ interface Questionnaire {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionnaireType!
+  metrics: QuestionnaireMetrics!
   requireEmail: Boolean!
   requireName: Boolean!
   user: Admin!
@@ -173,7 +233,6 @@ interface Questionnaire {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
-  responseCount: Int!
 }
 
 enum QuestionnaireType {
@@ -187,6 +246,7 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionnaireType!
+  metrics: QuestionnaireMetrics!
   requireEmail: Boolean!
   requireName: Boolean!
   user: Admin!
@@ -194,7 +254,6 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
-  responseCount: Int!
 }
 
 type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
@@ -202,6 +261,7 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionnaireType!
+  metrics: QuestionnaireMetrics!
   requireEmail: Boolean!
   requireName: Boolean!
   user: Admin!
@@ -209,7 +269,6 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
-  responseCount: Int!
 }
 
 type Session {
@@ -221,6 +280,25 @@ type Session {
   userAgent: String!
   active: Boolean!
   expiresAt: DateTime!
+}
+
+type RespondentLocation {
+  country: String!
+  region: String!
+  city: String!
+  timezone: String!
+}
+
+type Respondent implements User & SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: UserType!
+  self: Respondent!
+  name: String
+  email: String
+  location: RespondentLocation
+  questionnaire: Questionnaire!
 }
 
 type AnswerSingleChoice implements Answer {
@@ -291,6 +369,7 @@ type Response {
   answers: [Answer!]!
   startedAt: DateTime!
   completedAt: DateTime
+  respondent: Respondent!
   self: Response!
   questionnaire: Questionnaire!
 }
@@ -302,24 +381,6 @@ type PublicUpsertResponse {
 type LogOutResponse {
   session: Session!
   user: User!
-}
-
-type RespondentLocation {
-  country: String!
-  state: String!
-  city: String!
-  timezone: String!
-}
-
-type Respondent implements User & SchemaBaseInterface {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  role: UserType!
-  self: User!
-  name: String
-  email: String
-  location: RespondentLocation
 }
 
 type SignInResponse {
@@ -338,10 +399,10 @@ type Mutation {
   adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!): QuestionnaireQuiz!
   adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!): QuestionnaireSurvey!
   adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float): QuestionnaireExam!
-  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireQuiz!
-  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireSurvey!
-  adminUpdateQuestionnaireExam(questionnaireId: String!, questions: [QuestionDiscriminatorInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float, requireEmail: Boolean, requireName: Boolean): QuestionnaireExam!
-  publicUpsertSurveyResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!): PublicUpsertResponse!
+  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questionMethods: [QuestionMethodInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireQuiz!
+  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questionMethods: [QuestionMethodInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireSurvey!
+  adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float, requireEmail: Boolean, requireName: Boolean): QuestionnaireExam!
+  publicUpsertQuestionnaireResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!, completedAt: DateTime!, startedAt: DateTime!, email: String, name: String): PublicUpsertResponse!
   userlogOut: LogOutResponse!
   publicSignUp(password: String!, email: String!, name: String!): Admin!
   publicSignIn(password: String!, email: String!): SignInResponse!
@@ -407,6 +468,18 @@ input QuestionTextInput {
   description: String
   showCorrectAnswer: Boolean = false
   feedbackAfterSubmit: String
+}
+
+input QuestionMethodInput {
+  type: QuestionMethodType!
+  questionId: String
+  questionDiscriminator: QuestionDiscriminatorInput
+}
+
+enum QuestionMethodType {
+  CREATE
+  DELETE
+  UPDATE
 }
 
 input AnswerDiscriminatorInput {

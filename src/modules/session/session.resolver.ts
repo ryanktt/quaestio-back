@@ -20,11 +20,11 @@ export class SessionResolver {
 	constructor(
 		private readonly sessionService: SessionService,
 		private readonly userSessionRepository: UserSessionRepository,
-	) { }
+	) {}
 
 	@ResolveField(() => User)
 	async user(@Parent() session: Session): Promise<User> {
-		return this.userSessionRepository.userLoader().load(session.user);
+		return this.userSessionRepository.userLoader().load(session.user.toString());
 	}
 
 	@Role('User')

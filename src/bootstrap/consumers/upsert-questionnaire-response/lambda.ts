@@ -23,9 +23,10 @@ export const handler: SQSHandler = async (event) => {
 	}
 
 	const { mongoClient } = cache;
-
 	await mapSeries(event.Records, async (record) => {
-		const payload = JSON.parse(record.body) as IUpsertResponsePayload;
+		const payload = (
+			typeof record.body === 'string' ? JSON.parse(record.body) : record.body
+		) as IUpsertResponsePayload;
 		await upsertQuestionnaireResponse({ mongoClient, payload });
 	});
 };

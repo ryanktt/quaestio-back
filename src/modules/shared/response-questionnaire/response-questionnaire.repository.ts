@@ -10,8 +10,8 @@ import DataLoader from 'dataloader';
 export class ResponseQuestionnaireRepository {
 	constructor(
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
-		private readonly utilsArray: UtilsArray
-	) { }
+		private readonly utilsArray: UtilsArray,
+	) {}
 
 	async fetchQuestionnaireByIds(questionnaireIds: string[]): Promise<Questionnaire[]> {
 		return this.questionnaireSchema

@@ -5,6 +5,7 @@ import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.sche
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Model } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 @ObjectType()
 export class RespondentLocation {
@@ -14,7 +15,7 @@ export class RespondentLocation {
 
 	@Field()
 	@Prop({ required: true })
-	state: string;
+	region: string;
 
 	@Field()
 	@Prop({ required: true })
@@ -30,6 +31,9 @@ export class RespondentLocation {
 export class Respondent extends SchemaBase implements User {
 	@Field(() => EUserRole)
 	role: EUserRole.Respondent;
+
+	@Prop({ ref: 'Questionnaire', required: true })
+	questionnaire: ObjectId;
 
 	@Field({ nullable: true })
 	@Prop()

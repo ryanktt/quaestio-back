@@ -18,6 +18,7 @@ export class SessionGuard implements CanActivate {
 
 		const authToken = ctx.authToken as string;
 		const ctxRole = this.reflector.get<EUserRole>('role', context.getHandler());
+
 		if (ctxRole) {
 			const { user, session } = await this.sessionService.authenticateUser(authToken);
 			if (user.role !== ctxRole && ctxRole !== EUserRole.User) {

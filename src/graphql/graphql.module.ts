@@ -14,7 +14,7 @@ export default GraphQLModule.forRootAsync<ApolloDriverConfig>({
 		context: (context): IGraphqlContext => {
 			const headers = context.req.headers as { 'user-agent': string; auth: string };
 			const clientIp = getClientIp(context.req as Request) as string;
-			console.log(isLocal())
+
 			return {
 				userAgent: headers['user-agent'],
 				authToken: headers.auth,

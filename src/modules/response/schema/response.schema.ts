@@ -1,9 +1,11 @@
 import { EAnswerType } from '../response.interface';
 
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
+import { Respondent } from '@modules/user/respondent/respondent.schema';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 @InterfaceType({
 	isAbstract: true,
@@ -131,28 +133,24 @@ export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrue
 @ObjectType()
 @Schema()
 export class Response extends SchemaBase {
-	@Prop({ type: String, ref: 'Questionnaire', required: true })
-	questionnaire: string;
+	@Prop({ ref: 'Questionnaire', required: true })
+	questionnaire: ObjectId;
 
 	@Field(() => [Answer])
 	@Prop({ type: [AnswerSchema], required: true })
 	answers: AnswerTypes[];
 
-	// @Field()
-	// @Prop({ required: true })
-	// attemptCount?: number;
-
 	@Field()
-	@Prop({ default: new Date(), required: true })
+	@Prop({ required: true })
 	startedAt?: Date;
 
 	@Field({ nullable: true })
-	@Prop()
+	@Prop({ required: true })
 	completedAt?: Date;
 
-	// @Field(() => Respondent)
-	// @Prop({ type: String, ref: 'Respondent', required: true })
-	// user: string;
+	@Field(() => Respondent)
+	@Prop({ ref: 'Respondent', required: true })
+	respondent: string;
 }
 
 export const ResponseSchema = SchemaFactory.createForClass(Response);

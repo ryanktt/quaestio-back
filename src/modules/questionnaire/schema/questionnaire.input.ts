@@ -1,4 +1,4 @@
-import { EQuestionType } from '../questionnaire.interface';
+import { EQuestionType, EQuestionMethodType } from '../questionnaire.interface';
 
 import { Field, InputType, Int } from '@nestjs/graphql';
 
@@ -111,4 +111,16 @@ export class QuestionDiscriminatorInput {
 
 	@Field(() => QuestionTextInput, { nullable: true })
 	questionText?: QuestionTextInput;
+}
+
+@InputType()
+export class QuestionMethodInput {
+	@Field(() => EQuestionMethodType)
+	type: EQuestionMethodType;
+
+	@Field(() => String, { nullable: true })
+	questionId: string;
+
+	@Field(() => QuestionDiscriminatorInput, { nullable: true })
+	questionDiscriminator: QuestionDiscriminatorInput;
 }

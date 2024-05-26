@@ -15,7 +15,7 @@ export class UserSessionRepository {
 		@InjectModel('Session') private readonly sessionSchema: SessionModel,
 		@InjectModel('User') private readonly userSchema: UserModel,
 		private readonly utilsArray: UtilsArray,
-	) { }
+	) {}
 
 	async createSession(params: ICreateSessionParams): Promise<SessionDocument> {
 		const { expiresAt, ip, userId, userAgent, active } = params;

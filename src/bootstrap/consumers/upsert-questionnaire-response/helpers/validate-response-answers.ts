@@ -8,25 +8,30 @@ interface IValidateAnswers {
 export function validateResponseAnswers(params: IValidateAnswers): void {
 	const { answers, questionnaire } = params;
 	const questionMap: Record<string, { required: boolean; verified: boolean; type: EQuestionType }> = {};
-	questionnaire.questions.forEach(
-		(question) =>
-			(questionMap[question._id.toString()] = {
-				required: question.required,
-				verified: false,
-				type: question.type,
-			}),
-	);
+	const optionSet = new Set<string>();
+	questionnaire.questions.forEach((question) => {
+		const questionId = question._id.toString();
+		questionMap[questionId] = {
+			required: question.required,
+			verified: false,
+			type: question.type,
+		};
+
+		if ('options' in question) {
+			question.options.forEach((option) => optionSet.add(`${questionId}:${option._id.toString()}`));
+		}
+	});
 
 	answers.forEach((answer: AnswerTypes) => {
 		const questionId = answer.question.toString();
 		if (!(questionId in questionMap)) {
-			throw new Error('the question does not exist');
+			throw new Error(`the question does not exist: ${questionId}`);
 		}
 
 		const question = questionMap[questionId];
 
 		if ((question.type as string) !== (answer.type as string)) {
-			throw new Error('the question type is different than the answer type');
+			throw new Error('the question type is different from the answer type');
 		}
 
 		if (question.verified) {
@@ -35,10 +40,23 @@ export function validateResponseAnswers(params: IValidateAnswers): void {
 
 		let isAnswered = false;
 		if (answer.type === EAnswerType.SINGLE_CHOICE || answer.type === EAnswerType.TRUE_OR_FALSE) {
-			if (answer.option) isAnswered = true;
+			const option = answer.option;
+			if (option) {
+				if (!optionSet.has(`${questionId}:${option.toString()}`)) {
+					throw new Error(`the option does not exist: ${option.toString()}`);
+				}
+				isAnswered = true;
+			}
 		}
 		if (answer.type === EAnswerType.MULTIPLE_CHOICE) {
-			if (answer.options && answer.options.length > 0) isAnswered = true;
+			if (answer.options && answer.options.length > 0) {
+				answer.options.forEach((option) => {
+					if (!optionSet.has(`${questionId}:${option.toString()}`)) {
+						throw new Error(`the option does not exist: ${option.toString()}`);
+					}
+				});
+				isAnswered = true;
+			}
 		}
 		if (answer.type === EAnswerType.TEXT) {
 			if (answer.text) isAnswered = true;

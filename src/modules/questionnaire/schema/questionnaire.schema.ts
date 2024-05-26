@@ -3,9 +3,11 @@ import { EQuestionType, EQuestionnaireType } from '../questionnaire.interface';
 import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
 import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { QuestionnaireMetrics } from './questionnaire-metrics';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { Admin } from '@modules/user/admin/admin.schema';
 import { v4 as uuidv4 } from 'uuid';
+import { ObjectId } from 'mongodb';
 
 @ObjectType()
 @Schema()
@@ -21,10 +23,6 @@ export class Option extends SchemaBase {
 	@Field({ nullable: true, defaultValue: false })
 	@Prop({ default: false })
 	feedbackAfterSubmit?: string;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	selectedCount: number;
 }
 
 export const OptionSchema = SchemaFactory.createForClass(Option);
@@ -64,14 +62,6 @@ export class Question extends SchemaBaseInterface {
 	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
 	showCorrectAnswer: boolean;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	answerCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	unansweredCount: number;
 }
 
 export const QuestionSchema = SchemaFactory.createForClass(Question);
@@ -96,20 +86,6 @@ export class QuestionSingleChoice extends SchemaBase implements Question {
 
 	@Field({ defaultValue: false })
 	showCorrectAnswer: boolean;
-
-	@Field(() => Int, { defaultValue: 0 })
-	answerCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	unansweredCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	rightAnswerCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	wrongAnswerCount: number;
 
 	@Field(() => [Option])
 	@Prop({ required: true, type: [OptionSchema] })
@@ -151,20 +127,6 @@ export class QuestionMultipleChoice extends SchemaBase implements Question {
 	@Field({ defaultValue: false })
 	showCorrectAnswer: boolean;
 
-	@Field(() => Int, { defaultValue: 0 })
-	answerCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	unansweredCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	rightAnswerCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	wrongAnswerCount: number;
-
 	@Field(() => [Option])
 	@Prop({ required: true, type: [OptionSchema] })
 	options: Option[];
@@ -205,20 +167,6 @@ export class QuestionTrueOrFalse extends SchemaBase implements Question {
 	@Field({ defaultValue: false })
 	showCorrectAnswer: boolean;
 
-	@Field(() => Int, { defaultValue: 0 })
-	answerCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	unansweredCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	rightAnswerCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	wrongAnswerCount: number;
-
 	@Field(() => [Option])
 	@Prop({ required: true, type: [OptionSchema] })
 	options: Option[];
@@ -255,12 +203,6 @@ export class QuestionText extends SchemaBase implements Question {
 	@Field({ defaultValue: false })
 	showCorrectAnswer: boolean;
 
-	@Field(() => Int, { defaultValue: 0 })
-	answerCount: number;
-
-	@Field(() => Int, { defaultValue: 0 })
-	unansweredCount: number;
-
 	@Field({ nullable: true })
 	@Prop({ default: 'teste feedback' })
 	feedbackAfterSubmit?: string;
@@ -286,6 +228,9 @@ export class Questionnaire extends SchemaBaseInterface {
 	@Prop({ type: String, enum: EQuestionnaireType, required: true })
 	readonly type: EQuestionnaireType;
 
+	@Field(() => QuestionnaireMetrics)
+	metrics: ObjectId;
+
 	@Field({ defaultValue: true })
 	@Prop({ required: true, default: true })
 	requireEmail: boolean;
@@ -295,8 +240,8 @@ export class Questionnaire extends SchemaBaseInterface {
 	requireName: boolean;
 
 	@Field(() => Admin)
-	@Prop({ type: String, ref: 'User', required: true })
-	user: string;
+	@Prop({ ref: 'User', required: true })
+	user: ObjectId;
 
 	@Field()
 	@Prop({ required: true })
@@ -312,11 +257,7 @@ export class Questionnaire extends SchemaBaseInterface {
 
 	@Field(() => [Question])
 	@Prop({ type: [QuestionSchema], required: true })
-	questions: Question[];
-
-	@Field(() => Int, { defaultValue: 0 })
-	@Prop({ default: 0 })
-	responseCount: number;
+	questions: QuestionTypes[];
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -325,6 +266,9 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
 	readonly type: EQuestionnaireType.QuestionnaireExam;
 
+	@Field(() => QuestionnaireMetrics)
+	metrics: ObjectId;
+
 	@Field({ defaultValue: true })
 	requireEmail: boolean;
 
@@ -332,7 +276,7 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	requireName: boolean;
 
 	@Field(() => Admin)
-	user: string;
+	user: ObjectId;
 
 	@Field()
 	title: string;
@@ -344,7 +288,7 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	latest: boolean;
 
 	@Field(() => [Question])
-	questions: Question[];
+	questions: QuestionTypes[];
 
 	@Field({ nullable: true })
 	@Prop()
@@ -361,9 +305,6 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
 	randomizeQuestions: boolean;
-
-	@Field(() => Int, { defaultValue: 0 })
-	responseCount: number;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -372,6 +313,9 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
 	readonly type: EQuestionnaireType.QuestionnaireSurvey;
 
+	@Field(() => QuestionnaireMetrics)
+	metrics: ObjectId;
+
 	@Field({ defaultValue: true })
 	requireEmail: boolean;
 
@@ -379,7 +323,7 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	requireName: boolean;
 
 	@Field(() => Admin)
-	user: string;
+	user: ObjectId;
 
 	@Field()
 	title: string;
@@ -392,9 +336,6 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 
 	@Field(() => [Question])
 	questions: QuestionTypes[];
-
-	@Field(() => Int, { defaultValue: 0 })
-	responseCount: number;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -403,6 +344,9 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
 	readonly type: EQuestionnaireType.QuestionnaireQuiz;
 
+	@Field(() => QuestionnaireMetrics)
+	metrics: ObjectId;
+
 	@Field({ defaultValue: true })
 	requireEmail: boolean;
 
@@ -410,7 +354,7 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 	requireName: boolean;
 
 	@Field(() => Admin)
-	user: string;
+	user: ObjectId;
 
 	@Field()
 	title: string;
@@ -422,10 +366,7 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 	latest: boolean;
 
 	@Field(() => [Question])
-	questions: Question[];
-
-	@Field(() => Int, { defaultValue: 0 })
-	responseCount: number;
+	questions: QuestionTypes[];
 }
 
 export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);

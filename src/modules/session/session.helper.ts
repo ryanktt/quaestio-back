@@ -18,11 +18,11 @@ export class SessionHelper {
 	JWT_SECRET = this.configService.get<string>('JWT_SECRET', 'jwtSecret');
 
 	async validateAndGetJwtPayload(token: string): Promise<IJwtPayload> {
-		return this.utilsPromise.promisify(() => jwt.verify(token, 'JWT Secret') as IJwtPayload);
+		return this.utilsPromise.promisify(() => jwt.verify(token, this.JWT_SECRET) as IJwtPayload);
 	}
 
 	async validateAndGetJwtPublicPayload(token: string): Promise<IJWTPublicPayload> {
-		return this.utilsPromise.promisify(() => jwt.verify(token, 'JWT Secret') as IJWTPublicPayload);
+		return this.utilsPromise.promisify(() => jwt.verify(token, this.JWT_SECRET) as IJWTPublicPayload);
 	}
 
 	signJwtToken(payload: IJwtPayload, expiresAt?: Date): string {

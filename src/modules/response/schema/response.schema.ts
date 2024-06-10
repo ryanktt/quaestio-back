@@ -29,7 +29,7 @@ export class Answer extends SchemaBaseInterface {
 	@Prop({ required: true })
 	question: string;
 
-	@Field({ nullable: true })
+	@Field(() => Date, { nullable: true })
 	@Prop()
 	answeredAt?: Date;
 
@@ -49,7 +49,7 @@ class AnswerSingleChoice extends SchemaBase implements Answer {
 	@Field(() => String)
 	question: string;
 
-	@Field({ nullable: true })
+	@Field(() => Date, { nullable: true })
 	answeredAt: Date;
 
 	@Field({ nullable: true })
@@ -71,7 +71,7 @@ class AnswerMultipleChoice extends SchemaBase implements Answer {
 	@Field(() => String)
 	question: string;
 
-	@Field({ nullable: true })
+	@Field(() => Date, { nullable: true })
 	answeredAt: Date;
 
 	@Field({ nullable: true })
@@ -93,7 +93,7 @@ class AnswerTrueOrFalse extends SchemaBase implements Answer {
 	@Field(() => String)
 	question: string;
 
-	@Field({ nullable: true })
+	@Field(() => Date, { nullable: true })
 	answeredAt: Date;
 
 	@Field({ nullable: true })
@@ -115,7 +115,7 @@ class AnswerText extends SchemaBase implements Answer {
 	@Field(() => String)
 	question: string;
 
-	@Field({ nullable: true })
+	@Field(() => Date, { nullable: true })
 	answeredAt?: Date;
 
 	@Field({ nullable: true })
@@ -140,11 +140,11 @@ export class Response extends SchemaBase {
 	@Prop({ type: [AnswerSchema], required: true })
 	answers: AnswerTypes[];
 
-	@Field()
+	@Field(() => Date)
 	@Prop({ required: true })
 	startedAt?: Date;
 
-	@Field({ nullable: true })
+	@Field(() => Date, { nullable: true })
 	@Prop({ required: true })
 	completedAt?: Date;
 

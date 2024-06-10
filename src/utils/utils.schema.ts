@@ -13,10 +13,10 @@ export class SchemaBase {
 	@Field(() => String)
 	readonly _id: ObjectId;
 
-	@Field()
+	@Field(() => Date)
 	createdAt: Date;
 
-	@Field()
+	@Field(() => Date)
 	updatedAt: Date;
 }
 
@@ -25,10 +25,10 @@ export class SchemaBaseInterface {
 	@Field(() => String)
 	readonly _id: ObjectId;
 
-	@Field()
+	@Field(() => Date)
 	createdAt: Date;
 
-	@Field()
+	@Field(() => Date)
 	updatedAt: Date;
 }
 

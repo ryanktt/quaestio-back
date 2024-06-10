@@ -24,7 +24,7 @@ export class Session extends SchemaBase {
 	@Prop({ default: true, required: true })
 	active: boolean;
 
-	@Field()
+	@Field(() => Date)
 	@Prop({ required: true })
 	expiresAt: Date;
 }

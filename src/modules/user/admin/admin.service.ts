@@ -6,6 +6,7 @@ import { UserHelper } from '../user.helper';
 
 import { UserSessionRepository } from '@modules/shared/user-session/user-session.repository';
 import { UserSessionHelper } from '@modules/shared/user-session/user-session.helper';
+import { SessionDocument } from '@modules/session/session.schema';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 
@@ -104,5 +105,12 @@ export class AdminService {
 		);
 
 		return { user, session, authToken };
+	}
+
+	async signOut(session: SessionDocument): Promise<void> {
+		await this.userSessionRepository.updateSession({
+			active: false,
+			session,
+		});
 	}
 }

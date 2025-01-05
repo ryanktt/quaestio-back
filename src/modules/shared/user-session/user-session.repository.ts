@@ -1,4 +1,4 @@
-import { ESessionErrorCode, ICreateSessionParams } from '@modules/session/session.interface';
+import { ESessionErrorCode, ICreateSessionParams, IUpdateSessionParams } from '@modules/session/session.interface';
 import { SessionDocument, SessionModel } from '@modules/session/session.schema';
 import { User, UserDocument, UserModel } from '@modules/user/user.schema';
 import { EUserErrorCode } from '@modules/user/user.interface';
@@ -15,7 +15,7 @@ export class UserSessionRepository {
 		@InjectModel('Session') private readonly sessionSchema: SessionModel,
 		@InjectModel('User') private readonly userSchema: UserModel,
 		private readonly utilsArray: UtilsArray,
-	) {}
+	) { }
 
 	async createSession(params: ICreateSessionParams): Promise<SessionDocument> {
 		const { expiresAt, ip, userId, userAgent, active } = params;
@@ -29,6 +29,20 @@ export class UserSessionRepository {
 				});
 			}) as Promise<SessionDocument>;
 	}
+
+	async updateSession(params: IUpdateSessionParams): Promise<SessionDocument> {
+		const { session, active } = params;
+		session.active = active;
+		return session.save()
+			.catch((err: Error) => {
+				throw new AppError({
+					code: ESessionErrorCode.UPDATE_SESSION_ERROR,
+					message: 'fail to update session',
+					originalError: err,
+				});
+			}) as Promise<SessionDocument>;
+	}
+
 
 	async fetchSessionById(sessionId: string): Promise<SessionDocument | undefined> {
 		const session = (await this.sessionSchema

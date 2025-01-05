@@ -2,7 +2,7 @@ import { AdminService } from './admin.service';
 import { Admin } from './admin.schema';
 
 import { ObjectType, Resolver, Mutation, Context, Query, Field, Args } from '@nestjs/graphql';
-import { IPublicContext } from '@modules/session/session.interface';
+import { IAdminContext, IPublicContext } from '@modules/session/session.interface';
 import { Session } from '@modules/session/session.schema';
 import { Role } from '@utils/utils.decorators';
 
@@ -17,6 +17,13 @@ class AuthResponse {
 	@Field()
 	authToken: string;
 }
+
+@ObjectType()
+class SignOutResponse {
+	@Field(() => String)
+	status: string;
+}
+
 
 @Resolver(() => Admin)
 export class AdminResolver {
@@ -48,5 +55,14 @@ export class AdminResolver {
 		@Args('email') email: string,
 	): Promise<AuthResponse> {
 		return this.adminService.signIn({ email, password, ip: clientIp, userAgent });
+	}
+
+	@Role('Admin')
+	@Mutation(() => SignOutResponse)
+	async publicSignOut(
+		@Context() { session }: IAdminContext,
+	): Promise<SignOutResponse> {
+		await this.adminService.signOut(session);
+		return { status: 'success' };
 	}
 }

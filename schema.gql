@@ -383,7 +383,7 @@ type LogOutResponse {
   user: User!
 }
 
-type SignInResponse {
+type AuthResponse {
   session: Session!
   user: Admin!
   authToken: String!
@@ -404,8 +404,8 @@ type Mutation {
   adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float, requireEmail: Boolean, requireName: Boolean): QuestionnaireExam!
   publicUpsertQuestionnaireResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!, completedAt: DateTime!, startedAt: DateTime!, email: String, name: String): PublicUpsertResponse!
   userlogOut: LogOutResponse!
-  publicSignUp(password: String!, email: String!, name: String!): Admin!
-  publicSignIn(password: String!, email: String!): SignInResponse!
+  publicSignUp(password: String!, email: String!, name: String!): AuthResponse!
+  publicSignIn(password: String!, email: String!): AuthResponse!
 }
 
 input QuestionDiscriminatorInput {

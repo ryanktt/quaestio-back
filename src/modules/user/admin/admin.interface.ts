@@ -3,9 +3,11 @@ import { SessionDocument } from '@modules/session/session.schema';
 import { AdminDocument } from './admin.schema';
 
 export interface IAdminSignUpParams {
+	userAgent: string;
 	password: string;
 	email: string;
 	name: string;
+	ip: string;
 }
 
 export interface IAdminSignInParams {
@@ -21,7 +23,7 @@ export interface ICreateAdminParams {
 	name: string;
 }
 
-export interface IAdminSignInResponse {
+export interface IAuthResponse {
 	session: SessionDocument;
 	user: AdminDocument;
 	authToken: string;

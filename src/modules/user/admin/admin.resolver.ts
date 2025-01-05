@@ -7,7 +7,7 @@ import { Session } from '@modules/session/session.schema';
 import { Role } from '@utils/utils.decorators';
 
 @ObjectType()
-class SignInResponse {
+class AuthResponse {
 	@Field(() => Session)
 	session: Session;
 
@@ -20,7 +20,7 @@ class SignInResponse {
 
 @Resolver(() => Admin)
 export class AdminResolver {
-	constructor(private readonly adminService: AdminService) {}
+	constructor(private readonly adminService: AdminService) { }
 
 	@Role('Admin')
 	@Query(() => Admin, { nullable: true })
@@ -31,21 +31,22 @@ export class AdminResolver {
 		return this.adminService.fetch({ userId, email });
 	}
 
-	@Mutation(() => Admin)
+	@Mutation(() => AuthResponse)
 	async publicSignUp(
+		@Context() { clientIp, userAgent }: IPublicContext,
 		@Args('password') password: string,
 		@Args('email') email: string,
 		@Args('name') name: string,
-	): Promise<Admin> {
-		return this.adminService.signUp({ name, email, password });
+	): Promise<AuthResponse> {
+		return this.adminService.signUp({ name, email, password, ip: clientIp, userAgent });
 	}
 
-	@Mutation(() => SignInResponse)
+	@Mutation(() => AuthResponse)
 	async publicSignIn(
 		@Context() { clientIp, userAgent }: IPublicContext,
 		@Args('password') password: string,
 		@Args('email') email: string,
-	): Promise<SignInResponse> {
+	): Promise<AuthResponse> {
 		return this.adminService.signIn({ email, password, ip: clientIp, userAgent });
 	}
 }

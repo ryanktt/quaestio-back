@@ -1,4 +1,4 @@
-import { IAdminSignInParams, IAdminSignInResponse, IAdminSignUpParams } from './admin.interface';
+import { IAdminSignInParams, IAuthResponse, IAdminSignUpParams } from './admin.interface';
 import { AdminRepository } from './admin.repository';
 import { EUserErrorCode } from '../user.interface';
 import { AdminDocument } from './admin.schema';
@@ -16,7 +16,7 @@ export class AdminService {
 		private readonly userSessionHelper: UserSessionHelper,
 		private readonly adminRepository: AdminRepository,
 		private readonly userHelper: UserHelper,
-	) {}
+	) { }
 
 	async fetch({ userId, email }: { userId?: string; email?: string }): Promise<AdminDocument | undefined> {
 		if (userId) return this.adminRepository.fetchById(userId);
@@ -24,7 +24,7 @@ export class AdminService {
 		return undefined;
 	}
 
-	async signUp({ name, email, password }: IAdminSignUpParams): Promise<AdminDocument> {
+	async signUp({ name, email, password, ip, userAgent }: IAdminSignUpParams): Promise<IAuthResponse> {
 		const errCollector = AppError.collectorInstance();
 
 		const normalizedEmail = this.userHelper.normalizeEmail(email);
@@ -54,10 +54,25 @@ export class AdminService {
 			});
 		}
 
-		return this.adminRepository.create({ hashedPassword, email: normalizedEmail, name });
+		const user = await this.adminRepository.create({ hashedPassword, email: normalizedEmail, name });
+
+		const sessionExpDate = this.userSessionHelper.getExpirationDate();
+		const session = await this.userSessionRepository.createSession({
+			expiresAt: sessionExpDate,
+			userId: user.id,
+			userAgent,
+			ip,
+		});
+
+		const authToken = this.userSessionHelper.signJwtToken(
+			{ userId: user.id, sessionId: session.id },
+			sessionExpDate,
+		);
+
+		return { user, session, authToken };
 	}
 
-	async signIn({ email, password, ip, userAgent }: IAdminSignInParams): Promise<IAdminSignInResponse> {
+	async signIn({ email, password, ip, userAgent }: IAdminSignInParams): Promise<IAuthResponse> {
 		email = this.userHelper.normalizeEmail(email);
 
 		const user = await this.adminRepository.fetchByEmail(email);

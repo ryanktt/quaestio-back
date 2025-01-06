@@ -23,7 +23,7 @@ export class QuestionnaireResolver {
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly questionnaireService: QuestionnaireService,
 		private readonly userSessionRepository: UserSessionRepository,
-	) {}
+	) { }
 
 	@ResolveField(() => Admin)
 	async user(@Parent() questionnaire: Questionnaire): Promise<Admin> {
@@ -76,11 +76,13 @@ export class QuestionnaireResolver {
 		@Args('requireEmail', { defaultValue: true }) requireEmail: boolean,
 		@Args('requireName', { defaultValue: false }) requireName: boolean,
 		@Args('title') title: string,
+		@Args('description', { nullable: true }) description?: string,
 	): Promise<QuestionnaireQuiz> {
 		return this.questionnaireService.createQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireQuiz,
 			requireEmail,
 			requireName,
+			description,
 			questions,
 			title,
 			user,
@@ -95,11 +97,13 @@ export class QuestionnaireResolver {
 		@Args('requireEmail', { defaultValue: true }) requireEmail: boolean,
 		@Args('requireName', { defaultValue: false }) requireName: boolean,
 		@Args('title') title: string,
+		@Args('description', { nullable: true }) description?: string,
 	): Promise<QuestionnaireSurvey> {
 		return this.questionnaireService.createQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireSurvey,
 			requireEmail,
 			requireName,
+			description,
 			questions,
 			title,
 			user,
@@ -117,6 +121,7 @@ export class QuestionnaireResolver {
 		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
 		@Args('passingGradePercent', { nullable: true }) passingGradePercent?: number,
 		@Args('maxRetryAmount', { nullable: true }) maxRetryAmount?: number,
+		@Args('description', { nullable: true }) description?: string,
 		@Args('timeLimit', { nullable: true }) timeLimit?: number,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.createQuestionnaire({
@@ -126,6 +131,7 @@ export class QuestionnaireResolver {
 			maxRetryAmount,
 			requireEmail,
 			requireName,
+			description,
 			questions,
 			timeLimit,
 			title,

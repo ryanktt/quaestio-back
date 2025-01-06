@@ -62,6 +62,7 @@ export interface IRepositoryCreateQuestionnareParams {
 	title: string;
 	requireEmail?: boolean;
 	requireName?: boolean;
+	description?: string;
 }
 
 export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
@@ -75,6 +76,7 @@ export interface IRepositoryUpdateQuestionnareParams {
 	questions?: QuestionTypes[];
 	requireEmail?: boolean;
 	requireName?: boolean;
+	description?: string;
 	title?: string;
 }
 
@@ -118,6 +120,7 @@ export interface ICreateQuestionnaireParams {
 	maxRetryAmount?: number;
 	requireEmail?: boolean;
 	requireName?: boolean;
+	description?: string;
 	timeLimit?: number;
 }
 
@@ -128,6 +131,7 @@ export interface IUpdateQuestionnaireParams {
 	questionMethods?: QuestionMethodInput[];
 	randomizeQuestions?: boolean;
 	title?: string;
+	description?: string;
 	passingGradePercent?: number | null;
 	maxRetryAmount?: number | null;
 	requireEmail?: boolean | null;

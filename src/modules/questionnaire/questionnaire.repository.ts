@@ -52,7 +52,7 @@ export class QuestionnaireRepository {
 		private readonly questionnaireHelper: QuestionnaireHelper,
 		private readonly utilsArray: UtilsArray,
 		private readonly utilsDoc: UtilsDoc,
-	) {}
+	) { }
 
 	async fetchQuestionnaires({
 		questionnaireSharedIds,
@@ -209,12 +209,13 @@ export class QuestionnaireRepository {
 	}
 
 	async createQuiz(
-		{ requireEmail, requireName, questions, userId, title }: IRepositoryCreateQuestionnareParams,
+		{ requireEmail, requireName, questions, userId, title, description }: IRepositoryCreateQuestionnareParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const quiz = new this.questionnaireQuizSchema({
 			user: userId,
 			requireEmail,
+			description,
 			requireName,
 			questions,
 			title,
@@ -232,12 +233,13 @@ export class QuestionnaireRepository {
 	}
 
 	async createSurvey(
-		{ requireEmail, requireName, questions, userId, title }: IRepositoryCreateQuestionnareParams,
+		{ requireEmail, requireName, questions, userId, title, description }: IRepositoryCreateQuestionnareParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireSurveyDocument> {
 		const survey = new this.questionnaireSurveySchema({
 			user: userId,
 			requireEmail,
+			description,
 			requireName,
 			questions,
 			title,
@@ -261,6 +263,7 @@ export class QuestionnaireRepository {
 			maxRetryAmount,
 			requireEmail,
 			requireName,
+			description,
 			questions,
 			timeLimit,
 			userId,
@@ -275,6 +278,7 @@ export class QuestionnaireRepository {
 			user: userId,
 			requireEmail,
 			requireName,
+			description,
 			timeLimit,
 			questions,
 			title,
@@ -292,12 +296,13 @@ export class QuestionnaireRepository {
 	}
 
 	async updateQuiz(
-		{ requireEmail, requireName, metrics, questions, title, quiz }: IRepositoryUpdateQuestionnareQuizParams,
+		{ requireEmail, requireName, metrics, questions, title, description, quiz }: IRepositoryUpdateQuestionnareQuizParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const updatedQuiz = new this.questionnaireQuizSchema({
 			requireEmail: quiz.requireEmail,
 			requireName: quiz.requireName,
+			description: quiz.description,
 			createdAt: quiz.createdAt,
 			questions: quiz.questions,
 			sharedId: quiz.sharedId,
@@ -318,6 +323,7 @@ export class QuestionnaireRepository {
 			value: requireName,
 			defaultValue: false,
 		});
+		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'description', value: description });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'questions', value: questions });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'title', value: title });
 		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'latest', value: false });
@@ -339,6 +345,7 @@ export class QuestionnaireRepository {
 
 	async updateSurvey(
 		{
+			description,
 			requireEmail,
 			requireName,
 			questions,
@@ -351,6 +358,7 @@ export class QuestionnaireRepository {
 		const updatedSurvey = new this.questionnaireSurveySchema({
 			requireEmail: survey.requireEmail,
 			requireName: survey.requireName,
+			description: survey.description,
 			createdAt: survey.createdAt,
 			questions: survey.questions,
 			sharedId: survey.sharedId,
@@ -371,6 +379,7 @@ export class QuestionnaireRepository {
 			value: requireName,
 			defaultValue: false,
 		});
+		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'description', value: description });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'questions', value: questions });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'title', value: title });
 		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'latest', value: false });
@@ -396,6 +405,7 @@ export class QuestionnaireRepository {
 			randomizeQuestions,
 			maxRetryAmount,
 			requireEmail,
+			description,
 			requireName,
 			questions,
 			timeLimit,
@@ -411,6 +421,7 @@ export class QuestionnaireRepository {
 			randomizeQuestions: exam.randomizeQuestions,
 			requireEmail: exam.requireEmail,
 			requireName: exam.requireName,
+			description: exam.description,
 			timeLimit: exam.timeLimit,
 			createdAt: exam.createdAt,
 			questions: exam.questions,
@@ -445,6 +456,7 @@ export class QuestionnaireRepository {
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'maxRetryAmount', value: maxRetryAmount });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'timeLimit', value: timeLimit });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'description', value: description });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'title', value: title });
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'latest', value: false });
 

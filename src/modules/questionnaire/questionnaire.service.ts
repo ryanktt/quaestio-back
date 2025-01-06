@@ -27,7 +27,7 @@ export class QuestionnaireService {
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly questionnaireHelper: QuestionnaireHelper,
 		private readonly utilsDoc: UtilsDoc,
-	) {}
+	) { }
 
 	async fetchQuestionnaire(params: IFetchQuestionnaireParams): Promise<Questionnaire | undefined> {
 		const { questionnaireSharedId, questionnaireId, latest, user } = params;
@@ -56,6 +56,7 @@ export class QuestionnaireService {
 		const {
 			questions: questionDiscriminatorInputArray,
 			requireEmail,
+			description,
 			requireName,
 			title,
 			type,
@@ -70,13 +71,13 @@ export class QuestionnaireService {
 		return this.utilsDoc.startMongodbSession(async (session) => {
 			if (type === EQuestionnaireType.QuestionnaireQuiz) {
 				return this.questionnaireRepository.createQuiz(
-					{ questions, requireEmail, requireName, title, userId: user._id },
+					{ questions, description, requireEmail, requireName, title, userId: user._id },
 					session,
 				);
 			}
 			if (type === EQuestionnaireType.QuestionnaireSurvey) {
 				return this.questionnaireRepository.createSurvey(
-					{ questions, requireEmail, requireName, title, userId: user._id },
+					{ questions, description, requireEmail, requireName, title, userId: user._id },
 					session,
 				);
 			}
@@ -89,6 +90,7 @@ export class QuestionnaireService {
 					userId: user._id,
 					maxRetryAmount,
 					requireEmail,
+					description,
 					requireName,
 					timeLimit,
 					questions,
@@ -100,7 +102,7 @@ export class QuestionnaireService {
 	}
 
 	async updateQuestionnaire(params: IUpdateQuestionnaireParams): Promise<QuestionnaireDocTypes> {
-		const { questionMethods, questionnaireId, title, type, user } = params;
+		const { questionMethods, questionnaireId, title, description, type, user } = params;
 		await this.questionnaireHelper.validateUpdateQuestionnaireParams(params);
 
 		const [questionnaire, metrics] = await Promise.all([
@@ -134,6 +136,7 @@ export class QuestionnaireService {
 				return this.questionnaireRepository.updateQuiz(
 					{
 						quiz: questionnaire as QuestionnaireQuizDocument,
+						description,
 						questions,
 						metrics,
 						title,
@@ -146,6 +149,7 @@ export class QuestionnaireService {
 				return this.questionnaireRepository.updateSurvey(
 					{
 						survey: questionnaire as QuestionnaireSurveyDocument,
+						description,
 						questions,
 						metrics,
 						title,
@@ -161,6 +165,7 @@ export class QuestionnaireService {
 					passingGradePercent,
 					randomizeQuestions,
 					maxRetryAmount,
+					description,
 					timeLimit,
 					questions,
 					metrics,

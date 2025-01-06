@@ -211,6 +211,7 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   requireName: Boolean!
   user: Admin!
   title: String!
+  description: String!
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
@@ -230,6 +231,7 @@ interface Questionnaire {
   requireName: Boolean!
   user: Admin!
   title: String!
+  description: String!
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
@@ -251,6 +253,7 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   requireName: Boolean!
   user: Admin!
   title: String!
+  description: String!
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
@@ -266,6 +269,7 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   requireName: Boolean!
   user: Admin!
   title: String!
+  description: String!
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
@@ -400,9 +404,9 @@ type Query {
 }
 
 type Mutation {
-  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!): QuestionnaireQuiz!
-  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!): QuestionnaireSurvey!
-  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float): QuestionnaireExam!
+  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireQuiz!
+  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireSurvey!
+  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, description: String, timeLimit: Float): QuestionnaireExam!
   adminUpdateQuestionnaireQuiz(questionnaireId: String!, questionMethods: [QuestionMethodInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireQuiz!
   adminUpdateQuestionnaireSurvey(questionnaireId: String!, questionMethods: [QuestionMethodInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireSurvey!
   adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float, requireEmail: Boolean, requireName: Boolean): QuestionnaireExam!

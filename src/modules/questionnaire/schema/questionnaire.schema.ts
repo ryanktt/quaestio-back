@@ -248,6 +248,10 @@ export class Questionnaire extends SchemaBaseInterface {
 	title: string;
 
 	@Field()
+	@Prop({ required: true })
+	description: string;
+
+	@Field()
 	@Prop({ required: true, default: true })
 	latest: boolean;
 
@@ -280,6 +284,9 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 
 	@Field()
 	title: string;
+
+	@Field()
+	description: string;
 
 	@Field()
 	sharedId: string;
@@ -329,6 +336,9 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	title: string;
 
 	@Field()
+	description: string;
+
+	@Field()
 	sharedId: string;
 
 	@Field()
@@ -358,6 +368,9 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 
 	@Field()
 	title: string;
+
+	@Field()
+	description: string;
 
 	@Field()
 	sharedId: string;

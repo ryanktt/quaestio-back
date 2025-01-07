@@ -181,9 +181,9 @@ export type QuestionTypes =
 	| QuestionText;
 
 export enum EQuestionnaireType {
-	QuestionnaireSurvey = 'QuestionnaireSurvey',
-	QuestionnaireExam = 'QuestionnaireExam',
-	QuestionnaireQuiz = 'QuestionnaireQuiz',
+	Survey = 'Survey',
+	Exam = 'Exam',
+	Quiz = 'Quiz',
 }
 
 export interface Questionnaire extends SchemaBase {
@@ -197,7 +197,7 @@ export interface Questionnaire extends SchemaBase {
 }
 
 export interface QuestionnaireExam extends Questionnaire {
-	type: EQuestionnaireType.QuestionnaireExam;
+	type: EQuestionnaireType.Exam;
 	timeLimit?: number;
 	passingGradePercent?: number;
 	maxRetryAmount?: number;
@@ -205,11 +205,11 @@ export interface QuestionnaireExam extends Questionnaire {
 }
 
 export interface QuestionnaireSurvey extends Questionnaire {
-	type: EQuestionnaireType.QuestionnaireSurvey;
+	type: EQuestionnaireType.Survey;
 }
 
 export interface QuestionnaireQuiz extends Questionnaire {
-	type: EQuestionnaireType.QuestionnaireQuiz;
+	type: EQuestionnaireType.Quiz;
 }
 
 export type QuestionnaireTypes = QuestionnaireExam | QuestionnaireSurvey | QuestionnaireQuiz;

@@ -268,7 +268,7 @@ export class Questionnaire extends SchemaBaseInterface {
 @Schema()
 export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
-	readonly type: EQuestionnaireType.QuestionnaireExam;
+	readonly type: EQuestionnaireType.Exam;
 
 	@Field(() => QuestionnaireMetrics)
 	metrics: ObjectId;
@@ -318,7 +318,7 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 @Schema()
 export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
-	readonly type: EQuestionnaireType.QuestionnaireSurvey;
+	readonly type: EQuestionnaireType.Survey;
 
 	@Field(() => QuestionnaireMetrics)
 	metrics: ObjectId;
@@ -352,7 +352,7 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 @Schema()
 export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 	@Field(() => EQuestionnaireType)
-	readonly type: EQuestionnaireType.QuestionnaireQuiz;
+	readonly type: EQuestionnaireType.Quiz;
 
 	@Field(() => QuestionnaireMetrics)
 	metrics: ObjectId;

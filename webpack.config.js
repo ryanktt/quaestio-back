@@ -13,7 +13,7 @@ class CompilationLoggerPlugin {
 }
 
 module.exports = {
-	target: 'node14',
+	target: 'node16',
 	context: __dirname,
 	entry: slsw.lib.entries,
 	mode: isLocal ? 'development' : 'production',

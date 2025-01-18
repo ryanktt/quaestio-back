@@ -98,6 +98,7 @@ export const CreateQuestionnaireValidator = Joi.object().keys({
 		.valid(...Object.values(EQuestionnaireType))
 		.required(),
 	title: Joi.string().max(250).required(),
+	description: Joi.string().trim().required(),
 	user: Joi.object().required(),
 	questions: Joi.array().items(QuestionDiscriminatorInputValidator).required(),
 	passingGradePercent: Joi.number(),
@@ -115,6 +116,7 @@ export const UpdateQuestionnaireValidator = Joi.object().keys({
 	questionnaireId: Joi.string().required(),
 	user: Joi.object().required(),
 	title: Joi.string().trim().max(250),
+	description: Joi.string().trim(),
 	questionMethods: Joi.array().items(QuestionMethodValidator),
 	randomizeQuestions: Joi.boolean().default(false),
 	passingGradePercent: Joi.number().allow(null),

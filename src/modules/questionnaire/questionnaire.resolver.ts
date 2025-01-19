@@ -79,7 +79,7 @@ export class QuestionnaireResolver {
 		@Args('description', { nullable: true }) description?: string,
 	): Promise<QuestionnaireQuiz> {
 		return this.questionnaireService.createQuestionnaire({
-			type: EQuestionnaireType.Quiz,
+			type: EQuestionnaireType.QuestionnaireQuiz,
 			requireEmail,
 			requireName,
 			description,
@@ -100,7 +100,7 @@ export class QuestionnaireResolver {
 		@Args('description', { nullable: true }) description?: string,
 	): Promise<QuestionnaireSurvey> {
 		return this.questionnaireService.createQuestionnaire({
-			type: EQuestionnaireType.Survey,
+			type: EQuestionnaireType.QuestionnaireSurvey,
 			requireEmail,
 			requireName,
 			description,
@@ -125,7 +125,7 @@ export class QuestionnaireResolver {
 		@Args('timeLimit', { nullable: true }) timeLimit?: number,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.createQuestionnaire({
-			type: EQuestionnaireType.Exam,
+			type: EQuestionnaireType.QuestionnaireExam,
 			passingGradePercent,
 			randomizeQuestions,
 			maxRetryAmount,
@@ -149,15 +149,13 @@ export class QuestionnaireResolver {
 		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
 		@Args('requireName', { nullable: true }) requireName?: boolean,
 		@Args('title', { nullable: true }) title?: string,
-		@Args('description', { nullable: true }) description?: string,
 	): Promise<QuestionnaireQuiz> {
 		return this.questionnaireService.updateQuestionnaire({
-			type: EQuestionnaireType.Quiz,
+			type: EQuestionnaireType.QuestionnaireQuiz,
 			questionnaireId,
 			questionMethods,
 			requireEmail,
 			requireName,
-			description,
 			title,
 			user,
 		}) as Promise<QuestionnaireQuiz>;
@@ -172,16 +170,14 @@ export class QuestionnaireResolver {
 		questionMethods?: QuestionMethodInput[],
 		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
 		@Args('requireName', { nullable: true }) requireName?: boolean,
-		@Args('description', { nullable: true }) description?: string,
 		@Args('title', { nullable: true }) title?: string,
 	): Promise<QuestionnaireSurvey> {
 		return this.questionnaireService.updateQuestionnaire({
-			type: EQuestionnaireType.Survey,
+			type: EQuestionnaireType.QuestionnaireSurvey,
 			questionnaireId,
 			questionMethods,
 			requireEmail,
 			requireName,
-			description,
 			title,
 			user,
 		}) as Promise<QuestionnaireSurvey>;
@@ -201,17 +197,15 @@ export class QuestionnaireResolver {
 		@Args('title', { type: () => Number, nullable: true }) title?: string,
 		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
 		@Args('requireName', { nullable: true }) requireName?: boolean,
-		@Args('description', { nullable: true }) description?: string,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.updateQuestionnaire({
-			type: EQuestionnaireType.Exam,
+			type: EQuestionnaireType.QuestionnaireExam,
 			passingGradePercent,
 			randomizeQuestions,
 			questionnaireId,
 			questionMethods,
 			maxRetryAmount,
 			requireEmail,
-			description,
 			requireName,
 			timeLimit,
 			title,

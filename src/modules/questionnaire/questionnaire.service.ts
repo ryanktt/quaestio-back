@@ -69,13 +69,13 @@ export class QuestionnaireService {
 		});
 
 		return this.utilsDoc.startMongodbSession(async (session) => {
-			if (type === EQuestionnaireType.Quiz) {
+			if (type === EQuestionnaireType.QuestionnaireQuiz) {
 				return this.questionnaireRepository.createQuiz(
 					{ questions, description, requireEmail, requireName, title, userId: user._id },
 					session,
 				);
 			}
-			if (type === EQuestionnaireType.Survey) {
+			if (type === EQuestionnaireType.QuestionnaireSurvey) {
 				return this.questionnaireRepository.createSurvey(
 					{ questions, description, requireEmail, requireName, title, userId: user._id },
 					session,
@@ -132,7 +132,7 @@ export class QuestionnaireService {
 		);
 
 		return this.utilsDoc.startMongodbSession(async (session) => {
-			if (type === EQuestionnaireType.Quiz) {
+			if (type === EQuestionnaireType.QuestionnaireQuiz) {
 				return this.questionnaireRepository.updateQuiz(
 					{
 						quiz: questionnaire as QuestionnaireQuizDocument,
@@ -145,7 +145,7 @@ export class QuestionnaireService {
 				);
 			}
 
-			if (type === EQuestionnaireType.Survey) {
+			if (type === EQuestionnaireType.QuestionnaireSurvey) {
 				return this.questionnaireRepository.updateSurvey(
 					{
 						survey: questionnaire as QuestionnaireSurveyDocument,

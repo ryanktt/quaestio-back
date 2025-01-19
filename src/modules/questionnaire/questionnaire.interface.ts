@@ -47,9 +47,9 @@ export enum EQuestionMethodType {
 }
 
 export enum EQuestionnaireType {
-	Survey = 'Survey',
-	Exam = 'Exam',
-	Quiz = 'Quiz',
+	QuestionnaireSurvey = 'QuestionnaireSurvey',
+	QuestionnaireExam = 'QuestionnaireExam',
+	QuestionnaireQuiz = 'QuestionnaireQuiz',
 }
 registerEnumType(EQuestionnaireErrorCode, { name: 'QuestionnaireErrorCode' });
 registerEnumType(EQuestionMethodType, { name: 'QuestionMethodType' });

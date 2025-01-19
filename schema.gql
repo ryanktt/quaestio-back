@@ -238,9 +238,9 @@ interface Questionnaire {
 }
 
 enum QuestionnaireType {
-  Survey
-  Exam
-  Quiz
+  QuestionnaireSurvey
+  QuestionnaireExam
+  QuestionnaireQuiz
 }
 
 type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
@@ -407,9 +407,9 @@ type Mutation {
   adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireQuiz!
   adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireSurvey!
   adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, description: String, timeLimit: Float): QuestionnaireExam!
-  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questionMethods: [QuestionMethodInput!], requireEmail: Boolean, requireName: Boolean, title: String, description: String): QuestionnaireQuiz!
-  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questionMethods: [QuestionMethodInput!], requireEmail: Boolean, requireName: Boolean, description: String, title: String): QuestionnaireSurvey!
-  adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float, requireEmail: Boolean, requireName: Boolean, description: String): QuestionnaireExam!
+  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questionMethods: [QuestionMethodInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireQuiz!
+  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questionMethods: [QuestionMethodInput!], requireEmail: Boolean, requireName: Boolean, title: String): QuestionnaireSurvey!
+  adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, timeLimit: Float, title: Float, requireEmail: Boolean, requireName: Boolean): QuestionnaireExam!
   publicUpsertQuestionnaireResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!, completedAt: DateTime!, startedAt: DateTime!, email: String, name: String): PublicUpsertResponse!
   userlogOut: LogOutResponse!
   publicSignUp(password: String!, email: String!, name: String!): AuthResponse!

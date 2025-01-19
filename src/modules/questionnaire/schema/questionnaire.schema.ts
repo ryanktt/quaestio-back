@@ -43,9 +43,9 @@ export class Question extends SchemaBaseInterface {
 	@Prop({ type: String, required: true, enum: EQuestionType })
 	type: EQuestionType;
 
-	@Field()
-	@Prop({ required: true })
-	title: string;
+	@Field({ nullable: true })
+	@Prop()
+	title?: string;
 
 	@Field(() => Int, { nullable: true })
 	@Prop()
@@ -72,8 +72,8 @@ export class QuestionSingleChoice extends SchemaBase implements Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.SINGLE_CHOICE;
 
-	@Field()
-	title: string;
+	@Field({ nullable: true })
+	title?: string;
 
 	@Field(() => Int, { nullable: true })
 	weight?: number;
@@ -112,8 +112,8 @@ export class QuestionMultipleChoice extends SchemaBase implements Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.MULTIPLE_CHOICE;
 
-	@Field()
-	title: string;
+	@Field({ nullable: true })
+	title?: string;
 
 	@Field(() => Int, { nullable: true })
 	weight?: number;
@@ -152,8 +152,8 @@ export class QuestionTrueOrFalse extends SchemaBase implements Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TRUE_OR_FALSE;
 
-	@Field()
-	title: string;
+	@Field({ nullable: true })
+	title?: string;
 
 	@Field(() => Int, { nullable: true })
 	weight?: number;
@@ -188,8 +188,8 @@ export class QuestionText extends SchemaBase implements Question {
 	@Field(() => EQuestionType)
 	type: EQuestionType.TEXT;
 
-	@Field()
-	title: string;
+	@Field({ nullable: true })
+	title?: string;
 
 	@Field(() => Int, { nullable: true })
 	weight?: number;

@@ -19,8 +19,8 @@ export class QuestionInput {
 	@Field(() => EQuestionType)
 	type: EQuestionType;
 
-	@Field()
-	title: string;
+	@Field({ nullable: true })
+	title?: string;
 
 	@Field(() => Int, { nullable: true })
 	weight?: number;

@@ -140,7 +140,7 @@ export interface Option extends SchemaBase {
 
 export interface Question extends SchemaBase {
 	type: EQuestionType;
-	title: string;
+	title?: string;
 	weight?: number;
 	required: boolean;
 	description?: string;

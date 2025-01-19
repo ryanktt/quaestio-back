@@ -134,7 +134,7 @@ type QuestionSingleChoice implements Question {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean!
   description: String
@@ -150,7 +150,7 @@ interface Question {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean!
   description: String
@@ -162,7 +162,7 @@ type QuestionMultipleChoice implements Question {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean!
   description: String
@@ -178,7 +178,7 @@ type QuestionTrueOrFalse implements Question {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean!
   description: String
@@ -193,7 +193,7 @@ type QuestionText implements Question {
   createdAt: DateTime!
   updatedAt: DateTime!
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean!
   description: String
@@ -427,7 +427,7 @@ input QuestionDiscriminatorInput {
 
 input QuestionMultipleChoiceInput {
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean = false
   description: String
@@ -446,7 +446,7 @@ input OptionInput {
 
 input QuestionSingleChoiceInput {
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean = false
   description: String
@@ -459,7 +459,7 @@ input QuestionSingleChoiceInput {
 
 input QuestionTrueOrFalseInput {
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean = false
   description: String
@@ -471,7 +471,7 @@ input QuestionTrueOrFalseInput {
 
 input QuestionTextInput {
   type: QuestionType!
-  title: String!
+  title: String
   weight: Int
   required: Boolean = false
   description: String

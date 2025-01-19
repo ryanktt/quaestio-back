@@ -12,11 +12,11 @@ export const baseQuestionInputValidatorKeys = {
 	type: Joi.string()
 		.valid(...Object.values(EQuestionType))
 		.required(),
-	title: Joi.string().trim().required(),
-	weight: Joi.number().integer().positive(),
-	required: Joi.boolean(),
 	description: Joi.string().trim(),
+	required: Joi.boolean(),
+	title: Joi.string().trim(),
 	showCorrectAnswer: Joi.boolean(),
+	weight: Joi.number().integer().positive(),
 };
 
 const QuestionSingleChoiceInputValidator = Joi.object().keys({

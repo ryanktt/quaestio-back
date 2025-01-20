@@ -6,8 +6,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { QuestionnaireMetrics } from './questionnaire-metrics';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { Admin } from '@modules/user/admin/admin.schema';
-import { v4 as uuidv4 } from 'uuid';
 import { ObjectId } from 'mongodb';
+import { nanoid } from 'nanoid';
 
 @ObjectType()
 @Schema()
@@ -256,7 +256,7 @@ export class Questionnaire extends SchemaBaseInterface {
 	latest: boolean;
 
 	@Field()
-	@Prop({ default: uuidv4(), required: true })
+	@Prop({ default: nanoid(10), required: true })
 	sharedId: string;
 
 	@Field(() => [Question])

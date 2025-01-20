@@ -26,7 +26,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppError } from '@utils/utils.error';
 import { UtilsAWS } from '@utils/utils.aws';
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import Joi from 'joi';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class ResponseHelper {
 		private readonly configService: ConfigService<IEnvirolmentVariables>,
 		private readonly utilsPromise: UtilsPromise,
 		private readonly utilsAWS: UtilsAWS,
-	) {}
+	) { }
 
 	async validatePublicUpsertResponseParams(params: IPublicUpsertQuestResponseParams): Promise<void> {
 		await this.utilsPromise
@@ -85,11 +85,11 @@ export class ResponseHelper {
 		const questionMap: Record<string, { required: boolean; verified: boolean; type: EQuestionType }> = {};
 		questionnaire.questions.forEach(
 			(question) =>
-				(questionMap[question._id.toString()] = {
-					required: question.required,
-					verified: false,
-					type: question.type,
-				}),
+			(questionMap[question._id.toString()] = {
+				required: question.required,
+				verified: false,
+				type: question.type,
+			}),
 		);
 
 		answers.forEach((answer: AnswerTypes) => {
@@ -170,7 +170,7 @@ export class ResponseHelper {
 		const region = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION', '');
 
 		await this.utilsAWS.sendToKineses({
-			key: uuidv4(),
+			key: nanoid(10),
 			streamName,
 			payload,
 			region,

@@ -102,7 +102,7 @@ export class QuestionnaireService {
 	}
 
 	async updateQuestionnaire(params: IUpdateQuestionnaireParams): Promise<QuestionnaireDocTypes> {
-		const { questionMethods, questionnaireId, title, description, type, user } = params;
+		const { questionMethods, active, questionnaireId, title, description, type, user } = params;
 		await this.questionnaireHelper.validateUpdateQuestionnaireParams(params);
 
 		const [questionnaire, metrics] = await Promise.all([
@@ -139,6 +139,7 @@ export class QuestionnaireService {
 						description,
 						questions,
 						metrics,
+						active,
 						title,
 					},
 					session,
@@ -152,6 +153,7 @@ export class QuestionnaireService {
 						description,
 						questions,
 						metrics,
+						active,
 						title,
 					},
 					session,
@@ -169,6 +171,7 @@ export class QuestionnaireService {
 					timeLimit,
 					questions,
 					metrics,
+					active,
 					title,
 				},
 				session,

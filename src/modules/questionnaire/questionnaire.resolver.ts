@@ -197,12 +197,12 @@ export class QuestionnaireResolver {
 		questionMethods?: QuestionMethodInput[],
 		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
 		@Args('passingGradePercent', { type: () => Number, nullable: true }) passingGradePercent?: number | null,
+		@Args('title', { type: () => Number, nullable: true }) title?: string,
+		@Args('active', { nullable: true }) active?: boolean,
 		@Args('maxRetryAmount', { type: () => Number, nullable: true }) maxRetryAmount?: number | null,
 		@Args('timeLimit', { type: () => Number, nullable: true }) timeLimit?: number | null,
-		@Args('title', { type: () => Number, nullable: true }) title?: string,
-		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
-		@Args('requireName', { nullable: true }) requireName?: boolean,
-		@Args('active', { nullable: true }) active?: boolean,
+		@Args('requireEmail', { nullable: true }) requireEmail?: boolean | null,
+		@Args('requireName', { nullable: true }) requireName?: boolean | null,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireExam,

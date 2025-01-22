@@ -148,6 +148,7 @@ export class QuestionnaireResolver {
 		questionMethods?: QuestionMethodInput[],
 		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
 		@Args('requireName', { nullable: true }) requireName?: boolean,
+		@Args('active', { nullable: true }) active?: boolean,
 		@Args('title', { nullable: true }) title?: string,
 	): Promise<QuestionnaireQuiz> {
 		return this.questionnaireService.updateQuestionnaire({
@@ -156,6 +157,7 @@ export class QuestionnaireResolver {
 			questionMethods,
 			requireEmail,
 			requireName,
+			active,
 			title,
 			user,
 		}) as Promise<QuestionnaireQuiz>;
@@ -170,7 +172,9 @@ export class QuestionnaireResolver {
 		questionMethods?: QuestionMethodInput[],
 		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
 		@Args('requireName', { nullable: true }) requireName?: boolean,
+		@Args('active', { nullable: true }) active?: boolean,
 		@Args('title', { nullable: true }) title?: string,
+
 	): Promise<QuestionnaireSurvey> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireSurvey,
@@ -178,6 +182,7 @@ export class QuestionnaireResolver {
 			questionMethods,
 			requireEmail,
 			requireName,
+			active,
 			title,
 			user,
 		}) as Promise<QuestionnaireSurvey>;
@@ -197,6 +202,7 @@ export class QuestionnaireResolver {
 		@Args('title', { type: () => Number, nullable: true }) title?: string,
 		@Args('requireEmail', { nullable: true }) requireEmail?: boolean,
 		@Args('requireName', { nullable: true }) requireName?: boolean,
+		@Args('active', { nullable: true }) active?: boolean,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireExam,
@@ -208,6 +214,7 @@ export class QuestionnaireResolver {
 			requireEmail,
 			requireName,
 			timeLimit,
+			active,
 			title,
 			user,
 		}) as Promise<QuestionnaireExam>;

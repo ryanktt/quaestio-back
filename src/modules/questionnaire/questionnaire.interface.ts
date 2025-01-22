@@ -77,6 +77,7 @@ export interface IRepositoryUpdateQuestionnareParams {
 	requireEmail?: boolean;
 	requireName?: boolean;
 	description?: string;
+	active?: boolean;
 	title?: string;
 }
 
@@ -130,8 +131,9 @@ export interface IUpdateQuestionnaireParams {
 	user: AdminDocument;
 	questionMethods?: QuestionMethodInput[];
 	randomizeQuestions?: boolean;
-	title?: string;
 	description?: string;
+	active?: boolean;
+	title?: string;
 	passingGradePercent?: number | null;
 	maxRetryAmount?: number | null;
 	requireEmail?: boolean | null;

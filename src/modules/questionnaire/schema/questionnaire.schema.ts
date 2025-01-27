@@ -233,6 +233,10 @@ export class Questionnaire extends SchemaBaseInterface {
 
 	@Field({ defaultValue: true })
 	@Prop({ required: true, default: true })
+	active: boolean;
+
+	@Field({ defaultValue: true })
+	@Prop({ required: true, default: true })
 	requireEmail: boolean;
 
 	@Field({ defaultValue: false })
@@ -272,6 +276,9 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 
 	@Field(() => QuestionnaireMetrics)
 	metrics: ObjectId;
+
+	@Field({ defaultValue: true })
+	active: boolean;
 
 	@Field({ defaultValue: true })
 	requireEmail: boolean;
@@ -324,6 +331,9 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 	metrics: ObjectId;
 
 	@Field({ defaultValue: true })
+	active: boolean;
+
+	@Field({ defaultValue: true })
 	requireEmail: boolean;
 
 	@Field({ defaultValue: false })
@@ -356,6 +366,9 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 
 	@Field(() => QuestionnaireMetrics)
 	metrics: ObjectId;
+
+	@Field({ defaultValue: true })
+	active: boolean;
 
 	@Field({ defaultValue: true })
 	requireEmail: boolean;

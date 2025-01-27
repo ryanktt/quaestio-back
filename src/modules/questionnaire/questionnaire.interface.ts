@@ -74,10 +74,11 @@ export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCre
 export interface IRepositoryUpdateQuestionnareParams {
 	metrics: QuestionnaireMetricsDocument;
 	questions?: QuestionTypes[];
-	requireEmail?: boolean;
-	requireName?: boolean;
 	description?: string;
+	active?: boolean;
 	title?: string;
+	requireEmail?: boolean | null;
+	requireName?: boolean | null;
 }
 
 export interface IRepositoryUpdateQuestionnareQuizParams extends IRepositoryUpdateQuestionnareParams {
@@ -130,8 +131,9 @@ export interface IUpdateQuestionnaireParams {
 	user: AdminDocument;
 	questionMethods?: QuestionMethodInput[];
 	randomizeQuestions?: boolean;
-	title?: string;
 	description?: string;
+	active?: boolean;
+	title?: string;
 	passingGradePercent?: number | null;
 	maxRetryAmount?: number | null;
 	requireEmail?: boolean | null;

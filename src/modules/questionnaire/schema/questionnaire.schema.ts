@@ -4,10 +4,10 @@ import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.sche
 import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { QuestionnaireMetrics } from './questionnaire-metrics';
-import { Model, Schema as MongooseSchema } from 'mongoose';
+import { Model, Schema as MongooseSchema, SchemaTypes } from 'mongoose';
 import { Admin } from '@modules/user/admin/admin.schema';
-import { ObjectId } from 'mongodb';
 import { nanoid } from 'nanoid';
+import { ObjectId } from 'mongodb';
 
 @ObjectType()
 @Schema()
@@ -244,7 +244,7 @@ export class Questionnaire extends SchemaBaseInterface {
 	requireName: boolean;
 
 	@Field(() => Admin)
-	@Prop({ ref: 'User', required: true })
+	@Prop({ ref: 'User', type: SchemaTypes.ObjectId, required: true })
 	user: ObjectId;
 
 	@Field()

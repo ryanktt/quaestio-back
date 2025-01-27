@@ -4,7 +4,7 @@ import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.sche
 import { Respondent } from '@modules/user/respondent/respondent.schema';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Model, Schema as MongooseSchema } from 'mongoose';
+import { Model, Schema as MongooseSchema, SchemaTypes } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 @InterfaceType({
@@ -133,7 +133,7 @@ export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrue
 @ObjectType()
 @Schema()
 export class Response extends SchemaBase {
-	@Prop({ ref: 'Questionnaire', required: true })
+	@Prop({ ref: 'Questionnaire', type: SchemaTypes.ObjectId, required: true })
 	questionnaire: ObjectId;
 
 	@Field(() => [Answer])
@@ -149,7 +149,7 @@ export class Response extends SchemaBase {
 	completedAt?: Date;
 
 	@Field(() => Respondent)
-	@Prop({ ref: 'Respondent', required: true })
+	@Prop({ ref: 'Respondent', type: SchemaTypes.ObjectId, required: true })
 	respondent: string;
 }
 

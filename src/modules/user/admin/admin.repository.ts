@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AdminRepository {
-	constructor(@InjectModel('Admin') private readonly adminSchema: AdminModel) {}
+	constructor(@InjectModel('Admin') private readonly adminSchema: AdminModel) { }
 
 	async fetchById(userId: string): Promise<AdminDocument | undefined> {
 		const user = (await this.adminSchema
@@ -28,6 +28,7 @@ export class AdminRepository {
 		return this.adminSchema
 			.find({ _id: { $in: userIds } })
 			.lean()
+			.exec()
 			.catch((err: Error) => {
 				throw new AppError({
 					code: EUserErrorCode.FETCH_USERS_ERROR,

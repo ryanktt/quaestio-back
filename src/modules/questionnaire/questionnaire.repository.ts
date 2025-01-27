@@ -65,10 +65,10 @@ export class QuestionnaireRepository {
 		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
 		if (questionnaireIds) query._id = { $in: questionnaireIds };
 		if (userIds) query.user = { $in: userIds };
-
 		return this.questionnaireSchema
 			.find(query)
 			.lean()
+			.exec()
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
@@ -121,6 +121,7 @@ export class QuestionnaireRepository {
 		return this.questionnaireMetricsSchema
 			.find({ _id: { $in: questionnaireIds } })
 			.lean()
+			.exec()
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRE_METRICS_ERROR,

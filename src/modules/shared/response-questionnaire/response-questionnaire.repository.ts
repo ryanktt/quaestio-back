@@ -11,12 +11,13 @@ export class ResponseQuestionnaireRepository {
 	constructor(
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
 		private readonly utilsArray: UtilsArray,
-	) {}
+	) { }
 
 	async fetchQuestionnaireByIds(questionnaireIds: string[]): Promise<Questionnaire[]> {
 		return this.questionnaireSchema
 			.find({ _id: { $in: questionnaireIds } })
 			.lean()
+			.exec()
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,

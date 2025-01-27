@@ -296,7 +296,7 @@ export class QuestionnaireRepository {
 	}
 
 	async updateQuiz(
-		{ requireEmail, requireName, metrics, questions, title, description, quiz }: IRepositoryUpdateQuestionnareQuizParams,
+		{ requireEmail, active, requireName, metrics, questions, title, description, quiz }: IRepositoryUpdateQuestionnareQuizParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const updatedQuiz = new this.questionnaireQuizSchema({
@@ -306,6 +306,7 @@ export class QuestionnaireRepository {
 			createdAt: quiz.createdAt,
 			questions: quiz.questions,
 			sharedId: quiz.sharedId,
+			active: quiz.active,
 			title: quiz.title,
 			user: quiz.user,
 			updatedAt: new Date(),
@@ -325,6 +326,7 @@ export class QuestionnaireRepository {
 		});
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'description', value: description });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'active', value: active });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'title', value: title });
 		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'latest', value: false });
 
@@ -350,6 +352,7 @@ export class QuestionnaireRepository {
 			requireName,
 			questions,
 			metrics,
+			active,
 			survey,
 			title,
 		}: IRepositoryUpdateQuestionnareSurveyParams,
@@ -362,6 +365,7 @@ export class QuestionnaireRepository {
 			createdAt: survey.createdAt,
 			questions: survey.questions,
 			sharedId: survey.sharedId,
+			active: survey.active,
 			title: survey.title,
 			user: survey.user,
 			updatedAt: new Date(),
@@ -382,6 +386,7 @@ export class QuestionnaireRepository {
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'description', value: description });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'questions', value: questions });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'title', value: title });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'active', value: active });
 		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'latest', value: false });
 
 		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireSurveyDocument> => {
@@ -410,6 +415,7 @@ export class QuestionnaireRepository {
 			questions,
 			timeLimit,
 			metrics,
+			active,
 			title,
 			exam,
 		}: IRepositoryUpdateQuestionnareExamParams,
@@ -426,6 +432,7 @@ export class QuestionnaireRepository {
 			createdAt: exam.createdAt,
 			questions: exam.questions,
 			sharedId: exam.sharedId,
+			active: exam.active,
 			title: exam.title,
 			user: exam.user,
 			updatedAt: new Date(),
@@ -457,6 +464,7 @@ export class QuestionnaireRepository {
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'timeLimit', value: timeLimit });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'questions', value: questions });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'description', value: description });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'active', value: active });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'title', value: title });
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'latest', value: false });
 

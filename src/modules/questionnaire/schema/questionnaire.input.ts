@@ -7,8 +7,8 @@ export class OptionInput {
 	@Field()
 	title: string;
 
-	@Field()
-	correct: boolean;
+	@Field({ nullable: true })
+	correct?: boolean;
 
 	@Field({ nullable: true })
 	feedbackAfterSubmit?: string;

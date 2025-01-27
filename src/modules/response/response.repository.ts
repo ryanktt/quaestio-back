@@ -15,7 +15,7 @@ import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ResponseRepository {
-	constructor(@InjectModel('Response') private readonly responseSchema: ResponseModel) {}
+	constructor(@InjectModel('Response') private readonly responseSchema: ResponseModel) { }
 
 	async fetchResponses({
 		questionnaireIds,
@@ -28,6 +28,7 @@ export class ResponseRepository {
 		return this.responseSchema
 			.find(query)
 			.lean()
+			.exec()
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EResponseErrorCode.FETCH_RESPONSES_ERROR,
@@ -59,6 +60,7 @@ export class ResponseRepository {
 		return this.responseSchema
 			.findOne({ _id: new ObjectId(responseId), questionnaire: new ObjectId(questionnaireId) })
 			.lean()
+			.exec()
 			.catch((originalError: Error) => {
 				throw new AppError({
 					code: EResponseErrorCode.FETCH_RESPONSE_ERROR,

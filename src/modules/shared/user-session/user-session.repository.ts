@@ -76,6 +76,7 @@ export class UserSessionRepository {
 		return this.userSchema
 			.find({ _id: { $in: userIds } })
 			.lean()
+			.exec()
 			.catch((err: Error) => {
 				throw new AppError({
 					code: EUserErrorCode.FETCH_USERS_ERROR,

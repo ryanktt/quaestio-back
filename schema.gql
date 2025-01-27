@@ -444,7 +444,7 @@ input QuestionMultipleChoiceInput {
 
 input OptionInput {
   title: String!
-  correct: Boolean!
+  correct: Boolean
   feedbackAfterSubmit: String
 }
 

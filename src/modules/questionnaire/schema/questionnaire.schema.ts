@@ -204,7 +204,7 @@ export class QuestionText extends SchemaBase implements Question {
 	showCorrectAnswer: boolean;
 
 	@Field({ nullable: true })
-	@Prop({ default: 'teste feedback' })
+	@Prop()
 	feedbackAfterSubmit?: string;
 }
 
@@ -260,7 +260,7 @@ export class Questionnaire extends SchemaBaseInterface {
 	latest: boolean;
 
 	@Field()
-	@Prop({ default: nanoid(10), required: true })
+	@Prop({ default: () => nanoid(10), required: true })
 	sharedId: string;
 
 	@Field(() => [Question])

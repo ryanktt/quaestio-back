@@ -150,12 +150,14 @@ export class QuestionnaireResolver {
 		@Args('title', { nullable: true }) title?: string,
 		@Args('requireEmail', { type: () => Boolean, nullable: true }) requireEmail?: boolean | null,
 		@Args('requireName', { type: () => Boolean, nullable: true }) requireName?: boolean | null,
+		@Args('description', { type: () => String, nullable: true }) description?: string,
 	): Promise<QuestionnaireQuiz> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireQuiz,
 			questionnaireId,
 			questionMethods,
 			requireEmail,
+			description,
 			requireName,
 			active,
 			title,
@@ -174,13 +176,14 @@ export class QuestionnaireResolver {
 		@Args('title', { nullable: true }) title?: string,
 		@Args('requireEmail', { type: () => Boolean, nullable: true }) requireEmail?: boolean | null,
 		@Args('requireName', { type: () => Boolean, nullable: true }) requireName?: boolean | null,
-
+		@Args('description', { type: () => String, nullable: true }) description?: string,
 	): Promise<QuestionnaireSurvey> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireSurvey,
 			questionnaireId,
 			questionMethods,
 			requireEmail,
+			description,
 			requireName,
 			active,
 			title,
@@ -203,6 +206,8 @@ export class QuestionnaireResolver {
 		@Args('requireName', { type: () => Boolean, nullable: true }) requireName?: boolean | null,
 		@Args('maxRetryAmount', { type: () => Number, nullable: true }) maxRetryAmount?: number | null,
 		@Args('timeLimit', { type: () => Number, nullable: true }) timeLimit?: number | null,
+		@Args('description', { type: () => String, nullable: true }) description?: string,
+
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireExam,
@@ -212,6 +217,7 @@ export class QuestionnaireResolver {
 			questionMethods,
 			maxRetryAmount,
 			requireEmail,
+			description,
 			requireName,
 			timeLimit,
 			active,

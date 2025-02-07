@@ -42,7 +42,7 @@ export class QuestionnaireResolver {
 	}
 
 	@Role('Admin')
-	@Query(() => DeleteQuestionnaireResponse, { nullable: true })
+	@Mutation(() => DeleteQuestionnaireResponse, { nullable: true })
 	async adminDeleteQuestionnaire(
 		@Args('questionnaireSharedId') questionnaireSharedId: string,
 	): Promise<DeleteQuestionnaireResponse | undefined> {

@@ -290,6 +290,10 @@ type Session {
   expiresAt: DateTime!
 }
 
+type DeleteQuestionnaireResponse {
+  status: String!
+}
+
 type RespondentLocation {
   country: String!
   region: String!
@@ -408,6 +412,7 @@ type Query {
 }
 
 type Mutation {
+  adminDeleteQuestionnaire(questionnaireSharedId: String!): DeleteQuestionnaireResponse
   adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireQuiz!
   adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireSurvey!
   adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, description: String, timeLimit: Float): QuestionnaireExam!

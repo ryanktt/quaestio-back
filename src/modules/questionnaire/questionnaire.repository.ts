@@ -15,6 +15,7 @@ import {
 	IRepositoryUpdateQuestionnareQuizParams,
 	IRepositoryUpdateQuestionnareExamParams,
 	IRepositoryFetchQuestionnairesParams,
+	IRepositoryDeleteQuestionnaireParams,
 	IRepositoryFetchQuestionnaireParams,
 	IRepositoryCreateQuestionnareParams,
 	EQuestionnaireErrorCode,
@@ -165,6 +166,19 @@ export class QuestionnaireRepository {
 			const metrics = await this.fetchQuestionnaireMetricsByIds(ids);
 			return this.utilsArray.getObjectsSortedByIds(metrics, '_id', ids);
 		});
+	}
+
+	async deleteQuestionnaire({ questionnaireSharedId }: IRepositoryDeleteQuestionnaireParams): Promise<void> {
+		await this.questionnaireSchema
+			.deleteMany({ sharedId: questionnaireSharedId })
+			.exec()
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.DELETE_QUESTIONNAIRE_ERROR,
+					message: 'fail to delete questionnaire',
+					originalError,
+				});
+			});
 	}
 
 	async createQuestionnaireMetrics(

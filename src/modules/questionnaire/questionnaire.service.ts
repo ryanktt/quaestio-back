@@ -5,6 +5,7 @@ import {
 	ICreateQuestionnaireParams,
 	IFetchQuestionnairesParams,
 	IUpdateQuestionnaireParams,
+	IDeleteQuestionnaireParams,
 } from './questionnaire.interface';
 import {
 	QuestionnaireSurveyDocument,
@@ -183,5 +184,12 @@ export class QuestionnaireService {
 				session,
 			);
 		});
+	}
+
+	async deleteQuestionnaire(params: IDeleteQuestionnaireParams): Promise<void> {
+		const { questionnaireSharedId } = params;
+		await this.questionnaireHelper.validateDeleteQuestionnaireParams(params);
+
+		return this.questionnaireRepository.deleteQuestionnaire({ questionnaireSharedId });
 	}
 }

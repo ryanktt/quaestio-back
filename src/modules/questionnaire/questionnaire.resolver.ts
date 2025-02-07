@@ -9,13 +9,19 @@ import {
 import { QuestionnaireMetrics } from './schema/questionnaire-metrics';
 import { QuestionnaireService } from './questionnaire.service';
 
-import { ResolveField, Resolver, Mutation, Context, Parent, Query, Args } from '@nestjs/graphql';
+import { ResolveField, Resolver, Mutation, Context, Parent, Query, Args, Field, ObjectType } from '@nestjs/graphql';
 import { UserSessionRepository } from '@modules/shared/user-session/user-session.repository';
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { IAdminContext } from '@modules/session/session.interface';
 import { EQuestionnaireType } from './questionnaire.interface';
 import { Admin } from '@modules/user/admin/admin.schema';
 import { Role } from '@utils/utils.decorators';
+
+@ObjectType()
+export class DeleteQuestionnaireResponse {
+	@Field(() => String)
+	status: string;
+}
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {
@@ -33,6 +39,15 @@ export class QuestionnaireResolver {
 	@ResolveField(() => QuestionnaireMetrics)
 	async metrics(@Parent() questionnaire: Questionnaire): Promise<QuestionnaireMetrics> {
 		return this.questionnaireRepository.questionnaireMetricsLoader().load(questionnaire._id.toString());
+	}
+
+	@Role('Admin')
+	@Query(() => DeleteQuestionnaireResponse, { nullable: true })
+	async adminDeleteQuestionnaire(
+		@Args('questionnaireSharedId') questionnaireSharedId: string,
+	): Promise<DeleteQuestionnaireResponse | undefined> {
+		await this.questionnaireService.deleteQuestionnaire({ questionnaireSharedId });
+		return { status: 'Success' };
 	}
 
 	@Role('Admin')

@@ -25,9 +25,11 @@ export enum EQuestionnaireErrorCode {
 	UPDATE_QUESTIONNAIRE_SURVEY_ERROR = 'UPDATE_QUESTIONNAIRE_SURVEY_ERROR',
 	UPDATE_QUESTIONNAIRE_QUIZ_ERROR = 'UPDATE_QUESTIONNAIRE_QUIZ_ERROR',
 	UPDATE_QUESTIONNAIRE_EXAM_ERROR = 'UPDATE_QUESTIONNAIRE_EXAM_ERROR',
+	DELETE_QUESTIONNAIRE_INVALID_PARAMS = 'DELETE_QUESTIONNAIRE_INVALID_PARAMS',
 	FETCH_QUESTIONNAIRE_METRICS_ERROR = 'FETCH_QUESTIONNAIRE_METRICS_ERROR',
 	FETCH_QUESTIONNAIRES_ERROR = 'FETCH_QUESTIONNAIRES_ERROR',
 	FETCH_QUESTIONNAIRE_ERROR = 'FETCH_QUESTIONNAIRE_ERROR',
+	DELETE_QUESTIONNAIRE_ERROR = 'DELETE_QUESTIONNAIRE_ERROR',
 	QUESTIONNAIRE_METRICS_NOT_FOUND = 'QUESTIONNAIRE_METRICS_NOT_FOUND',
 	QUESTIONNAIRE_NOT_FOUND = 'QUESTIONNAIRE_NOT_FOUND',
 	INVALID_QUESTION = 'INVALID_QUESTION',
@@ -111,6 +113,10 @@ export interface IRepositoryFetchQuestionnairesParams {
 	latest?: boolean;
 }
 
+export interface IRepositoryDeleteQuestionnaireParams {
+	questionnaireSharedId: string;
+}
+
 export interface ICreateQuestionnaireParams {
 	questions: QuestionDiscriminatorInput[];
 	type: EQuestionnaireType;
@@ -153,4 +159,8 @@ export interface IFetchQuestionnairesParams {
 	questionnaireIds?: string[];
 	latest?: boolean;
 	user: AdminDocument;
+}
+
+export interface IDeleteQuestionnaireParams {
+	questionnaireSharedId: string;
 }

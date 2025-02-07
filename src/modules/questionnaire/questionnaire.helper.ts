@@ -6,10 +6,12 @@ import {
 	ICreateQuestionnaireParams,
 	IFetchQuestionnairesParams,
 	IUpdateQuestionnaireParams,
+	IDeleteQuestionnaireParams,
 } from './questionnaire.interface';
 import {
 	CreateQuestionnaireValidator,
 	UpdateQuestionnaireValidator,
+	DeleteQuestionnaireValidator,
 	FetchQuestionnairesValidator,
 	FetchQuestionnaireValidator,
 	QuestionDiscriminatorInput,
@@ -35,7 +37,7 @@ import {
 
 @Injectable()
 export class QuestionnaireHelper {
-	constructor(private readonly utilsPromise: UtilsPromise) {}
+	constructor(private readonly utilsPromise: UtilsPromise) { }
 
 	async validateCreateQuestionnaireParams(params: ICreateQuestionnaireParams): Promise<void> {
 		await this.utilsPromise
@@ -80,6 +82,18 @@ export class QuestionnaireHelper {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_INVALID_PARAMS,
 					message: 'invalid params to fetch questionnaires',
+					originalError,
+				});
+			});
+	}
+
+	async validateDeleteQuestionnaireParams(params: IDeleteQuestionnaireParams): Promise<void> {
+		await this.utilsPromise
+			.promisify(() => Joi.assert(params, DeleteQuestionnaireValidator))
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EQuestionnaireErrorCode.DELETE_QUESTIONNAIRE_INVALID_PARAMS,
+					message: 'invalid params to delete questionnaire',
 					originalError,
 				});
 			});

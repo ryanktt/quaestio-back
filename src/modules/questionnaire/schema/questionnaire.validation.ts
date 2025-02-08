@@ -118,6 +118,7 @@ export const UpdateQuestionnaireValidator = Joi.object().keys({
 	title: Joi.string().trim().max(250),
 	description: Joi.string().trim(),
 	questionMethods: Joi.array().items(QuestionMethodValidator),
+	active: Joi.boolean(),
 	randomizeQuestions: Joi.boolean().default(false),
 	passingGradePercent: Joi.number().allow(null),
 	maxRetryAmount: Joi.number().allow(null),

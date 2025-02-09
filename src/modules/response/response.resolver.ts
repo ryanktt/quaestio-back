@@ -17,7 +17,7 @@ export class ResponseResolver {
 	constructor(
 		private readonly responseService: ResponseService,
 		private readonly responseQuestRepository: ResponseQuestionnaireRepository,
-	) {}
+	) { }
 
 	// calls itself to define type in schema.gql so i dont get: '"Response" defined in resolvers, but not in schema.'
 	@ResolveField(() => Response)
@@ -40,7 +40,6 @@ export class ResponseResolver {
 		@Args('email', { nullable: true }) email: string,
 		@Args('name', { nullable: true }) name: string,
 	): Promise<PublicUpsertResponse> {
-		console.log(authToken);
 		return this.responseService.publicUpsertQuestionnaireResponse({
 			questionnaireId,
 			ip: clientIp,

@@ -216,6 +216,7 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  sharedCreatedAt: DateTime!
   timeLimit: Float
   passingGradePercent: Float
   maxRetryAmount: Float
@@ -237,6 +238,7 @@ interface Questionnaire {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  sharedCreatedAt: DateTime!
 }
 
 enum QuestionnaireType {
@@ -260,6 +262,7 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  sharedCreatedAt: DateTime!
 }
 
 type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
@@ -277,6 +280,7 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  sharedCreatedAt: DateTime!
 }
 
 type Session {
@@ -406,8 +410,8 @@ type SignOutResponse {
 }
 
 type Query {
-  adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean): Questionnaire
-  adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean): [Questionnaire!]!
+  adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean = true): Questionnaire
+  adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean = true): [Questionnaire!]!
   fetchAdmin(userId: String, email: String): Admin
 }
 

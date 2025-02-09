@@ -68,6 +68,7 @@ export class QuestionnaireRepository {
 		if (userIds) query.user = { $in: userIds };
 		return this.questionnaireSchema
 			.find(query)
+			.sort({ updatedAt: -1 })
 			.lean()
 			.exec()
 			.catch((originalError: Error) => {
@@ -315,16 +316,15 @@ export class QuestionnaireRepository {
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const updatedQuiz = new this.questionnaireQuizSchema({
+			sharedCreatedAt: quiz.sharedCreatedAt,
 			requireEmail: quiz.requireEmail,
 			requireName: quiz.requireName,
 			description: quiz.description,
-			createdAt: quiz.createdAt,
 			questions: quiz.questions,
 			sharedId: quiz.sharedId,
 			active: quiz.active,
 			title: quiz.title,
 			user: quiz.user,
-			updatedAt: new Date(),
 		}) as QuestionnaireQuizDocument;
 
 		this.utilsDoc.handleFieldUpdate({
@@ -374,16 +374,15 @@ export class QuestionnaireRepository {
 		session?: ClientSession,
 	): Promise<QuestionnaireSurveyDocument> {
 		const updatedSurvey = new this.questionnaireSurveySchema({
+			sharedCreatedAt: survey.sharedCreatedAt,
 			requireEmail: survey.requireEmail,
 			requireName: survey.requireName,
 			description: survey.description,
-			createdAt: survey.createdAt,
 			questions: survey.questions,
 			sharedId: survey.sharedId,
 			active: survey.active,
 			title: survey.title,
 			user: survey.user,
-			updatedAt: new Date(),
 		}) as QuestionnaireSurveyDocument;
 
 		this.utilsDoc.handleFieldUpdate({
@@ -440,17 +439,16 @@ export class QuestionnaireRepository {
 			maxRetryAmount: exam.maxRetryAmount,
 			passingGradePercent: exam.passingGradePercent,
 			randomizeQuestions: exam.randomizeQuestions,
+			sharedCreatedAt: exam.sharedCreatedAt,
 			requireEmail: exam.requireEmail,
 			requireName: exam.requireName,
 			description: exam.description,
 			timeLimit: exam.timeLimit,
-			createdAt: exam.createdAt,
 			questions: exam.questions,
 			sharedId: exam.sharedId,
 			active: exam.active,
 			title: exam.title,
 			user: exam.user,
-			updatedAt: new Date(),
 		}) as QuestionnaireExamDocument;
 
 		this.utilsDoc.handleFieldUpdate({

@@ -20,8 +20,8 @@ export class Option extends SchemaBase {
 	@Prop()
 	correct?: boolean;
 
-	@Field({ nullable: true, defaultValue: false })
-	@Prop({ default: false })
+	@Field({ nullable: true })
+	@Prop()
 	feedbackAfterSubmit?: string;
 }
 

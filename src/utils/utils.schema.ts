@@ -11,7 +11,7 @@ export type Ref<T> = T | string;
 @ObjectType({ isAbstract: true })
 export class SchemaBase {
 	@Field(() => String)
-	readonly _id: ObjectId;
+	_id: ObjectId;
 
 	@Field(() => Date)
 	createdAt: Date;

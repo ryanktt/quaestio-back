@@ -452,6 +452,7 @@ input QuestionMultipleChoiceInput {
 }
 
 input OptionInput {
+  id: String
   title: String!
   correct: Boolean
   feedbackAfterSubmit: String

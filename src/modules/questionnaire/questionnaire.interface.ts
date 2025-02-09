@@ -5,13 +5,16 @@ import {
 	QuestionnaireExamDocument,
 	QuestionDiscriminatorInput,
 	QuestionnaireSurveyDocument,
+	QuestionSingleChoiceInput,
+	QuestionMultipleChoiceInput,
+	QuestionTrueOrFalseInput,
+	QuestionTextInput,
 } from './schema';
 
 import { AdminDocument } from '@modules/user/admin/admin.schema';
 import { registerEnumType } from '@nestjs/graphql';
 import { QuestionnaireMetricsDocument } from './schema/questionnaire-metrics';
 import { ObjectId } from 'mongodb';
-// import { SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',
@@ -164,3 +167,5 @@ export interface IFetchQuestionnairesParams {
 export interface IDeleteQuestionnaireParams {
 	questionnaireSharedId: string;
 }
+
+export type QuestionInputTypes = QuestionSingleChoiceInput | QuestionMultipleChoiceInput | QuestionTrueOrFalseInput | QuestionTextInput;

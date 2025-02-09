@@ -266,6 +266,10 @@ export class Questionnaire extends SchemaBaseInterface {
 	@Field(() => [Question])
 	@Prop({ type: [QuestionSchema], required: true })
 	questions: QuestionTypes[];
+
+	@Field(() => Date)
+	@Prop({ default: () => new Date(), required: true })
+	sharedCreatedAt: Date;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -303,6 +307,9 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 
 	@Field(() => [Question])
 	questions: QuestionTypes[];
+
+	@Field(() => Date)
+	sharedCreatedAt: Date;
 
 	@Field({ nullable: true })
 	@Prop()
@@ -356,6 +363,9 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 
 	@Field(() => [Question])
 	questions: QuestionTypes[];
+
+	@Field(() => Date)
+	sharedCreatedAt: Date;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -393,6 +403,9 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 
 	@Field(() => [Question])
 	questions: QuestionTypes[];
+
+	@Field(() => Date)
+	sharedCreatedAt: Date;
 }
 
 export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);

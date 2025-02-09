@@ -56,7 +56,7 @@ export class QuestionnaireResolver {
 		@Context() { user }: IAdminContext,
 		@Args('questionnaireSharedId', { nullable: true }) questionnaireSharedId?: string,
 		@Args('questionnaireId', { nullable: true }) questionnaireId?: string,
-		@Args('latest', { nullable: true }) latest?: boolean,
+		@Args('latest', { nullable: true, defaultValue: true }) latest?: boolean,
 	): Promise<Questionnaire | undefined> {
 		return this.questionnaireService.fetchQuestionnaire({
 			questionnaireSharedId,
@@ -73,7 +73,7 @@ export class QuestionnaireResolver {
 		@Args('questionnaireSharedIds', { type: () => [String], nullable: true })
 		questionnaireSharedIds?: string[],
 		@Args('questionnaireIds', { type: () => [String], nullable: true }) questionnaireIds?: string[],
-		@Args('latest', { nullable: true }) latest?: boolean,
+		@Args('latest', { nullable: true, defaultValue: true }) latest?: boolean,
 	): Promise<Questionnaire[]> {
 		return this.questionnaireService.fetchQuestionnaires({
 			questionnaireSharedIds,

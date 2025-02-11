@@ -101,18 +101,18 @@ export class QuestionnaireHelper {
 			});
 	}
 
-	getQuestionFromQuestionDiscriminatorInput(
-		questionDiscriminatorInput?: QuestionDiscriminatorInput,
+	getQuestionFromQuestionDiscriminatorInput({ questionId, questionDiscriminator }:
+		{ questionDiscriminator?: QuestionDiscriminatorInput; questionId?: string }
 	): QuestionTypes | undefined {
-		if (!questionDiscriminatorInput) return undefined;
+		if (!questionDiscriminator) return undefined;
 		const map: Record<EQuestionType, QuestionInputTypes | undefined> = {
-			[EQuestionType.MULTIPLE_CHOICE]: questionDiscriminatorInput.questionMultipleChoice,
-			[EQuestionType.SINGLE_CHOICE]: questionDiscriminatorInput.questionSingleChoice,
-			[EQuestionType.TRUE_OR_FALSE]: questionDiscriminatorInput.questionTrueOrFalse,
-			[EQuestionType.TEXT]: questionDiscriminatorInput.questionText,
+			[EQuestionType.MULTIPLE_CHOICE]: questionDiscriminator.questionMultipleChoice,
+			[EQuestionType.SINGLE_CHOICE]: questionDiscriminator.questionSingleChoice,
+			[EQuestionType.TRUE_OR_FALSE]: questionDiscriminator.questionTrueOrFalse,
+			[EQuestionType.TEXT]: questionDiscriminator.questionText,
 		};
 
-		const questionInput = map[questionDiscriminatorInput.type];
+		const questionInput = map[questionDiscriminator.type];
 
 		const options: Option[] = [];
 		if (questionInput && 'options' in questionInput) {
@@ -123,7 +123,7 @@ export class QuestionnaireHelper {
 			});
 		}
 
-		return { ...questionInput, options } as QuestionTypes;
+		return { ...questionInput, _id: new ObjectId(questionId), options } as QuestionTypes;
 	}
 
 
@@ -136,7 +136,7 @@ export class QuestionnaireHelper {
 		if (!questionMethods) return undefined;
 		const questions = [...questionnaire.toObject().questions as QuestionTypes[]];
 		questionMethods.forEach(({ questionDiscriminator, questionId, type }) => {
-			const question = this.getQuestionFromQuestionDiscriminatorInput(questionDiscriminator);
+			const question = this.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator, questionId });
 			const questionIndex = questions.findIndex((q) => q._id.toString() === questionId);
 
 			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question) {

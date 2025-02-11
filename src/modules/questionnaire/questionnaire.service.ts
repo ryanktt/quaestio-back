@@ -65,8 +65,8 @@ export class QuestionnaireService {
 		} = params;
 		await this.questionnaireHelper.validateCreateQuestionnaireParams(params);
 
-		const questions = questionDiscriminatorInputArray.map((input) => {
-			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as QuestionTypes;
+		const questions = questionDiscriminatorInputArray.map((questionDiscriminator) => {
+			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator }) as QuestionTypes;
 		});
 
 		return this.utilsDoc.startMongodbSession(async (session) => {

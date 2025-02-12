@@ -10,7 +10,7 @@ import {
 import { QuestionnaireMetrics } from './schema/questionnaire-metrics';
 import { QuestionnaireService } from './questionnaire.service';
 
-import { ResolveField, Resolver, Mutation, Context, Parent, Query, Args, Field, ObjectType } from '@nestjs/graphql';
+import { ResolveField, Resolver, Mutation, Context, Parent, Query, Args, Field, ObjectType, Int } from '@nestjs/graphql';
 import { UserSessionRepository } from '@modules/shared/user-session/user-session.repository';
 import { QuestionnaireRepository } from './questionnaire.repository';
 import { IAdminContext } from '@modules/session/session.interface';
@@ -136,9 +136,9 @@ export class QuestionnaireResolver {
 		@Args('title') title: string,
 		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
 		@Args('passingGradePercent', { nullable: true }) passingGradePercent?: number,
-		@Args('maxRetryAmount', { nullable: true }) maxRetryAmount?: number,
+		@Args('maxRetryAmount', { type: () => Int, nullable: true }) maxRetryAmount?: number,
 		@Args('description', { nullable: true }) description?: string,
-		@Args('timeLimit', { nullable: true }) timeLimit?: number,
+		@Args('timeLimit', { type: () => Int, nullable: true }) timeLimit?: number,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.createQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireExam,
@@ -225,11 +225,11 @@ export class QuestionnaireResolver {
 		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
 		@Args('passingGradePercent', { type: () => Number, nullable: true }) passingGradePercent?: number | null,
 		@Args('active', { nullable: true }) active?: boolean,
-		@Args('title', { type: () => Number, nullable: true }) title?: string,
+		@Args('title', { type: () => String, nullable: true }) title?: string,
 		@Args('requireEmail', { type: () => Boolean, nullable: true }) requireEmail?: boolean | null,
 		@Args('requireName', { type: () => Boolean, nullable: true }) requireName?: boolean | null,
-		@Args('maxRetryAmount', { type: () => Number, nullable: true }) maxRetryAmount?: number | null,
-		@Args('timeLimit', { type: () => Number, nullable: true }) timeLimit?: number | null,
+		@Args('maxRetryAmount', { type: () => Int, nullable: true }) maxRetryAmount?: number | null,
+		@Args('timeLimit', { type: () => Int, nullable: true }) timeLimit?: number | null,
 		@Args('description', { type: () => String, nullable: true }) description?: string,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.updateQuestionnaire({

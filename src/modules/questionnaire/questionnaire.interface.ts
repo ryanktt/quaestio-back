@@ -9,6 +9,7 @@ import {
 	QuestionMultipleChoiceInput,
 	QuestionTrueOrFalseInput,
 	QuestionTextInput,
+	QuestionOrderInput,
 } from './schema';
 
 import { AdminDocument } from '@modules/user/admin/admin.schema';
@@ -138,6 +139,7 @@ export interface IUpdateQuestionnaireParams {
 	type: EQuestionnaireType;
 	questionnaireId: string;
 	user: AdminDocument;
+	questionOrder?: QuestionOrderInput[];
 	questionMethods?: QuestionMethodInput[];
 	randomizeQuestions?: boolean;
 	description?: string;

@@ -5,6 +5,7 @@ import {
 	QuestionnaireSurvey,
 	QuestionDiscriminatorInput,
 	QuestionMethodInput,
+	QuestionOrderInput,
 } from './schema';
 import { QuestionnaireMetrics } from './schema/questionnaire-metrics';
 import { QuestionnaireService } from './questionnaire.service';
@@ -161,6 +162,8 @@ export class QuestionnaireResolver {
 		@Args('questionnaireId') questionnaireId: string,
 		@Args('questionMethods', { type: () => [QuestionMethodInput], nullable: true })
 		questionMethods?: QuestionMethodInput[],
+		@Args('questionOrder', { type: () => [QuestionOrderInput], nullable: true })
+		questionOrder?: QuestionOrderInput[],
 		@Args('active', { nullable: true }) active?: boolean,
 		@Args('title', { nullable: true }) title?: string,
 		@Args('requireEmail', { type: () => Boolean, nullable: true }) requireEmail?: boolean | null,
@@ -171,6 +174,7 @@ export class QuestionnaireResolver {
 			type: EQuestionnaireType.QuestionnaireQuiz,
 			questionnaireId,
 			questionMethods,
+			questionOrder,
 			requireEmail,
 			description,
 			requireName,
@@ -187,6 +191,8 @@ export class QuestionnaireResolver {
 		@Args('questionnaireId') questionnaireId: string,
 		@Args('questionMethods', { type: () => [QuestionMethodInput], nullable: true })
 		questionMethods?: QuestionMethodInput[],
+		@Args('questionOrder', { type: () => [QuestionOrderInput], nullable: true })
+		questionOrder?: QuestionOrderInput[],
 		@Args('active', { nullable: true }) active?: boolean,
 		@Args('title', { nullable: true }) title?: string,
 		@Args('requireEmail', { type: () => Boolean, nullable: true }) requireEmail?: boolean | null,
@@ -197,6 +203,7 @@ export class QuestionnaireResolver {
 			type: EQuestionnaireType.QuestionnaireSurvey,
 			questionnaireId,
 			questionMethods,
+			questionOrder,
 			requireEmail,
 			description,
 			requireName,
@@ -213,6 +220,8 @@ export class QuestionnaireResolver {
 		@Args('questionnaireId') questionnaireId: string,
 		@Args('questionMethods', { type: () => [QuestionMethodInput], nullable: true })
 		questionMethods?: QuestionMethodInput[],
+		@Args('questionOrder', { type: () => [QuestionOrderInput], nullable: true })
+		questionOrder?: QuestionOrderInput[],
 		@Args('randomizeQuestions', { nullable: true, defaultValue: false }) randomizeQuestions?: boolean,
 		@Args('passingGradePercent', { type: () => Number, nullable: true }) passingGradePercent?: number | null,
 		@Args('active', { nullable: true }) active?: boolean,
@@ -222,7 +231,6 @@ export class QuestionnaireResolver {
 		@Args('maxRetryAmount', { type: () => Number, nullable: true }) maxRetryAmount?: number | null,
 		@Args('timeLimit', { type: () => Number, nullable: true }) timeLimit?: number | null,
 		@Args('description', { type: () => String, nullable: true }) description?: string,
-
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireExam,
@@ -231,6 +239,7 @@ export class QuestionnaireResolver {
 			questionnaireId,
 			questionMethods,
 			maxRetryAmount,
+			questionOrder,
 			requireEmail,
 			description,
 			requireName,

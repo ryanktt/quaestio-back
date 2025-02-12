@@ -81,6 +81,11 @@ export const QuestionMethodValidator = Joi.object().keys({
 	type: Joi.string()
 		.valid(...Object.values(EQuestionMethodType))
 		.required(),
+	index: Joi.number().integer().when('type', {
+		is: Joi.string().valid(EQuestionMethodType.UPDATE, EQuestionMethodType.CREATE),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
 	questionId: Joi.string().when('type', {
 		is: Joi.string().valid(EQuestionMethodType.DELETE, EQuestionMethodType.UPDATE),
 		then: Joi.required(),
@@ -118,6 +123,10 @@ export const UpdateQuestionnaireValidator = Joi.object().keys({
 	title: Joi.string().trim().max(250),
 	description: Joi.string().trim(),
 	questionMethods: Joi.array().items(QuestionMethodValidator),
+	questionOrder: Joi.array().items(Joi.object().keys({
+		questionId: Joi.string().required(),
+		index: Joi.number().required(),
+	})),
 	active: Joi.boolean(),
 	randomizeQuestions: Joi.boolean().default(false),
 	passingGradePercent: Joi.number().allow(null),

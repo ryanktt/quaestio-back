@@ -18,6 +18,7 @@ import {
 	QuestionDiscriminatorInput,
 	QuestionnaireDocument,
 	QuestionMethodInput,
+	QuestionOrderInput,
 	QuestionTypes,
 	Option,
 } from './schema';
@@ -132,18 +133,21 @@ export class QuestionnaireHelper {
 	getQuestionsFromQuestionMethodsInput(
 		questionnaire: QuestionnaireDocument,
 		questionMethods?: QuestionMethodInput[],
+		questionOrder?: QuestionOrderInput[],
 	): QuestionTypes[] | undefined {
 		if (!questionMethods) return undefined;
 		const questions = [...questionnaire.toObject().questions as QuestionTypes[]];
-		questionMethods.forEach(({ questionDiscriminator, questionId, type }) => {
-			const question = this.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator, questionId });
-			const questionIndex = questions.findIndex((q) => q._id.toString() === questionId);
+		const updatedQuestions: QuestionTypes[] = [];
 
-			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question) {
-				questions.push(question);
-			}
-			if ((type === EQuestionMethodType.UPDATE || type === EQuestionMethodType.DELETE)) {
-				questions.splice(questionIndex, 1);
+		questionOrder?.forEach(({ index, questionId }) => {
+			const question = questions.find(({ _id }) => _id.toString() === questionId);
+			if (question) updatedQuestions[index] = question;
+		});
+
+		questionMethods.forEach(({ questionDiscriminator, questionId, index, type }) => {
+			const question = this.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator, questionId });
+			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question && index) {
+				updatedQuestions[index] = question;
 			}
 		});
 		return questions;

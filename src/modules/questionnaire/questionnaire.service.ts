@@ -103,7 +103,7 @@ export class QuestionnaireService {
 	}
 
 	async updateQuestionnaire(params: IUpdateQuestionnaireParams): Promise<QuestionnaireDocTypes> {
-		const { questionMethods, requireEmail, requireName, active, questionnaireId, title, description, type, user } = params;
+		const { questionMethods, requireEmail, requireName, questionOrder, active, questionnaireId, title, description, type, user } = params;
 		await this.questionnaireHelper.validateUpdateQuestionnaireParams(params);
 
 		const [questionnaire, metrics] = await Promise.all([
@@ -130,6 +130,7 @@ export class QuestionnaireService {
 		const questions = this.questionnaireHelper.getQuestionsFromQuestionMethodsInput(
 			questionnaire,
 			questionMethods,
+			questionOrder
 		);
 
 		return this.utilsDoc.startMongodbSession(async (session) => {

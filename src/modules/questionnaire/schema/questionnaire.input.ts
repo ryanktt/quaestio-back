@@ -124,6 +124,17 @@ export class QuestionMethodInput {
 	@Field(() => String, { nullable: true })
 	questionId: string;
 
+	@Field(() => Int, { nullable: true })
+	index?: number;
+
 	@Field(() => QuestionDiscriminatorInput, { nullable: true })
 	questionDiscriminator: QuestionDiscriminatorInput;
+}
+@InputType()
+export class QuestionOrderInput {
+	@Field(() => String, { nullable: true })
+	questionId: string;
+
+	@Field(() => Int, { nullable: true })
+	index: number;
 }

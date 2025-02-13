@@ -42,13 +42,14 @@ export class QuestionnaireService {
 	}
 
 	async fetchQuestionnaires(params: IFetchQuestionnairesParams): Promise<Questionnaire[]> {
-		const { questionnaireSharedIds, questionnaireIds, latest, user } = params;
+		const { questionnaireSharedIds, questionnaireIds, latest, textFilter, user } = params;
 		await this.questionnaireHelper.validateFetchQuestionnairesParams(params);
 
 		return this.questionnaireRepository.fetchQuestionnaires({
 			questionnaireSharedIds,
 			userIds: [user.id],
 			questionnaireIds,
+			textFilter,
 			latest,
 		});
 	}

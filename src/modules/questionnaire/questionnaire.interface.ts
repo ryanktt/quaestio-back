@@ -114,6 +114,7 @@ export interface IRepositoryFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
 	userIds?: string[];
+	textFilter?: string;
 	latest?: boolean;
 }
 
@@ -162,6 +163,7 @@ export interface IFetchQuestionnaireParams {
 export interface IFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
+	textFilter?: string;
 	latest?: boolean;
 	user: AdminDocument;
 }

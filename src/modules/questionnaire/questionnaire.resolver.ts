@@ -75,10 +75,12 @@ export class QuestionnaireResolver {
 		questionnaireSharedIds?: string[],
 		@Args('questionnaireIds', { type: () => [String], nullable: true }) questionnaireIds?: string[],
 		@Args('latest', { nullable: true, defaultValue: true }) latest?: boolean,
+		@Args('textFilter', { nullable: true }) textFilter?: string,
 	): Promise<Questionnaire[]> {
 		return this.questionnaireService.fetchQuestionnaires({
 			questionnaireSharedIds,
 			questionnaireIds,
+			textFilter,
 			latest,
 			user,
 		});

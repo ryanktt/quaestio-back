@@ -138,7 +138,7 @@ export const UpdateQuestionnaireValidator = Joi.object().keys({
 
 export const FetchQuestionnaireValidator = Joi.object()
 	.keys({
-		user: Joi.object().required(),
+		user: Joi.object(),
 		questionnaireSharedId: Joi.string(),
 		questionnaireId: Joi.string(),
 		latest: Joi.boolean(),

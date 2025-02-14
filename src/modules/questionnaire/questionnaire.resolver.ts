@@ -67,6 +67,17 @@ export class QuestionnaireResolver {
 		});
 	}
 
+	@Query(() => Questionnaire, { nullable: true })
+	async publicFetchQuestionnaire(
+		@Args('questionnaireSharedId', { nullable: true }) questionnaireSharedId?: string,
+		@Args('questionnaireId', { nullable: true }) questionnaireId?: string,
+	): Promise<Questionnaire | undefined> {
+		return this.questionnaireService.fetchQuestionnaire({
+			questionnaireSharedId,
+			questionnaireId,
+		});
+	}
+
 	@Role('Admin')
 	@Query(() => [Questionnaire])
 	async adminFetchQuestionnaires(

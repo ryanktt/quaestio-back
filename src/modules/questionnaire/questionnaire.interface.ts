@@ -157,7 +157,7 @@ export interface IFetchQuestionnaireParams {
 	questionnaireSharedId?: string;
 	questionnaireId?: string;
 	latest?: boolean;
-	user: AdminDocument;
+	user?: AdminDocument;
 }
 
 export interface IFetchQuestionnairesParams {

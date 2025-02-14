@@ -36,7 +36,7 @@ export class QuestionnaireService {
 
 		return this.questionnaireRepository.fetchQuestionnaire({
 			...(questionnaireId ? { questionnaireId } : { questionnaireSharedId }),
-			userId: user.id,
+			userId: user?.id,
 			latest,
 		});
 	}

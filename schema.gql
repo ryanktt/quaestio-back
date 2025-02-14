@@ -411,6 +411,7 @@ type SignOutResponse {
 
 type Query {
   adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean = true): Questionnaire
+  publicFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
   adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean = true, textFilter: String): [Questionnaire!]!
   fetchAdmin(userId: String, email: String): Admin
 }

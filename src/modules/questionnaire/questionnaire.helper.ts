@@ -146,11 +146,13 @@ export class QuestionnaireHelper {
 
 		questionMethods.forEach(({ questionDiscriminator, questionId, index, type }) => {
 			const question = this.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator, questionId });
-			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question && index) {
+
+			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question && typeof index === 'number') {
 				updatedQuestions[index] = question;
 			}
 		});
-		return questions;
+
+		return updatedQuestions;
 	}
 
 	getQuestionnaireQuestionMetrics(

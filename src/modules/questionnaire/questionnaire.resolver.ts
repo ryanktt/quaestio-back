@@ -72,10 +72,7 @@ export class QuestionnaireResolver {
 		@Args('questionnaireSharedId', { nullable: true }) questionnaireSharedId?: string,
 		@Args('questionnaireId', { nullable: true }) questionnaireId?: string,
 	): Promise<Questionnaire | undefined> {
-		return this.questionnaireService.fetchQuestionnaire({
-			questionnaireSharedId,
-			questionnaireId,
-		});
+		return this.questionnaireService.fetchQuestionnaire(questionnaireId ? { questionnaireId } : { questionnaireSharedId, latest: true });
 	}
 
 	@Role('Admin')

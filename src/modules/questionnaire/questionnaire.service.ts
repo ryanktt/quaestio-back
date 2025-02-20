@@ -67,7 +67,9 @@ export class QuestionnaireService {
 		await this.questionnaireHelper.validateCreateQuestionnaireParams(params);
 
 		const questions = questionDiscriminatorInputArray.map((questionDiscriminator) => {
-			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator }) as QuestionTypes;
+			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput({
+				questionDiscriminator,
+			}) as QuestionTypes;
 		});
 
 		return this.utilsDoc.startMongodbSession(async (session) => {
@@ -104,7 +106,20 @@ export class QuestionnaireService {
 	}
 
 	async updateQuestionnaire(params: IUpdateQuestionnaireParams): Promise<QuestionnaireDocTypes> {
-		const { questionMethods, requireEmail, requireName, questionOrder, active, questionnaireId, title, description, type, user } = params;
+		const {
+			questionMethods,
+			questionnaireId,
+			questionOrder,
+			requireEmail,
+			requireName,
+			description,
+			bgColor,
+			color,
+			active,
+			title,
+			type,
+			user,
+		} = params;
 		await this.questionnaireHelper.validateUpdateQuestionnaireParams(params);
 
 		const [questionnaire, metrics] = await Promise.all([
@@ -131,7 +146,7 @@ export class QuestionnaireService {
 		const questions = this.questionnaireHelper.getQuestionsFromQuestionMethodsInput(
 			questionnaire,
 			questionMethods,
-			questionOrder
+			questionOrder,
 		);
 
 		return this.utilsDoc.startMongodbSession(async (session) => {
@@ -146,6 +161,8 @@ export class QuestionnaireService {
 						metrics,
 						active,
 						title,
+						bgColor,
+						color,
 					},
 					session,
 				);
@@ -162,6 +179,8 @@ export class QuestionnaireService {
 						metrics,
 						active,
 						title,
+						bgColor,
+						color,
 					},
 					session,
 				);
@@ -182,6 +201,8 @@ export class QuestionnaireService {
 					metrics,
 					active,
 					title,
+					bgColor,
+					color,
 				},
 				session,
 			);

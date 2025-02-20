@@ -217,6 +217,8 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   sharedId: String!
   questions: [Question!]!
   sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
   timeLimit: Float
   passingGradePercent: Float
   maxRetryAmount: Float
@@ -239,6 +241,8 @@ interface Questionnaire {
   sharedId: String!
   questions: [Question!]!
   sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
 }
 
 enum QuestionnaireType {
@@ -263,6 +267,8 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   sharedId: String!
   questions: [Question!]!
   sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
 }
 
 type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
@@ -281,6 +287,8 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   sharedId: String!
   questions: [Question!]!
   sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
 }
 
 type Session {
@@ -418,12 +426,12 @@ type Query {
 
 type Mutation {
   adminDeleteQuestionnaire(questionnaireSharedId: String!): DeleteQuestionnaireResponse
-  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireQuiz!
-  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireSurvey!
-  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Int, description: String, timeLimit: Int): QuestionnaireExam!
-  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, description: String): QuestionnaireQuiz!
-  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, description: String): QuestionnaireSurvey!
-  adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, maxRetryAmount: Int, timeLimit: Int, description: String): QuestionnaireExam!
+  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String, bgColor: String, color: String): QuestionnaireQuiz!
+  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String, bgColor: String, color: String): QuestionnaireSurvey!
+  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Int, description: String, timeLimit: Int, bgColor: String, color: String): QuestionnaireExam!
+  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, description: String, bgColor: String, color: String): QuestionnaireQuiz!
+  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, description: String, bgColor: String, color: String): QuestionnaireSurvey!
+  adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, maxRetryAmount: Int, timeLimit: Int, description: String, bgColor: String, color: String): QuestionnaireExam!
   publicUpsertQuestionnaireResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!, completedAt: DateTime!, startedAt: DateTime!, email: String, name: String): PublicUpsertResponse!
   userlogOut: LogOutResponse!
   publicSignUp(password: String!, email: String!, name: String!): AuthResponse!

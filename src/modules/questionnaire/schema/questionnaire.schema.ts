@@ -270,6 +270,14 @@ export class Questionnaire extends SchemaBaseInterface {
 	@Field(() => Date)
 	@Prop({ default: () => new Date(), required: true })
 	sharedCreatedAt: Date;
+
+	@Field(() => String, { nullable: true })
+	@Prop()
+	color: string;
+
+	@Field(() => String, { nullable: true })
+	@Prop()
+	bgColor: string;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -326,6 +334,12 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
 	randomizeQuestions: boolean;
+
+	@Field(() => String, { nullable: true })
+	color: string;
+
+	@Field(() => String, { nullable: true })
+	bgColor: string;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -366,6 +380,12 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 
 	@Field(() => Date)
 	sharedCreatedAt: Date;
+
+	@Field(() => String, { nullable: true })
+	color: string;
+
+	@Field(() => String, { nullable: true })
+	bgColor: string;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -406,6 +426,12 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 
 	@Field(() => Date)
 	sharedCreatedAt: Date;
+
+	@Field(() => String, { nullable: true })
+	color: string;
+
+	@Field(() => String, { nullable: true })
+	bgColor: string;
 }
 
 export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);

@@ -112,6 +112,8 @@ export const CreateQuestionnaireValidator = Joi.object().keys({
 	requireEmail: Joi.boolean(),
 	requireName: Joi.boolean(),
 	timeLimit: Joi.number(),
+	bgColor: Joi.string(),
+	color: Joi.string(),
 });
 
 export const UpdateQuestionnaireValidator = Joi.object().keys({
@@ -134,6 +136,8 @@ export const UpdateQuestionnaireValidator = Joi.object().keys({
 	requireEmail: Joi.boolean().allow(null),
 	requireName: Joi.boolean().allow(null),
 	timeLimit: Joi.number().allow(null),
+	bgColor: Joi.string().allow(null),
+	color: Joi.string().allow(null),
 });
 
 export const FetchQuestionnaireValidator = Joi.object()

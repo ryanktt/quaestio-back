@@ -103,6 +103,8 @@ export class QuestionnaireResolver {
 		@Args('requireName', { defaultValue: false }) requireName: boolean,
 		@Args('title') title: string,
 		@Args('description', { nullable: true }) description?: string,
+		@Args('bgColor', { nullable: true }) bgColor?: string,
+		@Args('color', { nullable: true }) color?: string,
 	): Promise<QuestionnaireQuiz> {
 		return this.questionnaireService.createQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireQuiz,
@@ -111,6 +113,8 @@ export class QuestionnaireResolver {
 			description,
 			questions,
 			title,
+			bgColor,
+			color,
 			user,
 		}) as Promise<QuestionnaireQuiz>;
 	}
@@ -124,6 +128,8 @@ export class QuestionnaireResolver {
 		@Args('requireName', { defaultValue: false }) requireName: boolean,
 		@Args('title') title: string,
 		@Args('description', { nullable: true }) description?: string,
+		@Args('bgColor', { nullable: true }) bgColor?: string,
+		@Args('color', { nullable: true }) color?: string,
 	): Promise<QuestionnaireSurvey> {
 		return this.questionnaireService.createQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireSurvey,
@@ -131,7 +137,9 @@ export class QuestionnaireResolver {
 			requireName,
 			description,
 			questions,
+			bgColor,
 			title,
+			color,
 			user,
 		}) as Promise<QuestionnaireSurvey>;
 	}
@@ -149,6 +157,8 @@ export class QuestionnaireResolver {
 		@Args('maxRetryAmount', { type: () => Int, nullable: true }) maxRetryAmount?: number,
 		@Args('description', { nullable: true }) description?: string,
 		@Args('timeLimit', { type: () => Int, nullable: true }) timeLimit?: number,
+		@Args('bgColor', { nullable: true }) bgColor?: string,
+		@Args('color', { nullable: true }) color?: string,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.createQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireExam,
@@ -160,6 +170,8 @@ export class QuestionnaireResolver {
 			description,
 			questions,
 			timeLimit,
+			bgColor,
+			color,
 			title,
 			user,
 		}) as Promise<QuestionnaireExam>;
@@ -179,6 +191,8 @@ export class QuestionnaireResolver {
 		@Args('requireEmail', { type: () => Boolean, nullable: true }) requireEmail?: boolean | null,
 		@Args('requireName', { type: () => Boolean, nullable: true }) requireName?: boolean | null,
 		@Args('description', { type: () => String, nullable: true }) description?: string,
+		@Args('bgColor', { nullable: true }) bgColor?: string,
+		@Args('color', { nullable: true }) color?: string,
 	): Promise<QuestionnaireQuiz> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireQuiz,
@@ -188,6 +202,8 @@ export class QuestionnaireResolver {
 			requireEmail,
 			description,
 			requireName,
+			bgColor,
+			color,
 			active,
 			title,
 			user,
@@ -208,6 +224,8 @@ export class QuestionnaireResolver {
 		@Args('requireEmail', { type: () => Boolean, nullable: true }) requireEmail?: boolean | null,
 		@Args('requireName', { type: () => Boolean, nullable: true }) requireName?: boolean | null,
 		@Args('description', { type: () => String, nullable: true }) description?: string,
+		@Args('bgColor', { nullable: true }) bgColor?: string,
+		@Args('color', { nullable: true }) color?: string,
 	): Promise<QuestionnaireSurvey> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireSurvey,
@@ -217,6 +235,8 @@ export class QuestionnaireResolver {
 			requireEmail,
 			description,
 			requireName,
+			bgColor,
+			color,
 			active,
 			title,
 			user,
@@ -241,6 +261,8 @@ export class QuestionnaireResolver {
 		@Args('maxRetryAmount', { type: () => Int, nullable: true }) maxRetryAmount?: number | null,
 		@Args('timeLimit', { type: () => Int, nullable: true }) timeLimit?: number | null,
 		@Args('description', { type: () => String, nullable: true }) description?: string,
+		@Args('bgColor', { nullable: true }) bgColor?: string,
+		@Args('color', { nullable: true }) color?: string,
 	): Promise<QuestionnaireExam> {
 		return this.questionnaireService.updateQuestionnaire({
 			type: EQuestionnaireType.QuestionnaireExam,
@@ -254,6 +276,8 @@ export class QuestionnaireResolver {
 			description,
 			requireName,
 			timeLimit,
+			bgColor,
+			color,
 			active,
 			title,
 			user,

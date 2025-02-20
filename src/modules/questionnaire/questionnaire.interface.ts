@@ -69,6 +69,8 @@ export interface IRepositoryCreateQuestionnareParams {
 	requireEmail?: boolean;
 	requireName?: boolean;
 	description?: string;
+	bgColor?: string
+	color?: string
 }
 
 export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
@@ -85,6 +87,8 @@ export interface IRepositoryUpdateQuestionnareParams {
 	title?: string;
 	requireEmail?: boolean | null;
 	requireName?: boolean | null;
+	bgColor?: string | null
+	color?: string | null
 }
 
 export interface IRepositoryUpdateQuestionnareQuizParams extends IRepositoryUpdateQuestionnareParams {
@@ -134,6 +138,8 @@ export interface ICreateQuestionnaireParams {
 	requireName?: boolean;
 	description?: string;
 	timeLimit?: number;
+	bgColor?: string;
+	color?: string;
 }
 
 export interface IUpdateQuestionnaireParams {
@@ -151,6 +157,8 @@ export interface IUpdateQuestionnaireParams {
 	requireEmail?: boolean | null;
 	requireName?: boolean | null;
 	timeLimit?: number | null;
+	bgColor?: string | null;
+	color?: string | null;
 }
 
 export interface IFetchQuestionnaireParams {

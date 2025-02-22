@@ -53,7 +53,7 @@ export interface IPublicUpsertQuestResponseParams {
 	ip: string;
 	completedAt: Date;
 	startedAt: Date;
-	authToken?: string;
+	respondentToken?: string;
 	email?: string;
 	name?: string;
 }

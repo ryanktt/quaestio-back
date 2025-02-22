@@ -40,6 +40,7 @@ export type IJwtPayload = {
 };
 
 export interface IPublicContext {
+	respondentToken?: string;
 	userAgent: string;
 	authToken?: string;
 	clientIp: string;

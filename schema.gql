@@ -399,7 +399,7 @@ type Response {
 }
 
 type PublicUpsertResponse {
-  authToken: String!
+  respondentToken: String!
 }
 
 type LogOutResponse {

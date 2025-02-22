@@ -9,7 +9,7 @@ import { IPublicContext } from '@modules/session/session.interface';
 @ObjectType()
 class PublicUpsertResponse {
 	@Field()
-	authToken: string;
+	respondentToken: string;
 }
 
 @Resolver(() => Response)
@@ -32,7 +32,7 @@ export class ResponseResolver {
 
 	@Mutation(() => PublicUpsertResponse)
 	publicUpsertQuestionnaireResponse(
-		@Context() { authToken, clientIp, userAgent }: IPublicContext,
+		@Context() { clientIp, userAgent, respondentToken }: IPublicContext,
 		@Args('answers', { type: () => [AnswerDiscriminatorInput] }) answers: AnswerDiscriminatorInput[],
 		@Args('questionnaireId') questionnaireId: string,
 		@Args('completedAt') completedAt: Date,
@@ -41,11 +41,11 @@ export class ResponseResolver {
 		@Args('name', { nullable: true }) name: string,
 	): Promise<PublicUpsertResponse> {
 		return this.responseService.publicUpsertQuestionnaireResponse({
+			respondentToken,
 			questionnaireId,
 			ip: clientIp,
 			completedAt,
 			startedAt,
-			authToken,
 			userAgent,
 			answers,
 			email,

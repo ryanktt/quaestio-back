@@ -12,17 +12,17 @@ export class ResponseService {
 	constructor(
 		private readonly responseQuestionnaireHelper: ResponseQuestionnaireHelper,
 		private readonly responseHelper: ResponseHelper,
-	) {}
+	) { }
 
 	async publicUpsertQuestionnaireResponse(
 		params: IPublicUpsertQuestResponseParams,
-	): Promise<{ authToken: string }> {
+	): Promise<{ respondentToken: string }> {
 		await this.responseHelper.validatePublicUpsertResponseParams(params);
 		const {
 			answers: answerDiscriminatorInputArray,
 			questionnaireId,
+			respondentToken,
 			completedAt,
-			authToken,
 			startedAt,
 			userAgent,
 			email,
@@ -33,12 +33,11 @@ export class ResponseService {
 			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as AnswerTypes;
 		});
 
-		let respondentToken = authToken;
-		if (!authToken) {
+		let token = respondentToken;
+		if (!respondentToken) {
 			const respondentId = new ObjectId().toString();
-			respondentToken = this.responseQuestionnaireHelper.signPublicUpsertResponseToken({ respondentId });
+			token = this.responseQuestionnaireHelper.signPublicUpsertResponseToken({ respondentId });
 		}
-
 		if (isLocal()) {
 			await this.responseHelper.invokeUpsertQuestionnaireResponseLambda({
 				respondentToken,
@@ -65,6 +64,6 @@ export class ResponseService {
 			});
 		}
 
-		return { authToken: respondentToken as string };
+		return { respondentToken: token as string };
 	}
 }

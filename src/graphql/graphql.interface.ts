@@ -1,5 +1,6 @@
 export interface IGraphqlContext {
 	userAgent: string;
-	authToken?: string;
 	clientIp: string;
+	respondentToken?: string;
+	authToken?: string;
 }

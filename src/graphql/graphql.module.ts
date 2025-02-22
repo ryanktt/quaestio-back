@@ -12,10 +12,11 @@ export default GraphQLModule.forRootAsync<ApolloDriverConfig>({
 	useFactory: () => ({
 		autoSchemaFile: isLocal() ? 'schema.gql' : true,
 		context: (context): IGraphqlContext => {
-			const headers = context.req.headers as { 'user-agent': string; auth: string };
+			const headers = context.req.headers as { 'user-agent': string; auth: string, 'respondent-token'?: string };
 			const clientIp = getClientIp(context.req as Request) as string;
 
 			return {
+				respondentToken: headers['respondent-token'],
 				userAgent: headers['user-agent'],
 				authToken: headers.auth,
 				clientIp,

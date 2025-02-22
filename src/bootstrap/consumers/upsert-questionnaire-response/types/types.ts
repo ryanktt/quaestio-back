@@ -47,7 +47,7 @@ export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrue
 export interface AnswerInput {
 	type: EAnswerType;
 	questionId: ObjectId;
-	answeredAt: Date;
+	answeredAt?: Date;
 }
 
 interface AnswerMultipleChoiceInput extends AnswerInput {

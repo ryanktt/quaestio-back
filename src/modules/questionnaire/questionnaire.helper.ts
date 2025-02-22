@@ -26,6 +26,7 @@ import {
 	QuestionMetricsTypes,
 	QuestionnaireMetrics,
 	QuestionMetricsWithOptionsTypes,
+	OptionMetrics,
 } from './schema/questionnaire-metrics';
 
 import { UtilsPromise } from '@utils/utils.promise';
@@ -155,24 +156,41 @@ export class QuestionnaireHelper {
 		return updatedQuestions;
 	}
 
+	getQuestionOptionMetrics(question: QuestionTypes, questionMetrics?: QuestionMetricsTypes): OptionMetrics[] {
+		const optionMetricsMap = new Map<string, OptionMetrics>();
+		if (questionMetrics && !('options' in questionMetrics) || !('options' in question)) return [];
+
+		questionMetrics?.options.forEach(option => {
+			optionMetricsMap.set(option._id.toString(), option);
+		});
+
+		return question.options.map((option) => {
+			const foundMetrics = optionMetricsMap.get(option._id.toString());
+			if (foundMetrics) return foundMetrics;
+			else return { _id: option._id, selectedCount: 0 } as OptionMetrics;
+		});
+	}
+
 	getQuestionnaireQuestionMetrics(
 		questionnaire: QuestionnaireTypes | QuestionnaireDocTypes,
 		metrics?: QuestionnaireMetrics,
 	): QuestionMetricsTypes[] {
 		const metricsMap = new Map<string, QuestionMetricsTypes>();
-		metrics?.questionMetrics.forEach((metrics) => metricsMap.set(metrics._id.toString(), metrics));
 
-		return questionnaire.questions.map((question) => {
-			let metrics = metricsMap.get(question._id.toString());
-			if (!metrics) {
-				metrics = { _id: question._id, type: question.type } as QuestionMetricsTypes;
-				if ('options' in question) {
-					metrics = {
-						...metrics,
-						options: question.options.map((option) => ({ _id: option._id })),
-					} as QuestionMetricsWithOptionsTypes;
-				}
+		metrics?.questionMetrics.forEach((metrics) => {
+			metricsMap.set(metrics._id.toString(), metrics);
+		});
+
+		return questionnaire.questions.map((question: QuestionTypes) => {
+			const foundMetrics = metricsMap.get(question._id.toString());
+			let metrics = foundMetrics || { _id: question._id, type: question.type } as QuestionMetricsTypes;
+			if ('options' in question) {
+				metrics = {
+					...metrics,
+					options: this.getQuestionOptionMetrics(question, foundMetrics),
+				} as QuestionMetricsWithOptionsTypes;
 			}
+
 			return metrics;
 		});
 	}

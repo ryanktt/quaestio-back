@@ -121,7 +121,6 @@ export class QuestionnaireService {
 			user,
 		} = params;
 		await this.questionnaireHelper.validateUpdateQuestionnaireParams(params);
-
 		const [questionnaire, metrics] = await Promise.all([
 			this.questionnaireRepository.fetchQuestionnaire({
 				userId: user.id,

@@ -233,6 +233,11 @@ export class QuestionnaireRepository {
 		);
 		const updatedMetrics = new this.questionnaireMetricsSchema({
 			_id: params.updatedQuestionnaire._id,
+			totalResponseCount: params.metrics.totalResponseCount,
+			totalAttemptCount: params.metrics.totalAttemptCount,
+			totalAnswerTime: params.metrics.totalAnswerTime,
+			avgAttemptCount: params.metrics.avgAttemptCount,
+			avgAnswerTime: params.metrics.avgAnswerTime,
 			questionMetrics,
 		});
 		return updatedMetrics.save({ session }).catch((originalError: Error) => {

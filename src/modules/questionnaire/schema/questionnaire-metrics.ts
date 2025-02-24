@@ -17,10 +17,10 @@ export const OptionMetricsSchema = SchemaFactory.createForClass(OptionMetrics);
 @InterfaceType({
 	isAbstract: true,
 	resolveType: (value: { type: EQuestionType }): string | undefined => {
-		if (value.type === EQuestionType.MULTIPLE_CHOICE) return 'QuestionMultipleChoice';
-		if (value.type === EQuestionType.TRUE_OR_FALSE) return 'QuestionTrueOrFalse';
-		if (value.type === EQuestionType.SINGLE_CHOICE) return 'QuestionSingleChoice';
-		if (value.type === EQuestionType.TEXT) return 'QuestionText';
+		if (value.type === EQuestionType.MULTIPLE_CHOICE) return 'QuestionMultipleChoiceMetrics';
+		if (value.type === EQuestionType.TRUE_OR_FALSE) return 'QuestionTrueOrFalseMetrics';
+		if (value.type === EQuestionType.SINGLE_CHOICE) return 'QuestionSingleChoiceMetrics';
+		if (value.type === EQuestionType.TEXT) return 'QuestionTextMetrics';
 		return undefined;
 	},
 })
@@ -166,7 +166,7 @@ export class QuestionnaireMetrics extends SchemaBase {
 
 	@Field(() => Int, { defaultValue: 0 })
 	@Prop({ default: 0 })
-	avgAttempCount: number;
+	avgAttemptCount: number;
 
 	@Field(() => [QuestionMetrics])
 	@Prop({ type: [QuestionMetricsSchema], required: true })

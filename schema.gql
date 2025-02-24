@@ -82,8 +82,8 @@ type QuestionnaireMetrics {
   totalResponseCount: Int!
   totalAttemptCount: Int!
   totalAnswerTime: Int!
-  avgAnswerTime: Int!
-  avgAttemptCount: Int!
+  avgAnswerTime: Float!
+  avgAttemptCount: Float!
   questionMetrics: [QuestionMetrics!]!
 
   """A JSON string of the questionnaire metrics map (by location)"""

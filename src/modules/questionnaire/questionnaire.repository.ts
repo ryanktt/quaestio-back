@@ -238,6 +238,7 @@ export class QuestionnaireRepository {
 			totalAnswerTime: params.metrics.totalAnswerTime,
 			avgAttemptCount: params.metrics.avgAttemptCount,
 			avgAnswerTime: params.metrics.avgAnswerTime,
+			byLocationMap: params.metrics.byLocationMap,
 			questionMetrics,
 		});
 		return updatedMetrics.save({ session }).catch((originalError: Error) => {

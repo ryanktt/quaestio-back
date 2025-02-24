@@ -160,11 +160,11 @@ export class QuestionnaireMetrics extends SchemaBase {
 	@Prop({ default: 0 })
 	totalAnswerTime: number;
 
-	@Field(() => Int, { defaultValue: 0 })
+	@Field(() => Number, { defaultValue: 0 })
 	@Prop({ default: 0 })
 	avgAnswerTime: number;
 
-	@Field(() => Int, { defaultValue: 0 })
+	@Field(() => Number, { defaultValue: 0 })
 	@Prop({ default: 0 })
 	avgAttemptCount: number;
 

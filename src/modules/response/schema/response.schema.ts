@@ -1,6 +1,6 @@
 import { EAnswerType } from '../response.interface';
 
-import { DocumentType, SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
+import { DocumentType, SchemaBase } from '@utils/utils.schema';
 import { Respondent } from '@modules/user/respondent/respondent.schema';
 import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -20,7 +20,7 @@ import { ObjectId } from 'mongodb';
 @Schema({
 	discriminatorKey: 'type',
 })
-export class Answer extends SchemaBaseInterface {
+export class Answer {
 	@Field(() => EAnswerType)
 	@Prop({ type: String, required: true, enum: EAnswerType })
 	type: EAnswerType;
@@ -42,7 +42,7 @@ export const AnswerSchema = SchemaFactory.createForClass(Answer);
 
 @ObjectType({ implements: Answer })
 @Schema()
-class AnswerSingleChoice extends SchemaBase implements Answer {
+class AnswerSingleChoice implements Answer {
 	@Field(() => EAnswerType)
 	type: EAnswerType.SINGLE_CHOICE;
 
@@ -64,7 +64,7 @@ export const AnswerSingleChoiceSchema = SchemaFactory.createForClass(AnswerSingl
 
 @ObjectType({ implements: Answer })
 @Schema()
-class AnswerMultipleChoice extends SchemaBase implements Answer {
+class AnswerMultipleChoice implements Answer {
 	@Field(() => EAnswerType)
 	type: EAnswerType.MULTIPLE_CHOICE;
 
@@ -86,7 +86,7 @@ export const AnswerMultipleChoiceSchema = SchemaFactory.createForClass(AnswerMul
 
 @ObjectType({ implements: Answer })
 @Schema()
-class AnswerTrueOrFalse extends SchemaBase implements Answer {
+class AnswerTrueOrFalse implements Answer {
 	@Field(() => EAnswerType)
 	type: EAnswerType.TRUE_OR_FALSE;
 
@@ -108,7 +108,7 @@ export const AnswerTrueOrFalseSchema = SchemaFactory.createForClass(AnswerTrueOr
 
 @ObjectType({ implements: Answer })
 @Schema()
-class AnswerText extends SchemaBase implements Answer {
+class AnswerText implements Answer {
 	@Field(() => EAnswerType)
 	type: EAnswerType.TEXT;
 
@@ -136,6 +136,10 @@ export class Response extends SchemaBase {
 	@Prop({ ref: 'Questionnaire', type: SchemaTypes.ObjectId, required: true })
 	questionnaire: ObjectId;
 
+	@Field(() => String)
+	@Prop({ required: true })
+	questionnaireSharedId?: string;
+
 	@Field(() => [Answer])
 	@Prop({ type: [AnswerSchema], required: true })
 	answers: AnswerTypes[];
@@ -144,6 +148,10 @@ export class Response extends SchemaBase {
 	@Prop({ required: true })
 	startedAt?: Date;
 
+	@Field(() => String)
+	@Prop({ required: true })
+	user: ObjectId;
+
 	@Field(() => Date, { nullable: true })
 	@Prop({ required: true })
 	completedAt?: Date;
@@ -151,6 +159,14 @@ export class Response extends SchemaBase {
 	@Field(() => Respondent)
 	@Prop({ ref: 'Respondent', type: SchemaTypes.ObjectId, required: true })
 	respondent: string;
+
+	@Field(() => String, { nullable: true })
+	@Prop()
+	respondentName?: string;
+
+	@Field(() => String, { nullable: true })
+	@Prop()
+	respondentEmail?: string;
 }
 
 export const ResponseSchema = SchemaFactory.createForClass(Response);

@@ -68,3 +68,11 @@ export const PublicUpsertQuestResponseValidator = Joi.object().keys({
 	email: Joi.string(),
 	name: Joi.string(),
 });
+
+
+export const FetchResponsesValidator = Joi.object().keys({
+	user: Joi.object().required(),
+	questionnaireSharedIds: Joi.array().items(Joi.string()),
+	questionnaireIds: Joi.array().items(Joi.string()),
+	textFilter: Joi.string().allow(''),
+});

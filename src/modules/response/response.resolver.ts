@@ -3,8 +3,9 @@ import { ResponseQuestionnaireRepository } from '@modules/shared/response-questi
 import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { ResponseService } from './response.service';
 
-import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation } from '@nestjs/graphql';
-import { IPublicContext } from '@modules/session/session.interface';
+import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation, Query } from '@nestjs/graphql';
+import { IAdminContext, IPublicContext } from '@modules/session/session.interface';
+import { Role } from '@utils/utils.decorators';
 
 @ObjectType()
 class PublicUpsertResponse {
@@ -50,6 +51,23 @@ export class ResponseResolver {
 			answers,
 			email,
 			name,
+		});
+	}
+
+	@Role('Admin')
+	@Query(() => [Response])
+	async adminFetchResponses(
+		@Context() { user }: IAdminContext,
+		@Args('questionnaireSharedIds', { type: () => [String], nullable: true })
+		questionnaireSharedIds?: string[],
+		@Args('questionnaireIds', { type: () => [String], nullable: true }) questionnaireIds?: string[],
+		@Args('textFilter', { nullable: true }) textFilter?: string,
+	): Promise<Response[]> {
+		return this.responseService.adminFetchResponses({
+			questionnaireSharedIds,
+			questionnaireIds,
+			textFilter,
+			user,
 		});
 	}
 }

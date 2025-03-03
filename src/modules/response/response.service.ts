@@ -1,8 +1,9 @@
-import { IPublicUpsertQuestResponseParams } from './response.interface';
-import { AnswerTypes } from './schema';
+import { IFetchResponsesParams, IPublicUpsertQuestResponseParams } from './response.interface';
+import { AnswerTypes, Response } from './schema';
 import { ResponseHelper } from './response.helper';
 
 import { ResponseQuestionnaireHelper } from '@modules/shared/response-questionnaire/response-questionnaire.helper';
+import { ResponseRepository } from './response.repository';
 import { Injectable } from '@nestjs/common';
 import { isLocal } from 'src/app.module';
 import { ObjectId } from 'mongodb';
@@ -11,8 +12,14 @@ import { ObjectId } from 'mongodb';
 export class ResponseService {
 	constructor(
 		private readonly responseQuestionnaireHelper: ResponseQuestionnaireHelper,
+		private readonly responseRepository: ResponseRepository,
 		private readonly responseHelper: ResponseHelper,
 	) { }
+
+	async adminFetchResponses(params: IFetchResponsesParams): Promise<Response[]> {
+		await this.responseHelper.validateFetchResponsesParams(params);
+		return this.responseRepository.fetchResponses(params);
+	}
 
 	async publicUpsertQuestionnaireResponse(
 		params: IPublicUpsertQuestResponseParams,

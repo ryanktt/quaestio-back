@@ -329,9 +329,6 @@ type Respondent implements User & SchemaBaseInterface {
 }
 
 type AnswerSingleChoice implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -340,9 +337,6 @@ type AnswerSingleChoice implements Answer {
 }
 
 interface Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -357,9 +351,6 @@ enum AnswerType {
 }
 
 type AnswerMultipleChoice implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -368,9 +359,6 @@ type AnswerMultipleChoice implements Answer {
 }
 
 type AnswerTrueOrFalse implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -379,9 +367,6 @@ type AnswerTrueOrFalse implements Answer {
 }
 
 type AnswerText implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -393,10 +378,14 @@ type Response {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  questionnaireSharedId: String!
   answers: [Answer!]!
   startedAt: DateTime!
+  user: String!
   completedAt: DateTime
   respondent: Respondent!
+  respondentName: String
+  respondentEmail: String
   self: Response!
   questionnaire: Questionnaire!
 }
@@ -424,6 +413,7 @@ type Query {
   adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean = true): Questionnaire
   publicFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
   adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean = true, textFilter: String): [Questionnaire!]!
+  adminFetchResponses(questionnaireSharedIds: [String!], questionnaireIds: [String!], textFilter: String): [Response!]!
   fetchAdmin(userId: String, email: String): Admin
 }
 

@@ -10,21 +10,41 @@ import { FilterType } from '@utils/utils.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
-import { ClientSession } from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { escapeRegExp } from '@utils/utils.string';
 
 @Injectable()
 export class ResponseRepository {
 	constructor(@InjectModel('Response') private readonly responseSchema: ResponseModel) { }
 
 	async fetchResponses({
+		questionnaireSharedIds,
 		questionnaireIds,
+		textFilter,
 		responseIds,
+		user,
 	}: IRepositoryFetchResponsesParams): Promise<Response[]> {
 		const query: FilterType<ResponseDocument> = {};
-		if (questionnaireIds) query.questionnaire = { $in: questionnaireIds };
+		if (questionnaireIds) query.questionnaireSharedId = { $in: questionnaireSharedIds };
+		if (questionnaireSharedIds) query.questionnaire = { $in: questionnaireIds };
 		if (responseIds) query._id = { $in: responseIds };
-
+		query.user = user._id;
+		if (textFilter) {
+			const escapedfilter = escapeRegExp(textFilter);
+			query.$or = [
+				{ questionnaireSharedId: { $regex: escapedfilter, $options: 'i' } },
+				{ respondentName: { $regex: escapedfilter, $options: 'i' } },
+				{ respondentEmail: { $regex: escapedfilter, $options: 'i' } },
+			];
+			const isFilterId = mongoose.isValidObjectId(textFilter);
+			if (isFilterId) {
+				query.$or.push(
+					{ 'response._id': textFilter },
+					{ 'questionnaire': textFilter },
+				);
+			}
+		}
 		return this.responseSchema
 			.find(query)
 			.lean()

@@ -4,10 +4,12 @@ import {
 	IValidateAnswers,
 	EResponseErrorCode,
 	IPublicUpsertQuestResponseParams,
+	IFetchResponsesParams,
 } from './response.interface';
 import {
 	PublicUpsertQuestResponseValidator,
 	AnswerDiscriminatorInput,
+	FetchResponsesValidator,
 	AnswerInput,
 	AnswerTypes,
 	Answer,
@@ -36,6 +38,18 @@ export class ResponseHelper {
 		private readonly utilsPromise: UtilsPromise,
 		private readonly utilsAWS: UtilsAWS,
 	) { }
+
+	async validateFetchResponsesParams(params: IFetchResponsesParams): Promise<void> {
+		await this.utilsPromise
+			.promisify(() => Joi.assert(params, FetchResponsesValidator))
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EResponseErrorCode.FETCH_RESPONSES_INVALID_PARAMS,
+					message: 'invalid params to fetch responses',
+					originalError,
+				});
+			});
+	}
 
 	async validatePublicUpsertResponseParams(params: IPublicUpsertQuestResponseParams): Promise<void> {
 		await this.utilsPromise

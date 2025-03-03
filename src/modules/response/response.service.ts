@@ -21,7 +21,6 @@ export class ResponseService {
 		const {
 			answers: answerDiscriminatorInputArray,
 			questionnaireId,
-			respondentToken,
 			completedAt,
 			startedAt,
 			userAgent,
@@ -33,10 +32,10 @@ export class ResponseService {
 			return this.responseHelper.getAnswerFromAnswerDiscriminatorInput(input) as AnswerTypes;
 		});
 
-		let token = respondentToken;
-		if (!respondentToken) {
+		let respondentToken = params.respondentToken;
+		if (!params.respondentToken) {
 			const respondentId = new ObjectId().toString();
-			token = this.responseQuestionnaireHelper.signPublicUpsertResponseToken({ respondentId });
+			respondentToken = this.responseQuestionnaireHelper.signPublicUpsertResponseToken({ respondentId });
 		}
 		if (isLocal()) {
 			await this.responseHelper.invokeUpsertQuestionnaireResponseLambda({
@@ -64,6 +63,6 @@ export class ResponseService {
 			});
 		}
 
-		return { respondentToken: token as string };
+		return { respondentToken: respondentToken as string };
 	}
 }

@@ -20,6 +20,10 @@ export class Option extends SchemaBase {
 	@Prop()
 	correct?: boolean;
 
+	@Field({ nullable: true, description: 'For true or false questions.' })
+	@Prop()
+	true?: boolean;
+
 	@Field({ nullable: true })
 	@Prop()
 	feedbackAfterSubmit?: string;

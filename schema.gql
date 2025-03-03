@@ -126,6 +126,9 @@ type Option {
   updatedAt: DateTime!
   title: String!
   correct: Boolean
+
+  """For true or false questions."""
+  true: Boolean
   feedbackAfterSubmit: String
 }
 
@@ -464,6 +467,9 @@ input OptionInput {
   id: String
   title: String!
   correct: Boolean
+
+  """For true or false questions."""
+  true: Boolean
   feedbackAfterSubmit: String
 }
 

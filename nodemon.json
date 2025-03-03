@@ -1,5 +1,5 @@
 {
 	"watch": ["src"],
 	"ext": "ts",
-	"exec": "sls offline --allowCache"
+	"exec": "sls offline --allowCache --host 0.0.0.0"
 }

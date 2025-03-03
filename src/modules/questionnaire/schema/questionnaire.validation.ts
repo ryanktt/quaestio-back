@@ -6,6 +6,7 @@ export const OptionInputValidator = Joi.object().keys({
 	title: Joi.string().trim().required(),
 	feedbackAfterSubmit: Joi.string().trim(),
 	correct: Joi.boolean(),
+	true: Joi.boolean(),
 });
 
 export const baseQuestionInputValidatorKeys = {

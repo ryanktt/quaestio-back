@@ -13,6 +13,9 @@ export class OptionInput {
 	@Field({ nullable: true })
 	correct?: boolean;
 
+	@Field({ nullable: true, description: 'For true or false questions.' })
+	true?: boolean;
+
 	@Field({ nullable: true })
 	feedbackAfterSubmit?: string;
 }

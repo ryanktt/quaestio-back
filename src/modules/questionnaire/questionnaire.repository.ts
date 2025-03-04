@@ -7,14 +7,12 @@ import {
 	QuestionnaireExamDocument,
 	QuestionnaireQuizDocument,
 	QuestionnaireSurveyDocument,
-	Questionnaire,
 } from './schema';
 import {
 	IRepositoryUpdateQuestionnareSurveyParams,
 	IRepositoryCreateQuestionnaireExamParams,
 	IRepositoryUpdateQuestionnareQuizParams,
 	IRepositoryUpdateQuestionnareExamParams,
-	IRepositoryFetchQuestionnairesParams,
 	IRepositoryDeleteQuestionnaireParams,
 	IRepositoryFetchQuestionnaireParams,
 	IRepositoryCreateQuestionnareParams,
@@ -33,14 +31,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { AppError } from '@utils/utils.error';
 import { UtilsDoc } from '@utils/utils.doc';
 import { Injectable } from '@nestjs/common';
-import mongoose, { ClientSession } from 'mongoose';
+import { ClientSession } from 'mongoose';
 import DataLoader from 'dataloader';
 import {
 	QuestionnaireDocTypes,
 	QuestionnaireTypes,
 } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
 import { ObjectId } from 'mongodb';
-import { escapeRegExp } from '@utils/utils.string';
 
 @Injectable()
 export class QuestionnaireRepository {
@@ -55,50 +52,6 @@ export class QuestionnaireRepository {
 		private readonly utilsArray: UtilsArray,
 		private readonly utilsDoc: UtilsDoc,
 	) { }
-
-	async fetchQuestionnaires({
-		questionnaireSharedIds,
-		questionnaireIds,
-		textFilter,
-		userIds,
-		latest,
-	}: IRepositoryFetchQuestionnairesParams): Promise<Questionnaire[]> {
-		const query: FilterType<QuestionnaireDocument> = {};
-		if (typeof latest === 'boolean') query.latest = latest;
-		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
-		if (questionnaireIds) query._id = { $in: questionnaireIds };
-		if (userIds) query.user = { $in: userIds };
-		if (textFilter) {
-			const escapedfilter = escapeRegExp(textFilter);
-			query.$or = [
-				{ sharedId: { $regex: escapedfilter, $options: 'i' } },
-				{ title: { $regex: escapedfilter, $options: 'i' } },
-				{ description: { $regex: escapedfilter, $options: 'i' } },
-				{ 'questions.description': { $regex: escapedfilter, $options: 'i' } },
-				{ 'questions.title': { $regex: escapedfilter, $options: 'i' } },
-			];
-			const isFilterId = mongoose.isValidObjectId(textFilter);
-			if (isFilterId) {
-				query.$or.push(
-					{ 'questions._id': textFilter },
-					{ '_id': textFilter },
-				);
-			}
-		}
-
-		return this.questionnaireSchema
-			.find(query)
-			.sort({ updatedAt: -1 })
-			.lean()
-			.exec()
-			.catch((originalError: Error) => {
-				throw new AppError({
-					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
-					message: 'fail to fetch questionnaires',
-					originalError,
-				});
-			}) as Promise<Questionnaire[]>;
-	}
 
 	async fetchQuestionnaire({
 		questionnaireSharedId,

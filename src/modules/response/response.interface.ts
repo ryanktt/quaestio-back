@@ -40,7 +40,6 @@ export interface IRepositoryFetchResponsesParams {
 }
 
 export interface IRepositoryFetchResponseParams {
-	questionnaireId?: string;
 	responseId?: string;
 }
 
@@ -68,6 +67,11 @@ export interface IFetchResponsesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
 	textFilter?: string;
+}
+
+export interface IFetchResponseParams {
+	user: User
+	responseId: string
 }
 
 export interface IValidateAnswers {

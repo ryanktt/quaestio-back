@@ -70,4 +70,16 @@ export class ResponseResolver {
 			user,
 		});
 	}
+
+	@Role('Admin')
+	@Query(() => Response, { nullable: true })
+	async adminFetchResponse(
+		@Context() { user }: IAdminContext,
+		@Args('responseId') responseId: string,
+	): Promise<Response | undefined> {
+		return this.responseService.adminFetchResponse({
+			responseId,
+			user,
+		});
+	}
 }

@@ -21,10 +21,12 @@ import { AppError } from '@utils/utils.error';
 import { UtilsDoc } from '@utils/utils.doc';
 import { Injectable } from '@nestjs/common';
 import { QuestionnaireDocTypes } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
+import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
 
 @Injectable()
 export class QuestionnaireService {
 	constructor(
+		private readonly responseQuestRepository: ResponseQuestionnaireRepository,
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly questionnaireHelper: QuestionnaireHelper,
 		private readonly utilsDoc: UtilsDoc,
@@ -45,7 +47,7 @@ export class QuestionnaireService {
 		const { questionnaireSharedIds, questionnaireIds, latest, textFilter, user } = params;
 		await this.questionnaireHelper.validateFetchQuestionnairesParams(params);
 
-		return this.questionnaireRepository.fetchQuestionnaires({
+		return this.responseQuestRepository.fetchQuestionnaires({
 			questionnaireSharedIds,
 			userIds: [user.id],
 			questionnaireIds,

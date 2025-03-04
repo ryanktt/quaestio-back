@@ -7,6 +7,7 @@ import {
 	IFetchQuestionnairesParams,
 	IUpdateQuestionnaireParams,
 	IDeleteQuestionnaireParams,
+	QuestionInputTypes,
 } from './questionnaire.interface';
 import {
 	CreateQuestionnaireValidator,
@@ -17,13 +18,15 @@ import {
 	QuestionDiscriminatorInput,
 	QuestionnaireDocument,
 	QuestionMethodInput,
-	QuestionInput,
+	QuestionOrderInput,
 	QuestionTypes,
+	Option,
 } from './schema';
 import {
 	QuestionMetricsTypes,
 	QuestionnaireMetrics,
 	QuestionMetricsWithOptionsTypes,
+	OptionMetrics,
 } from './schema/questionnaire-metrics';
 
 import { UtilsPromise } from '@utils/utils.promise';
@@ -34,6 +37,7 @@ import {
 	QuestionnaireDocTypes,
 	QuestionnaireTypes,
 } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class QuestionnaireHelper {
@@ -99,37 +103,72 @@ export class QuestionnaireHelper {
 			});
 	}
 
-	getQuestionFromQuestionDiscriminatorInput(
-		questionDiscriminatorInput: QuestionDiscriminatorInput,
+	getQuestionFromQuestionDiscriminatorInput({ questionId, questionDiscriminator }:
+		{ questionDiscriminator?: QuestionDiscriminatorInput; questionId?: string }
 	): QuestionTypes | undefined {
-		const map: Record<EQuestionType, QuestionInput | undefined> = {
-			[EQuestionType.MULTIPLE_CHOICE]: questionDiscriminatorInput.questionMultipleChoice,
-			[EQuestionType.SINGLE_CHOICE]: questionDiscriminatorInput.questionSingleChoice,
-			[EQuestionType.TRUE_OR_FALSE]: questionDiscriminatorInput.questionTrueOrFalse,
-			[EQuestionType.TEXT]: questionDiscriminatorInput.questionText,
+		if (!questionDiscriminator) return undefined;
+		const map: Record<EQuestionType, QuestionInputTypes | undefined> = {
+			[EQuestionType.MULTIPLE_CHOICE]: questionDiscriminator.questionMultipleChoice,
+			[EQuestionType.SINGLE_CHOICE]: questionDiscriminator.questionSingleChoice,
+			[EQuestionType.TRUE_OR_FALSE]: questionDiscriminator.questionTrueOrFalse,
+			[EQuestionType.TEXT]: questionDiscriminator.questionText,
 		};
 
-		return map[questionDiscriminatorInput.type] as QuestionTypes | undefined;
+		const questionInput = map[questionDiscriminator.type];
+
+		const options: Option[] = [];
+		if (questionInput && 'options' in questionInput) {
+			questionInput.options.forEach((optInput) => {
+				const option = { _id: new ObjectId(optInput.id), ...optInput };
+				delete option.id;
+				options.push(option as Option);
+			});
+		}
+
+		return { ...questionInput, _id: new ObjectId(questionId), options } as QuestionTypes;
 	}
+
+
+
 
 	getQuestionsFromQuestionMethodsInput(
 		questionnaire: QuestionnaireDocument,
 		questionMethods?: QuestionMethodInput[],
+		questionOrder?: QuestionOrderInput[],
 	): QuestionTypes[] | undefined {
 		if (!questionMethods) return undefined;
-		const questions = questionnaire.toObject().questions as QuestionTypes[];
-		questionMethods.forEach(({ questionDiscriminator, questionId, type }) => {
-			const question = this.getQuestionFromQuestionDiscriminatorInput(questionDiscriminator);
-			const questionIndex = questions.findIndex((question) => question._id.toString() === questionId);
+		const questions = [...questionnaire.toObject().questions as QuestionTypes[]];
+		const updatedQuestions: QuestionTypes[] = [];
 
-			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question) {
-				questions.push(question);
-			}
-			if ((type === EQuestionMethodType.UPDATE || type === EQuestionMethodType.DELETE) && question) {
-				questions.splice(questionIndex, 1);
+		questionOrder?.forEach(({ index, questionId }) => {
+			const question = questions.find(({ _id }) => _id.toString() === questionId);
+			if (question) updatedQuestions[index] = question;
+		});
+
+		questionMethods.forEach(({ questionDiscriminator, questionId, index, type }) => {
+			const question = this.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator, questionId });
+
+			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question && typeof index === 'number') {
+				updatedQuestions[index] = question;
 			}
 		});
-		return questions;
+
+		return updatedQuestions;
+	}
+
+	getQuestionOptionMetrics(question: QuestionTypes, questionMetrics?: QuestionMetricsTypes): OptionMetrics[] {
+		const optionMetricsMap = new Map<string, OptionMetrics>();
+		if (questionMetrics && !('options' in questionMetrics) || !('options' in question)) return [];
+
+		questionMetrics?.options.forEach(option => {
+			optionMetricsMap.set(option._id.toString(), option);
+		});
+
+		return question.options.map((option) => {
+			const foundMetrics = optionMetricsMap.get(option._id.toString());
+			if (foundMetrics) return foundMetrics;
+			else return { _id: option._id, selectedCount: 0 } as OptionMetrics;
+		});
 	}
 
 	getQuestionnaireQuestionMetrics(
@@ -137,19 +176,21 @@ export class QuestionnaireHelper {
 		metrics?: QuestionnaireMetrics,
 	): QuestionMetricsTypes[] {
 		const metricsMap = new Map<string, QuestionMetricsTypes>();
-		metrics?.questionMetrics.forEach((metrics) => metricsMap.set(metrics._id.toString(), metrics));
 
-		return questionnaire.questions.map((question) => {
-			let metrics = metricsMap.get(question._id.toString());
-			if (!metrics) {
-				metrics = { _id: question._id, type: question.type } as QuestionMetricsTypes;
-				if ('options' in question) {
-					metrics = {
-						...metrics,
-						options: question.options.map((option) => ({ _id: option._id })),
-					} as QuestionMetricsWithOptionsTypes;
-				}
+		metrics?.questionMetrics.forEach((metrics) => {
+			metricsMap.set(metrics._id.toString(), metrics);
+		});
+
+		return questionnaire.questions.map((question: QuestionTypes) => {
+			const foundMetrics = metricsMap.get(question._id.toString());
+			let metrics = foundMetrics || { _id: question._id, type: question.type } as QuestionMetricsTypes;
+			if ('options' in question) {
+				metrics = {
+					...metrics,
+					options: this.getQuestionOptionMetrics(question, foundMetrics),
+				} as QuestionMetricsWithOptionsTypes;
 			}
+
 			return metrics;
 		});
 	}

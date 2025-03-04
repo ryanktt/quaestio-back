@@ -13,7 +13,7 @@ export class UtilsDoc {
 	constructor(
 		@InjectConnection() private readonly connection: Connection,
 		private readonly utilsPromise: UtilsPromise,
-	) {}
+	) { }
 
 	async validateUserDocAccess<T extends DocumentType<AnyObj>, U extends DocumentType<AnyObj>>(
 		docToVal: U | undefined,
@@ -47,7 +47,7 @@ export class UtilsDoc {
 			return doc;
 		}
 
-		if (value !== undefined && typeof doc[field] === typeof value && doc[field] !== value) {
+		if (value !== undefined && doc[field] !== value) {
 			doc[field] = value as typeof doc[typeof field];
 			return doc;
 		}

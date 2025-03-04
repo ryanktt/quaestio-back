@@ -6,27 +6,58 @@ import {
 } from './response.interface';
 import { ResponseDocument, ResponseModel, Response } from './schema';
 
+import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
 import { FilterType } from '@utils/utils.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
-import { ClientSession } from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { escapeRegExp } from '@utils/utils.string';
 
 @Injectable()
 export class ResponseRepository {
-	constructor(@InjectModel('Response') private readonly responseSchema: ResponseModel) { }
+	constructor(
+		@InjectModel('Response') private readonly responseSchema: ResponseModel,
+		private readonly responseQuestRepository: ResponseQuestionnaireRepository,
+	) { }
 
 	async fetchResponses({
+		questionnaireSharedIds,
 		questionnaireIds,
+		textFilter,
 		responseIds,
+		user,
 	}: IRepositoryFetchResponsesParams): Promise<Response[]> {
 		const query: FilterType<ResponseDocument> = {};
-		if (questionnaireIds) query.questionnaire = { $in: questionnaireIds };
+		if (questionnaireIds) query.questionnaireSharedId = { $in: questionnaireSharedIds };
+		if (questionnaireSharedIds) query.questionnaire = { $in: questionnaireIds };
 		if (responseIds) query._id = { $in: responseIds };
+		query.user = user._id;
+		if (textFilter) {
 
+			const questionnaireIds = (
+				await this.responseQuestRepository.fetchQuestionnaires({ textFilter })
+			).map((quest) => quest._id.toString());
+
+			const escapedfilter = escapeRegExp(textFilter);
+			query.$or = [
+				{ questionnaireSharedId: { $regex: escapedfilter, $options: 'i' } },
+				{ questionnaire: { $in: questionnaireIds } },
+				{ respondentName: { $regex: escapedfilter, $options: 'i' } },
+				{ respondentEmail: { $regex: escapedfilter, $options: 'i' } },
+			];
+			const isFilterId = mongoose.isValidObjectId(textFilter);
+			if (isFilterId) {
+				query.$or.push(
+					{ '_id': textFilter },
+					{ 'questionnaire': textFilter },
+				);
+			}
+		}
 		return this.responseSchema
 			.find(query)
+			.sort({ _id: -1 })
 			.lean()
 			.exec()
 			.catch((originalError: Error) => {
@@ -50,16 +81,14 @@ export class ResponseRepository {
 					originalError,
 				});
 			})) as ResponseDocument | null;
-		return response ? response : undefined;
+		return response || undefined;
 	}
 
 	async fetchResponse({
-		questionnaireId,
 		responseId,
-	}: IRepositoryFetchResponseParams): Promise<ResponseDocument> {
-		return this.responseSchema
-			.findOne({ _id: new ObjectId(responseId), questionnaire: new ObjectId(questionnaireId) })
-			.lean()
+	}: IRepositoryFetchResponseParams): Promise<ResponseDocument | undefined> {
+		const response = (await this.responseSchema
+			.findOne({ _id: new ObjectId(responseId) })
 			.exec()
 			.catch((originalError: Error) => {
 				throw new AppError({
@@ -67,7 +96,8 @@ export class ResponseRepository {
 					message: 'fail to fetch response',
 					originalError,
 				});
-			}) as Promise<ResponseDocument>;
+			})) as ResponseDocument | null;
+		return response || undefined;
 	}
 
 	async create(

@@ -71,21 +71,31 @@ export async function upsertQuestionnaireResponse({
 						location: getRespondentLocationByIp(ip),
 						questionnaire: questionnaireId,
 						role: EUserRole.Respondent,
-						email,
-						name,
+						...(email && { email }),
+						...(name && { name }),
 					},
 				},
 				{ session, upsert: true },
 			);
 			await responseCollection.insertOne(
 				{
+					questionnaireSharedId: questionnaire.sharedId,
 					questionnaire: questionnaireId,
+					user: questionnaire.user,
 					respondent: respondentId,
-					completedAt,
+					...(email && { respondentEmail: email }),
+					...(name && { respondentName: name }),
+					completedAt: new Date(completedAt),
+					startedAt: new Date(startedAt),
 					userAgent,
 					answerTime,
-					startedAt,
-					answers,
+					answers: answers.map((answer) => ({
+						...answer,
+						answeredAt: answer.answeredAt
+							? new Date(answer.answeredAt)
+							: undefined
+					}
+					)),
 				},
 				{ session },
 			);

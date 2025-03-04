@@ -4,11 +4,17 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class OptionInput {
+	@Field(() => String, { nullable: true })
+	id?: string;
+
 	@Field()
 	title: string;
 
 	@Field({ nullable: true })
 	correct?: boolean;
+
+	@Field({ nullable: true, description: 'For true or false questions.' })
+	true?: boolean;
 
 	@Field({ nullable: true })
 	feedbackAfterSubmit?: string;
@@ -121,6 +127,17 @@ export class QuestionMethodInput {
 	@Field(() => String, { nullable: true })
 	questionId: string;
 
+	@Field(() => Int, { nullable: true })
+	index?: number;
+
 	@Field(() => QuestionDiscriminatorInput, { nullable: true })
 	questionDiscriminator: QuestionDiscriminatorInput;
+}
+@InputType()
+export class QuestionOrderInput {
+	@Field(() => String, { nullable: true })
+	questionId: string;
+
+	@Field(() => Int, { nullable: true })
+	index: number;
 }

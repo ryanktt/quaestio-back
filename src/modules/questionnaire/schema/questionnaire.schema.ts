@@ -16,12 +16,15 @@ export class Option extends SchemaBase {
 	@Prop({ required: true })
 	title: string;
 
-	@Field({ nullable: true })
 	@Prop()
 	correct?: boolean;
 
-	@Field({ nullable: true, defaultValue: false })
-	@Prop({ default: false })
+	@Field({ nullable: true, description: 'For true or false questions.' })
+	@Prop()
+	true?: boolean;
+
+	@Field({ nullable: true })
+	@Prop()
 	feedbackAfterSubmit?: string;
 }
 
@@ -266,6 +269,18 @@ export class Questionnaire extends SchemaBaseInterface {
 	@Field(() => [Question])
 	@Prop({ type: [QuestionSchema], required: true })
 	questions: QuestionTypes[];
+
+	@Field(() => Date)
+	@Prop({ default: () => new Date(), required: true })
+	sharedCreatedAt: Date;
+
+	@Field(() => String, { nullable: true })
+	@Prop()
+	color: string;
+
+	@Field(() => String, { nullable: true })
+	@Prop()
+	bgColor: string;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -304,6 +319,9 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field(() => [Question])
 	questions: QuestionTypes[];
 
+	@Field(() => Date)
+	sharedCreatedAt: Date;
+
 	@Field({ nullable: true })
 	@Prop()
 	timeLimit?: number;
@@ -319,6 +337,12 @@ export class QuestionnaireExam extends SchemaBase implements Questionnaire {
 	@Field({ defaultValue: false })
 	@Prop({ required: true, default: false })
 	randomizeQuestions: boolean;
+
+	@Field(() => String, { nullable: true })
+	color: string;
+
+	@Field(() => String, { nullable: true })
+	bgColor: string;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -356,6 +380,15 @@ export class QuestionnaireSurvey extends SchemaBase implements Questionnaire {
 
 	@Field(() => [Question])
 	questions: QuestionTypes[];
+
+	@Field(() => Date)
+	sharedCreatedAt: Date;
+
+	@Field(() => String, { nullable: true })
+	color: string;
+
+	@Field(() => String, { nullable: true })
+	bgColor: string;
 }
 
 @ObjectType({ implements: [Questionnaire, SchemaBaseInterface] })
@@ -393,6 +426,15 @@ export class QuestionnaireQuiz extends SchemaBase implements Questionnaire {
 
 	@Field(() => [Question])
 	questions: QuestionTypes[];
+
+	@Field(() => Date)
+	sharedCreatedAt: Date;
+
+	@Field(() => String, { nullable: true })
+	color: string;
+
+	@Field(() => String, { nullable: true })
+	bgColor: string;
 }
 
 export const QuestionnaireSchema = SchemaFactory.createForClass(Questionnaire);

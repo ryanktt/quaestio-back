@@ -82,8 +82,8 @@ type QuestionnaireMetrics {
   totalResponseCount: Int!
   totalAttemptCount: Int!
   totalAnswerTime: Int!
-  avgAnswerTime: Int!
-  avgAttempCount: Int!
+  avgAnswerTime: Float!
+  avgAttemptCount: Float!
   questionMetrics: [QuestionMetrics!]!
 
   """A JSON string of the questionnaire metrics map (by location)"""
@@ -125,8 +125,11 @@ type Option {
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
-  correct: Boolean
+
+  """For true or false questions."""
+  true: Boolean
   feedbackAfterSubmit: String
+  correct: Boolean
 }
 
 type QuestionSingleChoice implements Question {
@@ -216,6 +219,9 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
   timeLimit: Float
   passingGradePercent: Float
   maxRetryAmount: Float
@@ -237,6 +243,9 @@ interface Questionnaire {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
 }
 
 enum QuestionnaireType {
@@ -260,6 +269,9 @@ type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
 }
 
 type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
@@ -277,6 +289,9 @@ type QuestionnaireQuiz implements Questionnaire & SchemaBaseInterface {
   latest: Boolean!
   sharedId: String!
   questions: [Question!]!
+  sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
 }
 
 type Session {
@@ -314,9 +329,6 @@ type Respondent implements User & SchemaBaseInterface {
 }
 
 type AnswerSingleChoice implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -325,9 +337,6 @@ type AnswerSingleChoice implements Answer {
 }
 
 interface Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -342,9 +351,6 @@ enum AnswerType {
 }
 
 type AnswerMultipleChoice implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -353,9 +359,6 @@ type AnswerMultipleChoice implements Answer {
 }
 
 type AnswerTrueOrFalse implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -364,9 +367,6 @@ type AnswerTrueOrFalse implements Answer {
 }
 
 type AnswerText implements Answer {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   type: AnswerType!
   question: String!
   answeredAt: DateTime
@@ -378,16 +378,20 @@ type Response {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  questionnaireSharedId: String!
   answers: [Answer!]!
   startedAt: DateTime!
+  user: String!
   completedAt: DateTime
   respondent: Respondent!
+  respondentName: String
+  respondentEmail: String
   self: Response!
   questionnaire: Questionnaire!
 }
 
 type PublicUpsertResponse {
-  authToken: String!
+  respondentToken: String!
 }
 
 type LogOutResponse {
@@ -406,19 +410,22 @@ type SignOutResponse {
 }
 
 type Query {
-  adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean): Questionnaire
-  adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean): [Questionnaire!]!
+  adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean = true): Questionnaire
+  publicFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
+  adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean = true, textFilter: String): [Questionnaire!]!
+  adminFetchResponses(questionnaireSharedIds: [String!], questionnaireIds: [String!], textFilter: String): [Response!]!
+  adminFetchResponse(responseId: String!): Response
   fetchAdmin(userId: String, email: String): Admin
 }
 
 type Mutation {
   adminDeleteQuestionnaire(questionnaireSharedId: String!): DeleteQuestionnaireResponse
-  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireQuiz!
-  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String): QuestionnaireSurvey!
-  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Float, description: String, timeLimit: Float): QuestionnaireExam!
-  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questionMethods: [QuestionMethodInput!], active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, description: String): QuestionnaireQuiz!
-  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questionMethods: [QuestionMethodInput!], active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, description: String): QuestionnaireSurvey!
-  adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, active: Boolean, title: Float, requireEmail: Boolean, requireName: Boolean, maxRetryAmount: Float, timeLimit: Float, description: String): QuestionnaireExam!
+  adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String, bgColor: String, color: String): QuestionnaireQuiz!
+  adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String, bgColor: String, color: String): QuestionnaireSurvey!
+  adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Int, description: String, timeLimit: Int, bgColor: String, color: String): QuestionnaireExam!
+  adminUpdateQuestionnaireQuiz(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, description: String, bgColor: String, color: String): QuestionnaireQuiz!
+  adminUpdateQuestionnaireSurvey(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, description: String, bgColor: String, color: String): QuestionnaireSurvey!
+  adminUpdateQuestionnaireExam(questionnaireId: String!, questionMethods: [QuestionMethodInput!], questionOrder: [QuestionOrderInput!], randomizeQuestions: Boolean = false, passingGradePercent: Float, active: Boolean, title: String, requireEmail: Boolean, requireName: Boolean, maxRetryAmount: Int, timeLimit: Int, description: String, bgColor: String, color: String): QuestionnaireExam!
   publicUpsertQuestionnaireResponse(answers: [AnswerDiscriminatorInput!]!, questionnaireId: String!, completedAt: DateTime!, startedAt: DateTime!, email: String, name: String): PublicUpsertResponse!
   userlogOut: LogOutResponse!
   publicSignUp(password: String!, email: String!, name: String!): AuthResponse!
@@ -448,8 +455,12 @@ input QuestionMultipleChoiceInput {
 }
 
 input OptionInput {
+  id: String
   title: String!
   correct: Boolean
+
+  """For true or false questions."""
+  true: Boolean
   feedbackAfterSubmit: String
 }
 
@@ -491,6 +502,7 @@ input QuestionTextInput {
 input QuestionMethodInput {
   type: QuestionMethodType!
   questionId: String
+  index: Int
   questionDiscriminator: QuestionDiscriminatorInput
 }
 
@@ -498,6 +510,11 @@ enum QuestionMethodType {
   CREATE
   DELETE
   UPDATE
+}
+
+input QuestionOrderInput {
+  questionId: String
+  index: Int
 }
 
 input AnswerDiscriminatorInput {

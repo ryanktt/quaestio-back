@@ -3,13 +3,14 @@ import { ResponseQuestionnaireRepository } from '@modules/shared/response-questi
 import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { ResponseService } from './response.service';
 
-import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation } from '@nestjs/graphql';
-import { IPublicContext } from '@modules/session/session.interface';
+import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation, Query } from '@nestjs/graphql';
+import { IAdminContext, IPublicContext } from '@modules/session/session.interface';
+import { Role } from '@utils/utils.decorators';
 
 @ObjectType()
 class PublicUpsertResponse {
 	@Field()
-	authToken: string;
+	respondentToken: string;
 }
 
 @Resolver(() => Response)
@@ -17,7 +18,7 @@ export class ResponseResolver {
 	constructor(
 		private readonly responseService: ResponseService,
 		private readonly responseQuestRepository: ResponseQuestionnaireRepository,
-	) {}
+	) { }
 
 	// calls itself to define type in schema.gql so i dont get: '"Response" defined in resolvers, but not in schema.'
 	@ResolveField(() => Response)
@@ -32,7 +33,7 @@ export class ResponseResolver {
 
 	@Mutation(() => PublicUpsertResponse)
 	publicUpsertQuestionnaireResponse(
-		@Context() { authToken, clientIp, userAgent }: IPublicContext,
+		@Context() { clientIp, userAgent, respondentToken }: IPublicContext,
 		@Args('answers', { type: () => [AnswerDiscriminatorInput] }) answers: AnswerDiscriminatorInput[],
 		@Args('questionnaireId') questionnaireId: string,
 		@Args('completedAt') completedAt: Date,
@@ -40,17 +41,45 @@ export class ResponseResolver {
 		@Args('email', { nullable: true }) email: string,
 		@Args('name', { nullable: true }) name: string,
 	): Promise<PublicUpsertResponse> {
-		console.log(authToken);
 		return this.responseService.publicUpsertQuestionnaireResponse({
+			respondentToken,
 			questionnaireId,
 			ip: clientIp,
 			completedAt,
 			startedAt,
-			authToken,
 			userAgent,
 			answers,
 			email,
 			name,
+		});
+	}
+
+	@Role('Admin')
+	@Query(() => [Response])
+	async adminFetchResponses(
+		@Context() { user }: IAdminContext,
+		@Args('questionnaireSharedIds', { type: () => [String], nullable: true })
+		questionnaireSharedIds?: string[],
+		@Args('questionnaireIds', { type: () => [String], nullable: true }) questionnaireIds?: string[],
+		@Args('textFilter', { nullable: true }) textFilter?: string,
+	): Promise<Response[]> {
+		return this.responseService.adminFetchResponses({
+			questionnaireSharedIds,
+			questionnaireIds,
+			textFilter,
+			user,
+		});
+	}
+
+	@Role('Admin')
+	@Query(() => Response, { nullable: true })
+	async adminFetchResponse(
+		@Context() { user }: IAdminContext,
+		@Args('responseId') responseId: string,
+	): Promise<Response | undefined> {
+		return this.responseService.adminFetchResponse({
+			responseId,
+			user,
 		});
 	}
 }

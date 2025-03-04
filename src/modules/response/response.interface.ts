@@ -3,6 +3,7 @@ import { AnswerDiscriminatorInput, Answer, AnswerTypes } from './schema';
 import { QuestionnaireTypes } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
 import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { registerEnumType } from '@nestjs/graphql';
+import { User } from '@modules/user/user.schema';
 // import { RespondentDocument } from '@modules/user';
 
 export enum EAnswerType {
@@ -13,6 +14,7 @@ export enum EAnswerType {
 }
 export enum EResponseErrorCode {
 	CREATE_RESPONSE_INVALID_PARAMS = 'CREATE_RESPONSE_INVALID_PARAMS',
+	FETCH_RESPONSES_INVALID_PARAMS = 'FETCH_RESPONSES_INVALID_PARAMS',
 	CREATE_RESPONSE_ERROR = 'CREATE_RESPONSE_ERROR',
 	FETCH_RESPONSES_ERROR = 'FETCH_RESPONSES_ERROR',
 	FETCH_RESPONSE_ERROR = 'FETCH_RESPONSE_ERROR',
@@ -30,12 +32,14 @@ export interface IRepositoryUpsertResponseParams {
 }
 
 export interface IRepositoryFetchResponsesParams {
+	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
 	responseIds?: string[];
+	textFilter?: string;
+	user: User;
 }
 
 export interface IRepositoryFetchResponseParams {
-	questionnaireId?: string;
 	responseId?: string;
 }
 
@@ -53,9 +57,21 @@ export interface IPublicUpsertQuestResponseParams {
 	ip: string;
 	completedAt: Date;
 	startedAt: Date;
-	authToken?: string;
+	respondentToken?: string;
 	email?: string;
 	name?: string;
+}
+
+export interface IFetchResponsesParams {
+	user: User
+	questionnaireSharedIds?: string[];
+	questionnaireIds?: string[];
+	textFilter?: string;
+}
+
+export interface IFetchResponseParams {
+	user: User
+	responseId: string
 }
 
 export interface IValidateAnswers {

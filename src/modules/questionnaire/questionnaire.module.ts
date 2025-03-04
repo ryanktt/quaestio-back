@@ -6,10 +6,11 @@ import {
 } from './schema';
 import { QuestionnaireMetricsSchema } from './schema/questionnaire-metrics';
 import { QuestionnaireRepository } from './questionnaire.repository';
-import { QuestionnaireResolver } from './questionnaire.resolver';
+import { OptionResolver, QuestionnaireResolver } from './questionnaire.resolver';
 import { QuestionnaireService } from './questionnaire.service';
 import { QuestionnaireHelper } from './questionnaire.helper';
 
+import { ResponseQuestionnaireModule } from '@modules/shared/response-questionnaire/response-questionnaire.module';
 import { UserSessionModule } from '@modules/shared/user-session/user-session.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UtilsModule } from '@utils/utils.module';
@@ -32,10 +33,11 @@ import { Module } from '@nestjs/common';
 				],
 			},
 		]),
+		ResponseQuestionnaireModule,
 		UserSessionModule,
 		UtilsModule,
 	],
-	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
+	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService, OptionResolver],
 	exports: [QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 })
-export class QuestionnaireModule {}
+export class QuestionnaireModule { }

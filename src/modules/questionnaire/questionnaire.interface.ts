@@ -5,13 +5,17 @@ import {
 	QuestionnaireExamDocument,
 	QuestionDiscriminatorInput,
 	QuestionnaireSurveyDocument,
+	QuestionSingleChoiceInput,
+	QuestionMultipleChoiceInput,
+	QuestionTrueOrFalseInput,
+	QuestionTextInput,
+	QuestionOrderInput,
 } from './schema';
 
 import { AdminDocument } from '@modules/user/admin/admin.schema';
 import { registerEnumType } from '@nestjs/graphql';
 import { QuestionnaireMetricsDocument } from './schema/questionnaire-metrics';
 import { ObjectId } from 'mongodb';
-// import { SchemaBase, SchemaBaseInterface } from '@utils/utils.schema';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',
@@ -65,6 +69,8 @@ export interface IRepositoryCreateQuestionnareParams {
 	requireEmail?: boolean;
 	requireName?: boolean;
 	description?: string;
+	bgColor?: string
+	color?: string
 }
 
 export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
@@ -81,6 +87,8 @@ export interface IRepositoryUpdateQuestionnareParams {
 	title?: string;
 	requireEmail?: boolean | null;
 	requireName?: boolean | null;
+	bgColor?: string | null
+	color?: string | null
 }
 
 export interface IRepositoryUpdateQuestionnareQuizParams extends IRepositoryUpdateQuestionnareParams {
@@ -110,6 +118,7 @@ export interface IRepositoryFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
 	userIds?: string[];
+	textFilter?: string;
 	latest?: boolean;
 }
 
@@ -129,12 +138,15 @@ export interface ICreateQuestionnaireParams {
 	requireName?: boolean;
 	description?: string;
 	timeLimit?: number;
+	bgColor?: string;
+	color?: string;
 }
 
 export interface IUpdateQuestionnaireParams {
 	type: EQuestionnaireType;
 	questionnaireId: string;
 	user: AdminDocument;
+	questionOrder?: QuestionOrderInput[];
 	questionMethods?: QuestionMethodInput[];
 	randomizeQuestions?: boolean;
 	description?: string;
@@ -145,18 +157,21 @@ export interface IUpdateQuestionnaireParams {
 	requireEmail?: boolean | null;
 	requireName?: boolean | null;
 	timeLimit?: number | null;
+	bgColor?: string | null;
+	color?: string | null;
 }
 
 export interface IFetchQuestionnaireParams {
 	questionnaireSharedId?: string;
 	questionnaireId?: string;
 	latest?: boolean;
-	user: AdminDocument;
+	user?: AdminDocument;
 }
 
 export interface IFetchQuestionnairesParams {
 	questionnaireSharedIds?: string[];
 	questionnaireIds?: string[];
+	textFilter?: string;
 	latest?: boolean;
 	user: AdminDocument;
 }
@@ -164,3 +179,5 @@ export interface IFetchQuestionnairesParams {
 export interface IDeleteQuestionnaireParams {
 	questionnaireSharedId: string;
 }
+
+export type QuestionInputTypes = QuestionSingleChoiceInput | QuestionMultipleChoiceInput | QuestionTrueOrFalseInput | QuestionTextInput;

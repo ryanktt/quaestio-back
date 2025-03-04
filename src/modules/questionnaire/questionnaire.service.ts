@@ -21,10 +21,12 @@ import { AppError } from '@utils/utils.error';
 import { UtilsDoc } from '@utils/utils.doc';
 import { Injectable } from '@nestjs/common';
 import { QuestionnaireDocTypes } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
+import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
 
 @Injectable()
 export class QuestionnaireService {
 	constructor(
+		private readonly responseQuestRepository: ResponseQuestionnaireRepository,
 		private readonly questionnaireRepository: QuestionnaireRepository,
 		private readonly questionnaireHelper: QuestionnaireHelper,
 		private readonly utilsDoc: UtilsDoc,
@@ -36,19 +38,20 @@ export class QuestionnaireService {
 
 		return this.questionnaireRepository.fetchQuestionnaire({
 			...(questionnaireId ? { questionnaireId } : { questionnaireSharedId }),
-			userId: user.id,
+			userId: user?.id,
 			latest,
 		});
 	}
 
 	async fetchQuestionnaires(params: IFetchQuestionnairesParams): Promise<Questionnaire[]> {
-		const { questionnaireSharedIds, questionnaireIds, latest, user } = params;
+		const { questionnaireSharedIds, questionnaireIds, latest, textFilter, user } = params;
 		await this.questionnaireHelper.validateFetchQuestionnairesParams(params);
 
-		return this.questionnaireRepository.fetchQuestionnaires({
+		return this.responseQuestRepository.fetchQuestionnaires({
 			questionnaireSharedIds,
 			userIds: [user.id],
 			questionnaireIds,
+			textFilter,
 			latest,
 		});
 	}
@@ -65,8 +68,10 @@ export class QuestionnaireService {
 		} = params;
 		await this.questionnaireHelper.validateCreateQuestionnaireParams(params);
 
-		const questions = questionDiscriminatorInputArray.map((input) => {
-			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput(input) as QuestionTypes;
+		const questions = questionDiscriminatorInputArray.map((questionDiscriminator) => {
+			return this.questionnaireHelper.getQuestionFromQuestionDiscriminatorInput({
+				questionDiscriminator,
+			}) as QuestionTypes;
 		});
 
 		return this.utilsDoc.startMongodbSession(async (session) => {
@@ -103,9 +108,21 @@ export class QuestionnaireService {
 	}
 
 	async updateQuestionnaire(params: IUpdateQuestionnaireParams): Promise<QuestionnaireDocTypes> {
-		const { questionMethods, requireEmail, requireName, active, questionnaireId, title, description, type, user } = params;
+		const {
+			questionMethods,
+			questionnaireId,
+			questionOrder,
+			requireEmail,
+			requireName,
+			description,
+			bgColor,
+			color,
+			active,
+			title,
+			type,
+			user,
+		} = params;
 		await this.questionnaireHelper.validateUpdateQuestionnaireParams(params);
-
 		const [questionnaire, metrics] = await Promise.all([
 			this.questionnaireRepository.fetchQuestionnaire({
 				userId: user.id,
@@ -130,6 +147,7 @@ export class QuestionnaireService {
 		const questions = this.questionnaireHelper.getQuestionsFromQuestionMethodsInput(
 			questionnaire,
 			questionMethods,
+			questionOrder,
 		);
 
 		return this.utilsDoc.startMongodbSession(async (session) => {
@@ -144,6 +162,8 @@ export class QuestionnaireService {
 						metrics,
 						active,
 						title,
+						bgColor,
+						color,
 					},
 					session,
 				);
@@ -160,6 +180,8 @@ export class QuestionnaireService {
 						metrics,
 						active,
 						title,
+						bgColor,
+						color,
 					},
 					session,
 				);
@@ -180,6 +202,8 @@ export class QuestionnaireService {
 					metrics,
 					active,
 					title,
+					bgColor,
+					color,
 				},
 				session,
 			);

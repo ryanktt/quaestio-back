@@ -7,14 +7,12 @@ import {
 	QuestionnaireExamDocument,
 	QuestionnaireQuizDocument,
 	QuestionnaireSurveyDocument,
-	Questionnaire,
 } from './schema';
 import {
 	IRepositoryUpdateQuestionnareSurveyParams,
 	IRepositoryCreateQuestionnaireExamParams,
 	IRepositoryUpdateQuestionnareQuizParams,
 	IRepositoryUpdateQuestionnareExamParams,
-	IRepositoryFetchQuestionnairesParams,
 	IRepositoryDeleteQuestionnaireParams,
 	IRepositoryFetchQuestionnaireParams,
 	IRepositoryCreateQuestionnareParams,
@@ -54,30 +52,6 @@ export class QuestionnaireRepository {
 		private readonly utilsArray: UtilsArray,
 		private readonly utilsDoc: UtilsDoc,
 	) { }
-
-	async fetchQuestionnaires({
-		questionnaireSharedIds,
-		questionnaireIds,
-		userIds,
-		latest,
-	}: IRepositoryFetchQuestionnairesParams): Promise<Questionnaire[]> {
-		const query: FilterType<QuestionnaireDocument> = {};
-		if (typeof latest === 'boolean') query.latest = latest;
-		if (questionnaireSharedIds) query.sharedId = { $in: questionnaireSharedIds };
-		if (questionnaireIds) query._id = { $in: questionnaireIds };
-		if (userIds) query.user = { $in: userIds };
-		return this.questionnaireSchema
-			.find(query)
-			.lean()
-			.exec()
-			.catch((originalError: Error) => {
-				throw new AppError({
-					code: EQuestionnaireErrorCode.FETCH_QUESTIONNAIRES_ERROR,
-					message: 'fail to fetch questionnaires',
-					originalError,
-				});
-			}) as Promise<Questionnaire[]>;
-	}
 
 	async fetchQuestionnaire({
 		questionnaireSharedId,
@@ -212,6 +186,12 @@ export class QuestionnaireRepository {
 		);
 		const updatedMetrics = new this.questionnaireMetricsSchema({
 			_id: params.updatedQuestionnaire._id,
+			totalResponseCount: params.metrics.totalResponseCount,
+			totalAttemptCount: params.metrics.totalAttemptCount,
+			totalAnswerTime: params.metrics.totalAnswerTime,
+			avgAttemptCount: params.metrics.avgAttemptCount,
+			avgAnswerTime: params.metrics.avgAnswerTime,
+			byLocationMap: params.metrics.byLocationMap,
 			questionMetrics,
 		});
 		return updatedMetrics.save({ session }).catch((originalError: Error) => {
@@ -224,7 +204,7 @@ export class QuestionnaireRepository {
 	}
 
 	async createQuiz(
-		{ requireEmail, requireName, questions, userId, title, description }: IRepositoryCreateQuestionnareParams,
+		{ requireEmail, requireName, questions, userId, title, description, color, bgColor }: IRepositoryCreateQuestionnareParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const quiz = new this.questionnaireQuizSchema({
@@ -233,6 +213,8 @@ export class QuestionnaireRepository {
 			description,
 			requireName,
 			questions,
+			bgColor,
+			color,
 			title,
 		}) as QuestionnaireQuizDocument;
 
@@ -248,7 +230,7 @@ export class QuestionnaireRepository {
 	}
 
 	async createSurvey(
-		{ requireEmail, requireName, questions, userId, title, description }: IRepositoryCreateQuestionnareParams,
+		{ requireEmail, requireName, questions, userId, title, description, bgColor, color }: IRepositoryCreateQuestionnareParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireSurveyDocument> {
 		const survey = new this.questionnaireSurveySchema({
@@ -257,6 +239,8 @@ export class QuestionnaireRepository {
 			description,
 			requireName,
 			questions,
+			bgColor,
+			color,
 			title,
 		}) as QuestionnaireSurveyDocument;
 
@@ -280,6 +264,8 @@ export class QuestionnaireRepository {
 			requireName,
 			description,
 			questions,
+			bgColor,
+			color,
 			timeLimit,
 			userId,
 			title,
@@ -296,6 +282,8 @@ export class QuestionnaireRepository {
 			description,
 			timeLimit,
 			questions,
+			bgColor,
+			color,
 			title,
 		}) as QuestionnaireExamDocument;
 
@@ -311,20 +299,21 @@ export class QuestionnaireRepository {
 	}
 
 	async updateQuiz(
-		{ requireEmail, active, requireName, metrics, questions, title, description, quiz }: IRepositoryUpdateQuestionnareQuizParams,
+		{ requireEmail, active, requireName, metrics, questions, title, description, quiz, bgColor, color }: IRepositoryUpdateQuestionnareQuizParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const updatedQuiz = new this.questionnaireQuizSchema({
+			sharedCreatedAt: quiz.sharedCreatedAt,
 			requireEmail: quiz.requireEmail,
 			requireName: quiz.requireName,
 			description: quiz.description,
-			createdAt: quiz.createdAt,
 			questions: quiz.questions,
 			sharedId: quiz.sharedId,
+			bgColor: quiz.bgColor,
 			active: quiz.active,
 			title: quiz.title,
+			color: quiz.color,
 			user: quiz.user,
-			updatedAt: new Date(),
 		}) as QuestionnaireQuizDocument;
 
 		this.utilsDoc.handleFieldUpdate({
@@ -341,8 +330,10 @@ export class QuestionnaireRepository {
 		});
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'description', value: description });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'questions', value: questions });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'bgColor', value: bgColor });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'active', value: active });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'title', value: title });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedQuiz, field: 'color', value: color });
 		this.utilsDoc.handleFieldUpdate({ doc: quiz, field: 'latest', value: false });
 
 		return this.utilsDoc.startMongodbSession(async (session) => {
@@ -367,6 +358,8 @@ export class QuestionnaireRepository {
 			requireName,
 			questions,
 			metrics,
+			bgColor,
+			color,
 			active,
 			survey,
 			title,
@@ -374,16 +367,17 @@ export class QuestionnaireRepository {
 		session?: ClientSession,
 	): Promise<QuestionnaireSurveyDocument> {
 		const updatedSurvey = new this.questionnaireSurveySchema({
+			sharedCreatedAt: survey.sharedCreatedAt,
 			requireEmail: survey.requireEmail,
 			requireName: survey.requireName,
 			description: survey.description,
-			createdAt: survey.createdAt,
 			questions: survey.questions,
 			sharedId: survey.sharedId,
+			bgColor: survey.bgColor,
 			active: survey.active,
 			title: survey.title,
+			color: survey.color,
 			user: survey.user,
-			updatedAt: new Date(),
 		}) as QuestionnaireSurveyDocument;
 
 		this.utilsDoc.handleFieldUpdate({
@@ -402,6 +396,8 @@ export class QuestionnaireRepository {
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'questions', value: questions });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'title', value: title });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'active', value: active });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'bgColor', value: bgColor });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedSurvey, field: 'color', value: color });
 		this.utilsDoc.handleFieldUpdate({ doc: survey, field: 'latest', value: false });
 
 		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireSurveyDocument> => {
@@ -430,6 +426,8 @@ export class QuestionnaireRepository {
 			questions,
 			timeLimit,
 			metrics,
+			bgColor,
+			color,
 			active,
 			title,
 			exam,
@@ -440,17 +438,16 @@ export class QuestionnaireRepository {
 			maxRetryAmount: exam.maxRetryAmount,
 			passingGradePercent: exam.passingGradePercent,
 			randomizeQuestions: exam.randomizeQuestions,
+			sharedCreatedAt: exam.sharedCreatedAt,
 			requireEmail: exam.requireEmail,
 			requireName: exam.requireName,
 			description: exam.description,
 			timeLimit: exam.timeLimit,
-			createdAt: exam.createdAt,
 			questions: exam.questions,
 			sharedId: exam.sharedId,
 			active: exam.active,
 			title: exam.title,
 			user: exam.user,
-			updatedAt: new Date(),
 		}) as QuestionnaireExamDocument;
 
 		this.utilsDoc.handleFieldUpdate({
@@ -481,6 +478,8 @@ export class QuestionnaireRepository {
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'description', value: description });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'active', value: active });
 		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'title', value: title });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'bgColor', value: bgColor });
+		this.utilsDoc.handleFieldUpdate({ doc: updatedExam, field: 'color', value: color });
 		this.utilsDoc.handleFieldUpdate({ doc: exam, field: 'latest', value: false });
 
 		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireExamDocument> => {

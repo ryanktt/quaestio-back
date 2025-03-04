@@ -6,6 +6,7 @@ export const OptionInputValidator = Joi.object().keys({
 	title: Joi.string().trim().required(),
 	feedbackAfterSubmit: Joi.string().trim(),
 	correct: Joi.boolean(),
+	true: Joi.boolean(),
 });
 
 export const baseQuestionInputValidatorKeys = {
@@ -81,6 +82,11 @@ export const QuestionMethodValidator = Joi.object().keys({
 	type: Joi.string()
 		.valid(...Object.values(EQuestionMethodType))
 		.required(),
+	index: Joi.number().integer().when('type', {
+		is: Joi.string().valid(EQuestionMethodType.UPDATE, EQuestionMethodType.CREATE),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
 	questionId: Joi.string().when('type', {
 		is: Joi.string().valid(EQuestionMethodType.DELETE, EQuestionMethodType.UPDATE),
 		then: Joi.required(),
@@ -107,6 +113,8 @@ export const CreateQuestionnaireValidator = Joi.object().keys({
 	requireEmail: Joi.boolean(),
 	requireName: Joi.boolean(),
 	timeLimit: Joi.number(),
+	bgColor: Joi.string(),
+	color: Joi.string(),
 });
 
 export const UpdateQuestionnaireValidator = Joi.object().keys({
@@ -118,17 +126,24 @@ export const UpdateQuestionnaireValidator = Joi.object().keys({
 	title: Joi.string().trim().max(250),
 	description: Joi.string().trim(),
 	questionMethods: Joi.array().items(QuestionMethodValidator),
+	questionOrder: Joi.array().items(Joi.object().keys({
+		questionId: Joi.string().required(),
+		index: Joi.number().required(),
+	})),
+	active: Joi.boolean(),
 	randomizeQuestions: Joi.boolean().default(false),
 	passingGradePercent: Joi.number().allow(null),
 	maxRetryAmount: Joi.number().allow(null),
 	requireEmail: Joi.boolean().allow(null),
 	requireName: Joi.boolean().allow(null),
 	timeLimit: Joi.number().allow(null),
+	bgColor: Joi.string().allow(null),
+	color: Joi.string().allow(null),
 });
 
 export const FetchQuestionnaireValidator = Joi.object()
 	.keys({
-		user: Joi.object().required(),
+		user: Joi.object(),
 		questionnaireSharedId: Joi.string(),
 		questionnaireId: Joi.string(),
 		latest: Joi.boolean(),
@@ -139,6 +154,7 @@ export const FetchQuestionnairesValidator = Joi.object().keys({
 	user: Joi.object().required(),
 	questionnaireSharedIds: Joi.array().items(Joi.string()),
 	questionnaireIds: Joi.array().items(Joi.string()),
+	textFilter: Joi.string().allow(''),
 	latest: Joi.boolean(),
 });
 

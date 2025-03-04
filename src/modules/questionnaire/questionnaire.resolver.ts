@@ -6,6 +6,7 @@ import {
 	QuestionDiscriminatorInput,
 	QuestionMethodInput,
 	QuestionOrderInput,
+	Option,
 } from './schema';
 import { QuestionnaireMetrics } from './schema/questionnaire-metrics';
 import { QuestionnaireService } from './questionnaire.service';
@@ -22,6 +23,17 @@ import { Role } from '@utils/utils.decorators';
 export class DeleteQuestionnaireResponse {
 	@Field(() => String)
 	status: string;
+}
+
+@Resolver(() => Option)
+export class OptionResolver {
+	@ResolveField(() => Boolean, { nullable: true })
+	correct(
+		@Context() { user }: IAdminContext,
+		@Parent() option: Option
+	): boolean | undefined {
+		return user ? option.correct : undefined;
+	}
 }
 
 @Resolver(() => Questionnaire)

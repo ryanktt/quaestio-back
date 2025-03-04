@@ -6,7 +6,7 @@ import {
 } from './schema';
 import { QuestionnaireMetricsSchema } from './schema/questionnaire-metrics';
 import { QuestionnaireRepository } from './questionnaire.repository';
-import { QuestionnaireResolver } from './questionnaire.resolver';
+import { OptionResolver, QuestionnaireResolver } from './questionnaire.resolver';
 import { QuestionnaireService } from './questionnaire.service';
 import { QuestionnaireHelper } from './questionnaire.helper';
 
@@ -37,7 +37,7 @@ import { Module } from '@nestjs/common';
 		UserSessionModule,
 		UtilsModule,
 	],
-	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
+	providers: [QuestionnaireResolver, QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService, OptionResolver],
 	exports: [QuestionnaireRepository, QuestionnaireHelper, QuestionnaireService],
 })
 export class QuestionnaireModule { }

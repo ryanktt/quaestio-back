@@ -125,11 +125,11 @@ type Option {
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
-  correct: Boolean
 
   """For true or false questions."""
   true: Boolean
   feedbackAfterSubmit: String
+  correct: Boolean
 }
 
 type QuestionSingleChoice implements Question {

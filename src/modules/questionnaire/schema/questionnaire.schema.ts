@@ -16,7 +16,6 @@ export class Option extends SchemaBase {
 	@Prop({ required: true })
 	title: string;
 
-	@Field({ nullable: true })
 	@Prop()
 	correct?: boolean;
 

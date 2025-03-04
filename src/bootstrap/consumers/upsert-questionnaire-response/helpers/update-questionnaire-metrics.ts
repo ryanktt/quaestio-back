@@ -65,6 +65,27 @@ export function updateQuestionnaireMetrics({
 		let questionMetricsByLocation = byLocationQuestionMetricsMap?.[questionId];
 		let questionMetrics = questionMetricsMap[questionId];
 
+		if (!questionMetricsByLocation) {
+			const qMetricsByLoc: Partial<QuestionMetricsTypes> = {
+				_id: questionMetrics._id,
+				type: questionMetrics.type,
+				unansweredCount: 0,
+				answerCount: 0,
+			};
+			if (
+				(qMetricsByLoc.type === EQuestionType.MULTIPLE_CHOICE ||
+					qMetricsByLoc.type === EQuestionType.SINGLE_CHOICE ||
+					qMetricsByLoc.type === EQuestionType.TRUE_OR_FALSE) &&
+				qMetricsByLoc.type === questionMetrics.type
+			) {
+				qMetricsByLoc.rightAnswerCount = 0;
+				qMetricsByLoc.wrongAnswerCount = 0;
+				qMetricsByLoc.options = questionMetrics.options.map(({ _id, selectedCount }) => ({ _id, selectedCount }));
+			}
+			byLocationQuestionMetricsMap[questionId] = qMetricsByLoc as QuestionMetricsTypes;
+			questionMetricsByLocation = qMetricsByLoc as QuestionMetricsTypes;
+		}
+
 		const isCorrect = questionCorrectionMap?.[questionId]?.isCorrect;
 		const isAnswered = questionCorrectionMap?.[questionId]?.isAnswered;
 

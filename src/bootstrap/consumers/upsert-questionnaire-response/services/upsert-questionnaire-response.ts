@@ -79,6 +79,7 @@ export async function upsertQuestionnaireResponse({
 			);
 			await responseCollection.insertOne(
 				{
+					questionnaireSharedId: questionnaire.sharedId,
 					questionnaire: questionnaireId,
 					user: questionnaire.user,
 					respondent: respondentId,
@@ -88,7 +89,13 @@ export async function upsertQuestionnaireResponse({
 					startedAt: new Date(startedAt),
 					userAgent,
 					answerTime,
-					answers,
+					answers: answers.map((answer) => ({
+						...answer,
+						answeredAt: answer.answeredAt
+							? new Date(answer.answeredAt)
+							: undefined
+					}
+					)),
 				},
 				{ session },
 			);

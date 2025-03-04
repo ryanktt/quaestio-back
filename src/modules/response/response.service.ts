@@ -1,4 +1,8 @@
-import { IFetchResponsesParams, IPublicUpsertQuestResponseParams } from './response.interface';
+import {
+	IFetchResponseParams,
+	IFetchResponsesParams,
+	IPublicUpsertQuestResponseParams,
+} from './response.interface';
 import { AnswerTypes, Response } from './schema';
 import { ResponseHelper } from './response.helper';
 
@@ -15,6 +19,13 @@ export class ResponseService {
 		private readonly responseRepository: ResponseRepository,
 		private readonly responseHelper: ResponseHelper,
 	) { }
+
+	async adminFetchResponse(params: IFetchResponseParams): Promise<Response | undefined> {
+		return this.responseRepository.fetchResponse(params).then((res) => {
+			console.log(res);
+			return res?.user.toString() === params.user._id.toString() ? res : undefined;
+		});
+	}
 
 	async adminFetchResponses(params: IFetchResponsesParams): Promise<Response[]> {
 		await this.responseHelper.validateFetchResponsesParams(params);

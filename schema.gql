@@ -414,6 +414,7 @@ type Query {
   publicFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
   adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean = true, textFilter: String): [Questionnaire!]!
   adminFetchResponses(questionnaireSharedIds: [String!], questionnaireIds: [String!], textFilter: String): [Response!]!
+  adminFetchResponse(responseId: String!): Response
   fetchAdmin(userId: String, email: String): Admin
 }
 

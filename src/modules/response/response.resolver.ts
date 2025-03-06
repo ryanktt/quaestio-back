@@ -1,4 +1,4 @@
-import { AnswerDiscriminatorInput, Response } from './schema';
+import { Answer, AnswerDiscriminatorInput, AnswerTypes, Response } from './schema';
 import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
 import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { ResponseService } from './response.service';
@@ -7,10 +7,40 @@ import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutat
 import { IAdminContext, IPublicContext } from '@modules/session/session.interface';
 import { Role } from '@utils/utils.decorators';
 
+
+@ObjectType()
+class CorrectQuestionOption {
+	@Field()
+	questionId: string;
+
+	@Field(() => [String])
+	optionIds: string[];
+}
+
+@ObjectType()
+class ResponseCorrection {
+	@Field(() => [Answer])
+	correctedAnswers: AnswerTypes[];
+
+	@Field(() => [CorrectQuestionOption])
+	correctQuestionOptions: CorrectQuestionOption[];
+}
+
+export interface IResponseCorrection {
+	correctedAnswers: AnswerTypes[]
+	correctQuestionOptions: {
+		questionId: string;
+		optionIds: string[];
+	}[]
+}
+
 @ObjectType()
 class PublicUpsertResponse {
 	@Field()
 	respondentToken: string;
+
+	@Field(() => ResponseCorrection)
+	correction: ResponseCorrection;
 }
 
 @Resolver(() => Response)

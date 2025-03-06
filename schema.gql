@@ -390,8 +390,19 @@ type Response {
   questionnaire: Questionnaire!
 }
 
+type CorrectQuestionOption {
+  questionId: String!
+  optionIds: [String!]!
+}
+
+type ResponseCorrection {
+  correctedAnswers: [Answer!]!
+  correctQuestionOptions: [CorrectQuestionOption!]!
+}
+
 type PublicUpsertResponse {
   respondentToken: String!
+  correction: ResponseCorrection!
 }
 
 type LogOutResponse {

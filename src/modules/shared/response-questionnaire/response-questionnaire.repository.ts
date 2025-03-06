@@ -81,4 +81,8 @@ export class ResponseQuestionnaireRepository {
 			return this.utilsArray.getObjectsSortedByIds(questionnaires, '_id', ids);
 		});
 	}
+
+	async fetchQuestionnaireById(id: string): Promise<Questionnaire | undefined> {
+		return this.questionnaireLoader().load(id);
+	}
 }

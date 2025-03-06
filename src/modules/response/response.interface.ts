@@ -15,6 +15,7 @@ export enum EAnswerType {
 export enum EResponseErrorCode {
 	CREATE_RESPONSE_INVALID_PARAMS = 'CREATE_RESPONSE_INVALID_PARAMS',
 	FETCH_RESPONSES_INVALID_PARAMS = 'FETCH_RESPONSES_INVALID_PARAMS',
+	MISSING_REQUIRED_FIELDS = 'MISSING_REQUIRED_FIELDS',
 	CREATE_RESPONSE_ERROR = 'CREATE_RESPONSE_ERROR',
 	FETCH_RESPONSES_ERROR = 'FETCH_RESPONSES_ERROR',
 	FETCH_RESPONSE_ERROR = 'FETCH_RESPONSE_ERROR',
@@ -69,6 +70,15 @@ export interface IFetchResponsesParams {
 	textFilter?: string;
 }
 
+export interface IValidateAndFetchCorrectedAnswers {
+	questionnaireId: string;
+	answers: AnswerDiscriminatorInput[];
+	completedAt: Date;
+	startedAt: Date;
+	email?: string;
+	name?: string;
+}
+
 export interface IFetchResponseParams {
 	user: User
 	responseId: string
@@ -87,4 +97,13 @@ export interface ICorrectAnswers {
 export interface IUpdateQuestionnaireMetrics {
 	answers: AnswerTypes[];
 	questionnaire: QuestionnaireTypes;
+}
+
+
+export interface IResponseCorrection {
+	correctedAnswers: AnswerTypes[]
+	correctQuestionOptions: {
+		questionId: string;
+		optionIds: string[];
+	}[]
 }

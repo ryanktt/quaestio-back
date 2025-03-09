@@ -16,6 +16,7 @@ import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import { isLocal } from 'src/app.module';
 import { ObjectId } from 'mongodb';
+import { PaginatedResponseResponse } from './response.resolver';
 
 
 
@@ -35,9 +36,23 @@ export class ResponseService {
 		});
 	}
 
-	async adminFetchResponses(params: IFetchResponsesParams): Promise<Response[]> {
+	async adminFetchResponses(params: IFetchResponsesParams): Promise<PaginatedResponseResponse> {
 		await this.responseHelper.validateFetchResponsesParams(params);
-		return this.responseRepository.fetchResponses(params);
+		const { limit, page } = params.pagination;
+
+		const [results, totalResponseCount] = await Promise.all([
+			this.responseRepository.fetchResponses(params),
+			this.responseRepository.countResponses(params),
+		]);
+
+		const totalPageCount = Math.ceil(totalResponseCount / limit);
+		return {
+			results,
+			totalPageCount,
+			currentPage: page,
+			hasNextPage: page < totalPageCount,
+			totalResultCount: totalResponseCount,
+		};
 	}
 
 	async publicUpsertQuestionnaireResponse(

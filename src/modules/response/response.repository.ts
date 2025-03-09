@@ -22,13 +22,14 @@ export class ResponseRepository {
 		private readonly responseQuestRepository: ResponseQuestionnaireRepository,
 	) { }
 
-	async fetchResponses({
+
+	async buildMongoFetchResponsesQueryParams({
 		questionnaireSharedIds,
 		questionnaireIds,
 		textFilter,
 		responseIds,
 		user,
-	}: IRepositoryFetchResponsesParams): Promise<Response[]> {
+	}: IRepositoryFetchResponsesParams): Promise<FilterType<ResponseDocument>> {
 		const query: FilterType<ResponseDocument> = {};
 		if (questionnaireIds) query.questionnaireSharedId = { $in: questionnaireSharedIds };
 		if (questionnaireSharedIds) query.questionnaire = { $in: questionnaireIds };
@@ -55,8 +56,16 @@ export class ResponseRepository {
 				);
 			}
 		}
+		return query;
+	}
+
+
+	async fetchResponses(params: IRepositoryFetchResponsesParams): Promise<Response[]> {
+		const query = await this.buildMongoFetchResponsesQueryParams(params);
+		const limit = params.pagination?.limit;
+		const page = params.pagination?.page;
 		return this.responseSchema
-			.find(query)
+			.find(query, null, limit && page ? { limit, skip: (page - 1) * limit } : {})
 			.sort({ _id: -1 })
 			.lean()
 			.exec()
@@ -67,6 +76,21 @@ export class ResponseRepository {
 					originalError,
 				});
 			}) as Promise<Response[]>;
+	}
+
+	async countResponses(params: IRepositoryFetchResponsesParams): Promise<number> {
+		const query = await this.buildMongoFetchResponsesQueryParams(params);
+		return this.responseSchema
+			.find(query)
+			.countDocuments()
+			.exec()
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EResponseErrorCode.COUNT_RESPONSES_ERROR,
+					message: 'fail to count responses',
+					originalError,
+				});
+			});
 	}
 
 	async fetchById(responseId?: string): Promise<ResponseDocument | undefined> {

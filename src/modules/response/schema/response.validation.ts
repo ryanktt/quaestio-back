@@ -75,4 +75,8 @@ export const FetchResponsesValidator = Joi.object().keys({
 	questionnaireSharedIds: Joi.array().items(Joi.string()),
 	questionnaireIds: Joi.array().items(Joi.string()),
 	textFilter: Joi.string().allow(''),
+	pagination: Joi.object().keys({
+		page: Joi.number().integer().positive(),
+		limit: Joi.number().integer().positive(),
+	})
 });

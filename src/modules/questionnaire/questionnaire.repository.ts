@@ -176,22 +176,14 @@ export class QuestionnaireRepository {
 	async updateQuestionnaireMetrics(
 		params: {
 			updatedQuestionnaire: QuestionnaireDocTypes | QuestionnaireTypes;
-			metrics: QuestionnaireMetrics;
 		},
 		session?: ClientSession,
 	): Promise<QuestionnaireMetricsDocument> {
 		const questionMetrics = this.questionnaireHelper.getQuestionnaireQuestionMetrics(
 			params.updatedQuestionnaire,
-			params.metrics,
 		);
 		const updatedMetrics = new this.questionnaireMetricsSchema({
 			_id: params.updatedQuestionnaire._id,
-			totalResponseCount: params.metrics.totalResponseCount,
-			totalAttemptCount: params.metrics.totalAttemptCount,
-			totalAnswerTime: params.metrics.totalAnswerTime,
-			avgAttemptCount: params.metrics.avgAttemptCount,
-			avgAnswerTime: params.metrics.avgAnswerTime,
-			byLocationMap: params.metrics.byLocationMap,
 			questionMetrics,
 		});
 		return updatedMetrics.save({ session }).catch((originalError: Error) => {
@@ -299,7 +291,7 @@ export class QuestionnaireRepository {
 	}
 
 	async updateQuiz(
-		{ requireEmail, active, requireName, metrics, questions, title, description, quiz, bgColor, color }: IRepositoryUpdateQuestionnareQuizParams,
+		{ requireEmail, active, requireName, questions, title, description, quiz, bgColor, color }: IRepositoryUpdateQuestionnareQuizParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const updatedQuiz = new this.questionnaireQuizSchema({
@@ -339,7 +331,7 @@ export class QuestionnaireRepository {
 		return this.utilsDoc.startMongodbSession(async (session) => {
 			try {
 				await quiz.save({ session });
-				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedQuiz, metrics }, session);
+				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedQuiz }, session);
 				return updatedQuiz.save({ session }) as Promise<QuestionnaireQuizDocument>;
 			} catch (err) {
 				throw new AppError({
@@ -357,7 +349,6 @@ export class QuestionnaireRepository {
 			requireEmail,
 			requireName,
 			questions,
-			metrics,
 			bgColor,
 			color,
 			active,
@@ -403,7 +394,7 @@ export class QuestionnaireRepository {
 		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireSurveyDocument> => {
 			try {
 				await survey.save({ session });
-				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedSurvey, metrics }, session);
+				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedSurvey }, session);
 				return updatedSurvey.save({ session }) as Promise<QuestionnaireSurveyDocument>;
 			} catch (err) {
 				throw new AppError({
@@ -425,7 +416,6 @@ export class QuestionnaireRepository {
 			requireName,
 			questions,
 			timeLimit,
-			metrics,
 			bgColor,
 			color,
 			active,
@@ -485,7 +475,7 @@ export class QuestionnaireRepository {
 		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireExamDocument> => {
 			try {
 				await exam.save({ session });
-				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedExam, metrics }, session);
+				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedExam }, session);
 				return updatedExam.save({ session }) as Promise<QuestionnaireExamDocument>;
 			} catch (err) {
 				throw new AppError({

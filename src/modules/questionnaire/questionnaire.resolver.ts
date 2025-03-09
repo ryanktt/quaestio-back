@@ -18,6 +18,7 @@ import { IAdminContext } from '@modules/session/session.interface';
 import { EQuestionnaireType } from './questionnaire.interface';
 import { Admin } from '@modules/user/admin/admin.schema';
 import { Role } from '@utils/utils.decorators';
+import { PaginationInput, PaginatedResponse, defaultPaginationValues } from '@utils/utils.pagination';
 
 @ObjectType()
 export class DeleteQuestionnaireResponse {
@@ -35,6 +36,9 @@ export class OptionResolver {
 		return user ? option.correct : undefined;
 	}
 }
+
+@ObjectType()
+export class PaginatedQuestionnaireResponse extends PaginatedResponse(Questionnaire) { }
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {
@@ -88,19 +92,21 @@ export class QuestionnaireResolver {
 	}
 
 	@Role('Admin')
-	@Query(() => [Questionnaire])
+	@Query(() => PaginatedQuestionnaireResponse)
 	async adminFetchQuestionnaires(
 		@Context() { user }: IAdminContext,
+		@Args('pagination', { type: () => PaginationInput, defaultValue: defaultPaginationValues }) pagination: PaginationInput,
 		@Args('questionnaireSharedIds', { type: () => [String], nullable: true })
 		questionnaireSharedIds?: string[],
 		@Args('questionnaireIds', { type: () => [String], nullable: true }) questionnaireIds?: string[],
 		@Args('latest', { nullable: true, defaultValue: true }) latest?: boolean,
 		@Args('textFilter', { nullable: true }) textFilter?: string,
-	): Promise<Questionnaire[]> {
+	): Promise<PaginatedQuestionnaireResponse> {
 		return this.questionnaireService.fetchQuestionnaires({
 			questionnaireSharedIds,
 			questionnaireIds,
 			textFilter,
+			pagination,
 			latest,
 			user,
 		});

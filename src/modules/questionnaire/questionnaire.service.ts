@@ -22,6 +22,7 @@ import { UtilsDoc } from '@utils/utils.doc';
 import { Injectable } from '@nestjs/common';
 import { QuestionnaireDocTypes } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
 import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
+import { PaginatedQuestionnaireResponse } from './questionnaire.resolver';
 
 @Injectable()
 export class QuestionnaireService {
@@ -43,17 +44,32 @@ export class QuestionnaireService {
 		});
 	}
 
-	async fetchQuestionnaires(params: IFetchQuestionnairesParams): Promise<Questionnaire[]> {
-		const { questionnaireSharedIds, questionnaireIds, latest, textFilter, user } = params;
+	async fetchQuestionnaires(params: IFetchQuestionnairesParams): Promise<PaginatedQuestionnaireResponse> {
+		const { questionnaireSharedIds, questionnaireIds, latest, textFilter, user, pagination } = params;
 		await this.questionnaireHelper.validateFetchQuestionnairesParams(params);
 
-		return this.responseQuestRepository.fetchQuestionnaires({
+		const { limit, page } = pagination;
+
+		const query = {
 			questionnaireSharedIds,
 			userIds: [user.id],
 			questionnaireIds,
 			textFilter,
 			latest,
-		});
+		};
+		const [results, totalResponseCount] = await Promise.all([
+			this.responseQuestRepository.fetchQuestionnaires(query),
+			this.responseQuestRepository.countQuestionnaires(query),
+		]);
+
+		const totalPageCount = Math.ceil(totalResponseCount / limit);
+		return {
+			results,
+			totalPageCount,
+			currentPage: page,
+			hasNextPage: page < totalPageCount,
+			totalResultCount: totalResponseCount,
+		};
 	}
 
 	async createQuestionnaire(params: ICreateQuestionnaireParams): Promise<QuestionnaireDocTypes> {

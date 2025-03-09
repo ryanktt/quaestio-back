@@ -309,6 +309,14 @@ type DeleteQuestionnaireResponse {
   status: String!
 }
 
+type PaginatedQuestionnaireResponse {
+  results: [Questionnaire!]!
+  currentPage: Int!
+  totalPageCount: Int!
+  totalResultCount: Int!
+  hasNextPage: Boolean!
+}
+
 type RespondentLocation {
   country: String!
   region: String!
@@ -423,10 +431,15 @@ type SignOutResponse {
 type Query {
   adminFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String, latest: Boolean = true): Questionnaire
   publicFetchQuestionnaire(questionnaireSharedId: String, questionnaireId: String): Questionnaire
-  adminFetchQuestionnaires(questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean = true, textFilter: String): [Questionnaire!]!
+  adminFetchQuestionnaires(pagination: PaginationInput = {page: 1, limit: 20}, questionnaireSharedIds: [String!], questionnaireIds: [String!], latest: Boolean = true, textFilter: String): PaginatedQuestionnaireResponse!
   adminFetchResponses(questionnaireSharedIds: [String!], questionnaireIds: [String!], textFilter: String): [Response!]!
   adminFetchResponse(responseId: String!): Response
   fetchAdmin(userId: String, email: String): Admin
+}
+
+input PaginationInput {
+  page: Int = 1
+  limit: Int = 20
 }
 
 type Mutation {

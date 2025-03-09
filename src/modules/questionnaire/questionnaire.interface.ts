@@ -16,6 +16,7 @@ import { AdminDocument } from '@modules/user/admin/admin.schema';
 import { registerEnumType } from '@nestjs/graphql';
 import { QuestionnaireMetricsDocument } from './schema/questionnaire-metrics';
 import { ObjectId } from 'mongodb';
+import { PaginationInput } from '@utils/utils.pagination';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',
@@ -32,6 +33,7 @@ export enum EQuestionnaireErrorCode {
 	DELETE_QUESTIONNAIRE_INVALID_PARAMS = 'DELETE_QUESTIONNAIRE_INVALID_PARAMS',
 	FETCH_QUESTIONNAIRE_METRICS_ERROR = 'FETCH_QUESTIONNAIRE_METRICS_ERROR',
 	FETCH_QUESTIONNAIRES_ERROR = 'FETCH_QUESTIONNAIRES_ERROR',
+	COUNT_QUESTIONNAIRES_ERROR = 'COUNT_QUESTIONNAIRES_ERROR',
 	FETCH_QUESTIONNAIRE_ERROR = 'FETCH_QUESTIONNAIRE_ERROR',
 	DELETE_QUESTIONNAIRE_ERROR = 'DELETE_QUESTIONNAIRE_ERROR',
 	QUESTIONNAIRE_METRICS_NOT_FOUND = 'QUESTIONNAIRE_METRICS_NOT_FOUND',
@@ -120,6 +122,7 @@ export interface IRepositoryFetchQuestionnairesParams {
 	userIds?: string[];
 	textFilter?: string;
 	latest?: boolean;
+	pagination?: PaginationInput;
 }
 
 export interface IRepositoryDeleteQuestionnaireParams {
@@ -173,6 +176,7 @@ export interface IFetchQuestionnairesParams {
 	questionnaireIds?: string[];
 	textFilter?: string;
 	latest?: boolean;
+	pagination: PaginationInput;
 	user: AdminDocument;
 }
 

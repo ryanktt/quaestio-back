@@ -156,6 +156,10 @@ export const FetchQuestionnairesValidator = Joi.object().keys({
 	questionnaireIds: Joi.array().items(Joi.string()),
 	textFilter: Joi.string().allow(''),
 	latest: Joi.boolean(),
+	pagination: Joi.object().keys({
+		page: Joi.number().integer().positive(),
+		limit: Joi.number().integer().positive(),
+	})
 });
 
 export const DeleteQuestionnaireValidator = Joi.object().keys({

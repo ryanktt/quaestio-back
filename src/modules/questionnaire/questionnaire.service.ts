@@ -6,6 +6,7 @@ import {
 	IFetchQuestionnairesParams,
 	IUpdateQuestionnaireParams,
 	IDeleteQuestionnaireParams,
+	IToggleQuestionnaireActiveParams,
 } from './questionnaire.interface';
 import {
 	QuestionnaireSurveyDocument,
@@ -231,5 +232,17 @@ export class QuestionnaireService {
 		await this.questionnaireHelper.validateDeleteQuestionnaireParams(params);
 
 		return this.questionnaireRepository.deleteQuestionnaire({ questionnaireSharedId });
+	}
+
+	async toggleQuestionnaireActive({ questionnaireSharedId, active }: IToggleQuestionnaireActiveParams): Promise<Questionnaire> {
+		const questionnaire = await this.questionnaireRepository.fetchBySharedId(questionnaireSharedId);
+		if (!questionnaire) {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.QUESTIONNAIRE_NOT_FOUND,
+				message: 'submitted questionnaire was not found'
+			});
+		}
+		return this.questionnaireRepository.toggleQuestionnaireActive({ questionnaire, active });
+
 	}
 }

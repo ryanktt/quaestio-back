@@ -10,6 +10,7 @@ import {
 	QuestionTrueOrFalseInput,
 	QuestionTextInput,
 	QuestionOrderInput,
+	QuestionnaireDocument,
 } from './schema';
 
 import { AdminDocument } from '@modules/user/admin/admin.schema';
@@ -17,6 +18,7 @@ import { registerEnumType } from '@nestjs/graphql';
 import { QuestionnaireMetricsDocument } from './schema/questionnaire-metrics';
 import { ObjectId } from 'mongodb';
 import { PaginationInput } from '@utils/utils.pagination';
+import { QuestionnaireDocTypes } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',
@@ -30,6 +32,7 @@ export enum EQuestionnaireErrorCode {
 	UPDATE_QUESTIONNAIRE_SURVEY_ERROR = 'UPDATE_QUESTIONNAIRE_SURVEY_ERROR',
 	UPDATE_QUESTIONNAIRE_QUIZ_ERROR = 'UPDATE_QUESTIONNAIRE_QUIZ_ERROR',
 	UPDATE_QUESTIONNAIRE_EXAM_ERROR = 'UPDATE_QUESTIONNAIRE_EXAM_ERROR',
+	UPDATE_QUESTIONNAIRE_ERROR = 'UPDATE_QUESTIONNAIRE_ERROR',
 	DELETE_QUESTIONNAIRE_INVALID_PARAMS = 'DELETE_QUESTIONNAIRE_INVALID_PARAMS',
 	FETCH_QUESTIONNAIRE_METRICS_ERROR = 'FETCH_QUESTIONNAIRE_METRICS_ERROR',
 	FETCH_QUESTIONNAIRES_ERROR = 'FETCH_QUESTIONNAIRES_ERROR',
@@ -182,6 +185,16 @@ export interface IFetchQuestionnairesParams {
 
 export interface IDeleteQuestionnaireParams {
 	questionnaireSharedId: string;
+}
+
+export interface IToggleQuestionnaireActiveParams {
+	questionnaireSharedId: string;
+	active?: boolean;
+}
+
+export interface IRepositoryToggleActive {
+	questionnaire: QuestionnaireDocTypes | QuestionnaireDocument;
+	active?: boolean;
 }
 
 export type QuestionInputTypes = QuestionSingleChoiceInput | QuestionMultipleChoiceInput | QuestionTrueOrFalseInput | QuestionTextInput;

@@ -452,6 +452,7 @@ input PaginationInput {
 
 type Mutation {
   adminDeleteQuestionnaire(questionnaireSharedId: String!): DeleteQuestionnaireResponse
+  adminToggleQuestionnaireActive(questionnaireSharedId: String!, active: Boolean): Questionnaire
   adminCreateQuestionnaireQuiz(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String, bgColor: String, color: String): QuestionnaireQuiz!
   adminCreateQuestionnaireSurvey(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, description: String, bgColor: String, color: String): QuestionnaireSurvey!
   adminCreateQuestionnaireExam(questions: [QuestionDiscriminatorInput!]!, requireEmail: Boolean = true, requireName: Boolean = false, title: String!, randomizeQuestions: Boolean = false, passingGradePercent: Float, maxRetryAmount: Int, description: String, timeLimit: Int, bgColor: String, color: String): QuestionnaireExam!

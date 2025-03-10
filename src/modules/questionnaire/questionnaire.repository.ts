@@ -17,6 +17,7 @@ import {
 	IRepositoryFetchQuestionnaireParams,
 	IRepositoryCreateQuestionnareParams,
 	EQuestionnaireErrorCode,
+	IRepositoryToggleActive,
 } from './questionnaire.interface';
 
 import {
@@ -122,7 +123,7 @@ export class QuestionnaireRepository {
 
 	async fetchBySharedId(questionnaireSharedId: string): Promise<QuestionnaireDocument | undefined> {
 		const questionnaire = (await this.questionnaireSchema
-			.findOne({ sharedId: questionnaireSharedId })
+			.findOne({ sharedId: questionnaireSharedId, latest: true })
 			.exec()
 			.catch((originalError: Error) => {
 				throw new AppError({
@@ -485,5 +486,16 @@ export class QuestionnaireRepository {
 				});
 			}
 		}, session);
+	}
+
+	async toggleQuestionnaireActive({ questionnaire, active }: IRepositoryToggleActive): Promise<QuestionnaireDocTypes> {
+		questionnaire.active = typeof active === 'boolean' ? active : !questionnaire.active;
+		return questionnaire.save().catch((err) => {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_ERROR,
+				originalError: err instanceof Error ? err : undefined,
+				message: 'fail to toggle questionnaire active',
+			});
+		}) as Promise<QuestionnaireDocTypes>;
 	}
 }

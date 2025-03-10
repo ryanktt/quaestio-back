@@ -68,6 +68,15 @@ export class QuestionnaireResolver {
 	}
 
 	@Role('Admin')
+	@Mutation(() => Questionnaire, { nullable: true })
+	async adminToggleQuestionnaireActive(
+		@Args('questionnaireSharedId') questionnaireSharedId: string,
+		@Args('active', { nullable: true }) active?: boolean,
+	): Promise<Questionnaire> {
+		return this.questionnaireService.toggleQuestionnaireActive({ questionnaireSharedId, active });
+	}
+
+	@Role('Admin')
 	@Query(() => Questionnaire, { nullable: true })
 	async adminFetchQuestionnaire(
 		@Context() { user }: IAdminContext,

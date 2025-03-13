@@ -2,7 +2,7 @@ import { EAnswerType } from '../response.interface';
 
 import { DocumentType, SchemaBase } from '@utils/utils.schema';
 import { Respondent } from '@modules/user/respondent/respondent.schema';
-import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
+import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema, SchemaTypes } from 'mongoose';
 import { ObjectId } from 'mongodb';
@@ -155,6 +155,10 @@ export class Response extends SchemaBase {
 	@Field(() => Date, { nullable: true })
 	@Prop({ required: true })
 	completedAt?: Date;
+
+	@Field(() => Int)
+	@Prop({ required: true })
+	answerTime: number;
 
 	@Field(() => Respondent)
 	@Prop({ ref: 'Respondent', type: SchemaTypes.ObjectId, required: true })

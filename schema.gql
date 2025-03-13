@@ -391,6 +391,7 @@ type Response {
   startedAt: DateTime!
   user: String!
   completedAt: DateTime
+  answerTime: Int!
   respondent: Respondent!
   respondentName: String
   respondentEmail: String

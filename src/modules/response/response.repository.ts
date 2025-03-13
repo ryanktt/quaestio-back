@@ -31,8 +31,8 @@ export class ResponseRepository {
 		user,
 	}: IRepositoryFetchResponsesParams): Promise<FilterType<ResponseDocument>> {
 		const query: FilterType<ResponseDocument> = {};
-		if (questionnaireIds) query.questionnaireSharedId = { $in: questionnaireSharedIds };
-		if (questionnaireSharedIds) query.questionnaire = { $in: questionnaireIds };
+		if (questionnaireSharedIds) query.questionnaireSharedId = { $in: questionnaireSharedIds };
+		if (questionnaireIds) query.questionnaire = { $in: questionnaireIds };
 		if (responseIds) query._id = { $in: responseIds };
 		query.user = user._id;
 		if (textFilter) {

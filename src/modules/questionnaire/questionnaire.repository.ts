@@ -191,6 +191,7 @@ export class QuestionnaireRepository {
 		);
 		const updatedMetrics = new this.questionnaireMetricsSchema({
 			_id: params.updatedQuestionnaire._id,
+			sharedId: params.updatedQuestionnaire.sharedId,
 			questionMetrics,
 		});
 		return updatedMetrics.save({ session }).catch((originalError: Error) => {

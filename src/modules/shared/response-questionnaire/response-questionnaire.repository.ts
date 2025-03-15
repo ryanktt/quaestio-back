@@ -1,18 +1,21 @@
-import { Questionnaire, QuestionnaireDocument, QuestionnaireModel } from '@modules/questionnaire/schema';
 import { EQuestionnaireErrorCode, IRepositoryFetchQuestionnairesParams } from '@modules/questionnaire/questionnaire.interface';
+import { Questionnaire, QuestionnaireDocument, QuestionnaireModel } from '@modules/questionnaire/schema';
+import { ResponseModel } from '@modules/response/schema';
 import { UtilsArray } from '@utils/utils.array';
 import { InjectModel } from '@nestjs/mongoose';
 import { AppError } from '@utils/utils.error';
 import { Injectable } from '@nestjs/common';
 import DataLoader from 'dataloader';
-import mongoose from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { escapeRegExp } from '@utils/utils.string';
 import { FilterType } from '@utils/utils.schema';
+import { EResponseErrorCode } from '@modules/response/response.interface';
 
 @Injectable()
 export class ResponseQuestionnaireRepository {
 	constructor(
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
+		@InjectModel('Response') private readonly responseSchema: ResponseModel,
 		private readonly utilsArray: UtilsArray,
 	) { }
 
@@ -28,6 +31,19 @@ export class ResponseQuestionnaireRepository {
 					originalError,
 				});
 			}) as Promise<Questionnaire[]>;
+	}
+
+	async deleteResponses(params: { questionnaireSharedId: string }, session?: ClientSession): Promise<void> {
+		await this.responseSchema
+			.deleteMany(params, { session })
+			.exec()
+			.catch((originalError: Error) => {
+				throw new AppError({
+					code: EResponseErrorCode.DELETE_RESPONSES_ERROR,
+					message: 'fail to delte responses',
+					originalError,
+				});
+			});
 	}
 
 	buildMongoFetchQuestionnairesQueryParams({

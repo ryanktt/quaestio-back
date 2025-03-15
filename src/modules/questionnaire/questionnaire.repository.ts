@@ -39,6 +39,7 @@ import {
 	QuestionnaireTypes,
 } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
 import { ObjectId } from 'mongodb';
+import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
 
 @Injectable()
 export class QuestionnaireRepository {
@@ -50,6 +51,7 @@ export class QuestionnaireRepository {
 		@InjectModel('QuestionnaireQuiz') private readonly questionnaireQuizSchema: QuestionnaireQuizModel,
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
 		private readonly questionnaireHelper: QuestionnaireHelper,
+		private readonly responseQuestionnaireRepo: ResponseQuestionnaireRepository,
 		private readonly utilsArray: UtilsArray,
 		private readonly utilsDoc: UtilsDoc,
 	) { }
@@ -144,16 +146,19 @@ export class QuestionnaireRepository {
 	}
 
 	async deleteQuestionnaire({ questionnaireSharedId }: IRepositoryDeleteQuestionnaireParams): Promise<void> {
-		await this.questionnaireSchema
-			.deleteMany({ sharedId: questionnaireSharedId })
-			.exec()
-			.catch((originalError: Error) => {
+		await this.utilsDoc.startMongodbSession(async (session) => {
+			try {
+				await this.questionnaireSchema.deleteMany({ sharedId: questionnaireSharedId }).session(session).exec();
+				await this.questionnaireMetricsSchema.deleteMany({ sharedId: questionnaireSharedId }).session(session).exec();
+				await this.responseQuestionnaireRepo.deleteResponses({ questionnaireSharedId }, session);
+			} catch (originalError) {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.DELETE_QUESTIONNAIRE_ERROR,
 					message: 'fail to delete questionnaire',
-					originalError,
+					originalError: originalError as Error,
 				});
-			});
+			}
+		});
 	}
 
 	async createQuestionnaireMetrics(
@@ -162,6 +167,7 @@ export class QuestionnaireRepository {
 	): Promise<QuestionnaireMetricsDocument> {
 		const questionMetrics = this.questionnaireHelper.getQuestionnaireQuestionMetrics(questionnaire);
 		const metrics = new this.questionnaireMetricsSchema({
+			sharedId: questionnaire.sharedId,
 			_id: questionnaire._id,
 			questionMetrics,
 		});
@@ -197,7 +203,16 @@ export class QuestionnaireRepository {
 	}
 
 	async createQuiz(
-		{ requireEmail, requireName, questions, userId, title, description, color, bgColor }: IRepositoryCreateQuestionnareParams,
+		{
+			requireEmail,
+			requireName,
+			questions,
+			userId,
+			title,
+			description,
+			color,
+			bgColor,
+		}: IRepositoryCreateQuestionnareParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const quiz = new this.questionnaireQuizSchema({
@@ -223,7 +238,16 @@ export class QuestionnaireRepository {
 	}
 
 	async createSurvey(
-		{ requireEmail, requireName, questions, userId, title, description, bgColor, color }: IRepositoryCreateQuestionnareParams,
+		{
+			requireEmail,
+			requireName,
+			questions,
+			userId,
+			title,
+			description,
+			bgColor,
+			color,
+		}: IRepositoryCreateQuestionnareParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireSurveyDocument> {
 		const survey = new this.questionnaireSurveySchema({
@@ -292,7 +316,17 @@ export class QuestionnaireRepository {
 	}
 
 	async updateQuiz(
-		{ requireEmail, active, requireName, questions, title, description, quiz, bgColor, color }: IRepositoryUpdateQuestionnareQuizParams,
+		{
+			requireEmail,
+			active,
+			requireName,
+			questions,
+			title,
+			description,
+			quiz,
+			bgColor,
+			color,
+		}: IRepositoryUpdateQuestionnareQuizParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const updatedQuiz = new this.questionnaireQuizSchema({
@@ -488,7 +522,10 @@ export class QuestionnaireRepository {
 		}, session);
 	}
 
-	async toggleQuestionnaireActive({ questionnaire, active }: IRepositoryToggleActive): Promise<QuestionnaireDocTypes> {
+	async toggleQuestionnaireActive({
+		questionnaire,
+		active,
+	}: IRepositoryToggleActive): Promise<QuestionnaireDocTypes> {
 		questionnaire.active = typeof active === 'boolean' ? active : !questionnaire.active;
 		return questionnaire.save().catch((err) => {
 			throw new AppError({

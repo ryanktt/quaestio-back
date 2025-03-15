@@ -2,17 +2,164 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type OptionMetrics {
+type RespondentLocation {
+  country: String!
+  region: String!
+  city: String!
+  timezone: String!
+}
+
+type Respondent implements User & SchemaBaseInterface {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  selectedCount: Int!
+  role: UserType!
+  self: Respondent!
+  name: String
+  email: String
+  location: RespondentLocation
+  questionnaire: Questionnaire!
+}
+
+interface User {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: UserType!
+  self: User!
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+enum UserType {
+  Respondent
+  Admin
+  User
+}
+
+interface SchemaBaseInterface {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+interface Questionnaire {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionnaireType!
+  metrics: QuestionnaireMetrics!
+  active: Boolean!
+  requireEmail: Boolean!
+  requireName: Boolean!
+  user: Admin!
+  title: String!
+  description: String!
+  latest: Boolean!
+  sharedId: String!
+  questions: [Question!]!
+  sharedCreatedAt: DateTime!
+  color: String
+  bgColor: String
+}
+
+enum QuestionnaireType {
+  QuestionnaireSurvey
+  QuestionnaireExam
+  QuestionnaireQuiz
+}
+
+interface Question {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  title: String
+  weight: Int
+  required: Boolean!
+  description: String
+  showCorrectAnswer: Boolean!
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
+  TRUE_OR_FALSE
+  TEXT
+}
+
+type AnswerSingleChoice implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime
+  correct: Boolean
+  option: String
+}
+
+interface Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime
+  correct: Boolean
+}
+
+enum AnswerType {
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
+  TRUE_OR_FALSE
+  TEXT
+}
+
+type AnswerMultipleChoice implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime
+  correct: Boolean
+  options: [String!]
+}
+
+type AnswerTrueOrFalse implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime
+  correct: Boolean
+  option: String
+}
+
+type AnswerText implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime
+  correct: Boolean
+  text: String
+}
+
+type Response {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  questionnaireSharedId: String!
+  answers: [Answer!]!
+  startedAt: DateTime!
+  user: String!
+  completedAt: DateTime
+  answerTime: Int!
+  respondent: Respondent!
+  respondentName: String
+  respondentEmail: String
+  self: Response!
+  questionnaire: Questionnaire!
+}
+
+type OptionMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  selectedCount: Int!
+}
 
 type QuestionSingleChoiceMetrics implements QuestionMetrics {
   _id: String!
@@ -33,13 +180,6 @@ interface QuestionMetrics {
   type: QuestionType!
   answerCount: Int!
   unansweredCount: Int!
-}
-
-enum QuestionType {
-  MULTIPLE_CHOICE
-  SINGLE_CHOICE
-  TRUE_OR_FALSE
-  TEXT
 }
 
 type QuestionMultipleChoiceMetrics implements QuestionMetrics {
@@ -79,6 +219,7 @@ type QuestionnaireMetrics {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  sharedId: String!
   totalResponseCount: Int!
   totalAttemptCount: Int!
   totalAnswerTime: Int!
@@ -98,26 +239,6 @@ type Admin implements User & SchemaBaseInterface {
   self: User!
   name: String!
   email: String!
-}
-
-interface User {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  role: UserType!
-  self: User!
-}
-
-enum UserType {
-  Respondent
-  Admin
-  User
-}
-
-interface SchemaBaseInterface {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 type Option {
@@ -146,18 +267,6 @@ type QuestionSingleChoice implements Question {
   randomizeOptions: Boolean!
   wrongAnswerFeedback: String
   rightAnswerFeedback: String
-}
-
-interface Question {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  type: QuestionType!
-  title: String
-  weight: Int
-  required: Boolean!
-  description: String
-  showCorrectAnswer: Boolean!
 }
 
 type QuestionMultipleChoice implements Question {
@@ -228,32 +337,6 @@ type QuestionnaireExam implements Questionnaire & SchemaBaseInterface {
   randomizeQuestions: Boolean!
 }
 
-interface Questionnaire {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  type: QuestionnaireType!
-  metrics: QuestionnaireMetrics!
-  active: Boolean!
-  requireEmail: Boolean!
-  requireName: Boolean!
-  user: Admin!
-  title: String!
-  description: String!
-  latest: Boolean!
-  sharedId: String!
-  questions: [Question!]!
-  sharedCreatedAt: DateTime!
-  color: String
-  bgColor: String
-}
-
-enum QuestionnaireType {
-  QuestionnaireSurvey
-  QuestionnaireExam
-  QuestionnaireQuiz
-}
-
 type QuestionnaireSurvey implements Questionnaire & SchemaBaseInterface {
   _id: String!
   createdAt: DateTime!
@@ -315,88 +398,6 @@ type PaginatedQuestionnaireResponse {
   totalPageCount: Int!
   totalResultCount: Int!
   hasNextPage: Boolean!
-}
-
-type RespondentLocation {
-  country: String!
-  region: String!
-  city: String!
-  timezone: String!
-}
-
-type Respondent implements User & SchemaBaseInterface {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  role: UserType!
-  self: Respondent!
-  name: String
-  email: String
-  location: RespondentLocation
-  questionnaire: Questionnaire!
-}
-
-type AnswerSingleChoice implements Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime
-  correct: Boolean
-  option: String
-}
-
-interface Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime
-  correct: Boolean
-}
-
-enum AnswerType {
-  MULTIPLE_CHOICE
-  SINGLE_CHOICE
-  TRUE_OR_FALSE
-  TEXT
-}
-
-type AnswerMultipleChoice implements Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime
-  correct: Boolean
-  options: [String!]
-}
-
-type AnswerTrueOrFalse implements Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime
-  correct: Boolean
-  option: String
-}
-
-type AnswerText implements Answer {
-  type: AnswerType!
-  question: String!
-  answeredAt: DateTime
-  correct: Boolean
-  text: String
-}
-
-type Response {
-  _id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  questionnaireSharedId: String!
-  answers: [Answer!]!
-  startedAt: DateTime!
-  user: String!
-  completedAt: DateTime
-  answerTime: Int!
-  respondent: Respondent!
-  respondentName: String
-  respondentEmail: String
-  self: Response!
-  questionnaire: Questionnaire!
 }
 
 type CorrectQuestionOption {

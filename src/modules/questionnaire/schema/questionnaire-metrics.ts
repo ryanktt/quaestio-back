@@ -148,6 +148,10 @@ export type QuestionMetricsWithOptionsTypes =
 @ObjectType()
 @Schema()
 export class QuestionnaireMetrics extends SchemaBase {
+	@Field(() => String)
+	@Prop({ required: true })
+	sharedId: string;
+
 	@Field(() => Int, { defaultValue: 0 })
 	@Prop({ default: 0 })
 	totalResponseCount: number;

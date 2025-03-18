@@ -114,6 +114,7 @@ export class ResponseService {
 			const respondentId = new ObjectId().toString();
 			respondentToken = this.responseQuestionnaireHelper.signPublicUpsertResponseToken({ respondentId });
 		}
+
 		if (isLocal()) {
 			await this.responseHelper.invokeUpsertQuestionnaireResponseLambda({
 				respondentToken,

@@ -71,6 +71,7 @@ export class ResponseHelper {
 			[EAnswerType.SINGLE_CHOICE]: answerDiscriminatorInput.answerSingleChoice,
 			[EAnswerType.TRUE_OR_FALSE]: answerDiscriminatorInput.answerTrueOrFalse,
 			[EAnswerType.TEXT]: answerDiscriminatorInput.answerText,
+			[EAnswerType.RATING]: answerDiscriminatorInput.answerRating,
 		};
 
 		const answerInput = map[answerDiscriminatorInput.type];
@@ -132,6 +133,9 @@ export class ResponseHelper {
 			if (answer.type === EAnswerType.TEXT) {
 				if (answer.text) isAnswered = true;
 			}
+			if (answer.type === EAnswerType.RATING) {
+				if (typeof answer.rating === 'number') isAnswered = true;
+			}
 
 			if (questionMap[questionId].required && !isAnswered) {
 				throw new Error('question is required but either no option was selected or no text was filled');
@@ -168,7 +172,7 @@ export class ResponseHelper {
 				answer.correct = isOptionCorrect(answer.option, correctOptionIds);
 			} else if ('options' in answer && answer.options && answer.options.length > 0) {
 				answer.correct = isOptionsCorrect(answer.options, correctOptionIds);
-			} else if ('text' in answer) {
+			} else if ('text' in answer || 'rating' in answer) {
 				answer.correct = true;
 			}
 

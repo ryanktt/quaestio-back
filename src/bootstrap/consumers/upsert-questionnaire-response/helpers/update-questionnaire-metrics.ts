@@ -36,10 +36,9 @@ export function updateQuestionnaireMetrics({
 	const respondentLocationKey = getRespondentLocationKey(respondentIp);
 	const byLocationMap = initByLocationMap(metrics, respondentLocationKey) as IMetricsByLocationMap;
 	const byLocation = byLocationMap[respondentLocationKey];
-
 	const byLocationQuestionMetricsMap = getQuestionMetricsMap(byLocation?.questionMetrics);
 	const questionMetricsMap = getQuestionMetricsMap(metrics.questionMetrics);
-	const questionCorrectionMap: Record<string, { isCorrect?: boolean; isAnswered: boolean }> = {};
+	const questionCorrectionMap: Record<string, { isCorrect?: boolean; isAnswered: boolean; rating?: number }> = {};
 
 	const answeredOptionIds: string[] = [];
 	const { questions } = questionnaire;
@@ -49,6 +48,7 @@ export function updateQuestionnaireMetrics({
 		questionCorrectionMap[questionId] = {
 			isAnswered: answer.answeredAt ? true : false,
 			isCorrect: answer.correct,
+			rating: 'rating' in answer ? answer.rating : undefined
 		};
 
 		if ('option' in answer && answer.option) {
@@ -65,6 +65,7 @@ export function updateQuestionnaireMetrics({
 
 		const isCorrect = questionCorrectionMap?.[questionId]?.isCorrect;
 		const isAnswered = questionCorrectionMap?.[questionId]?.isAnswered;
+		const rating = questionCorrectionMap?.[questionId]?.rating;
 
 		if (isAnswered) {
 			questionMetricsByLocation.answerCount++;
@@ -97,6 +98,17 @@ export function updateQuestionnaireMetrics({
 					qOptionsMetricsMap[optionId].selectedCount++;
 				}
 			});
+		}
+
+		if (questionMetrics.type === EQuestionType.RATING && rating && isAnswered) {
+			const { totalRating = 0, answerCount } = questionMetrics;
+			const newTotalRate = totalRating + rating;
+			questionMetrics.avgRating = Math.round(newTotalRate / answerCount);
+			questionMetrics.totalRating = newTotalRate;
+
+			const ratingMetrics = questionMetrics.byRating.find((byRating) => byRating.rating === rating);
+			if (ratingMetrics) ratingMetrics.selectedCount++;
+
 		}
 	});
 

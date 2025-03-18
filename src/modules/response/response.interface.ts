@@ -11,6 +11,7 @@ export enum EAnswerType {
 	MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
 	SINGLE_CHOICE = 'SINGLE_CHOICE',
 	TRUE_OR_FALSE = 'TRUE_OR_FALSE',
+	RATING = 'RATING',
 	TEXT = 'TEXT',
 }
 export enum EResponseErrorCode {

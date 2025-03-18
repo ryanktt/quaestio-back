@@ -88,6 +88,7 @@ enum QuestionType {
   MULTIPLE_CHOICE
   SINGLE_CHOICE
   TRUE_OR_FALSE
+  RATING
   TEXT
 }
 
@@ -110,6 +111,7 @@ enum AnswerType {
   MULTIPLE_CHOICE
   SINGLE_CHOICE
   TRUE_OR_FALSE
+  RATING
   TEXT
 }
 
@@ -137,6 +139,14 @@ type AnswerText implements Answer {
   text: String
 }
 
+type AnswerRating implements Answer {
+  type: AnswerType!
+  question: String!
+  answeredAt: DateTime
+  correct: Boolean
+  rating: Float
+}
+
 type Response {
   _id: String!
   createdAt: DateTime!
@@ -152,6 +162,14 @@ type Response {
   respondentEmail: String
   self: Response!
   questionnaire: Questionnaire!
+}
+
+type ByRatingMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  rating: Int!
+  selectedCount: Int!
 }
 
 type OptionMetrics {
@@ -213,6 +231,18 @@ type QuestionTextMetrics implements QuestionMetrics {
   type: QuestionType!
   answerCount: Int!
   unansweredCount: Int!
+}
+
+type QuestionRatingMetrics implements QuestionMetrics {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  answerCount: Int!
+  unansweredCount: Int!
+  avgRating: Float
+  totalRating: Float
+  byRating: [ByRatingMetrics!]
 }
 
 type QuestionnaireMetrics {
@@ -301,6 +331,19 @@ type QuestionTrueOrFalse implements Question {
 }
 
 type QuestionText implements Question {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: QuestionType!
+  title: String
+  weight: Int
+  required: Boolean!
+  description: String
+  showCorrectAnswer: Boolean!
+  feedbackAfterSubmit: String
+}
+
+type QuestionRating implements Question {
   _id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -474,6 +517,7 @@ input QuestionDiscriminatorInput {
   questionSingleChoice: QuestionSingleChoiceInput
   questionTrueOrFalse: QuestionTrueOrFalseInput
   questionText: QuestionTextInput
+  questionRating: QuestionRatingInput
 }
 
 input QuestionMultipleChoiceInput {
@@ -534,6 +578,16 @@ input QuestionTextInput {
   feedbackAfterSubmit: String
 }
 
+input QuestionRatingInput {
+  type: QuestionType!
+  title: String
+  weight: Int
+  required: Boolean = false
+  description: String
+  showCorrectAnswer: Boolean = false
+  feedbackAfterSubmit: String
+}
+
 input QuestionMethodInput {
   type: QuestionMethodType!
   questionId: String
@@ -558,6 +612,7 @@ input AnswerDiscriminatorInput {
   answerSingleChoice: AnswerSingleChoiceInput
   answerTrueOrFalse: AnswerTrueOrFalseInput
   answerText: AnswerTextInput
+  answerRating: AnswerRatingInput
 }
 
 input AnswerMultipleChoiceInput {
@@ -586,4 +641,11 @@ input AnswerTextInput {
   questionId: String!
   answeredAt: DateTime
   text: String
+}
+
+input AnswerRatingInput {
+  type: AnswerType!
+  questionId: String!
+  answeredAt: DateTime
+  rating: Float
 }

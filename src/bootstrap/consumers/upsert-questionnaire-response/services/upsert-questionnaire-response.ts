@@ -17,7 +17,7 @@ export async function upsertQuestionnaireResponse({
 	const { respondentToken, completedAt, userAgent, startedAt, answers, email, name, ip } = payload;
 
 	const questionnaireId = new ObjectId(payload.questionnaireId);
-	console.log(respondentToken);
+
 	try {
 		let respondentId: ObjectId | undefined;
 		if (respondentToken) {

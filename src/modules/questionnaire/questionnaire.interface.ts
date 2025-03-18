@@ -11,6 +11,7 @@ import {
 	QuestionTextInput,
 	QuestionOrderInput,
 	QuestionnaireDocument,
+	QuestionRatingInput,
 } from './schema';
 
 import { AdminDocument } from '@modules/user/admin/admin.schema';
@@ -49,6 +50,7 @@ export enum EQuestionType {
 	MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
 	SINGLE_CHOICE = 'SINGLE_CHOICE',
 	TRUE_OR_FALSE = 'TRUE_OR_FALSE',
+	RATING = 'RATING',
 	TEXT = 'TEXT',
 }
 export enum EQuestionMethodType {
@@ -74,8 +76,8 @@ export interface IRepositoryCreateQuestionnareParams {
 	requireEmail?: boolean;
 	requireName?: boolean;
 	description?: string;
-	bgColor?: string
-	color?: string
+	bgColor?: string;
+	color?: string;
 }
 
 export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
@@ -92,8 +94,8 @@ export interface IRepositoryUpdateQuestionnareParams {
 	title?: string;
 	requireEmail?: boolean | null;
 	requireName?: boolean | null;
-	bgColor?: string | null
-	color?: string | null
+	bgColor?: string | null;
+	color?: string | null;
 }
 
 export interface IRepositoryUpdateQuestionnareQuizParams extends IRepositoryUpdateQuestionnareParams {
@@ -197,4 +199,9 @@ export interface IRepositoryToggleActive {
 	active?: boolean;
 }
 
-export type QuestionInputTypes = QuestionSingleChoiceInput | QuestionMultipleChoiceInput | QuestionTrueOrFalseInput | QuestionTextInput;
+export type QuestionInputTypes =
+	| QuestionSingleChoiceInput
+	| QuestionMultipleChoiceInput
+	| QuestionTrueOrFalseInput
+	| QuestionTextInput
+	| QuestionRatingInput;

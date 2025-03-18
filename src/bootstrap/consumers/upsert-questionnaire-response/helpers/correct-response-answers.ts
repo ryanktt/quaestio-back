@@ -37,7 +37,7 @@ export function correctQuestionnaireAnswers({ answers, questionnaire }: ICorrect
 		} else if ('options' in answer && answer.options && answer.options.length > 0) {
 			answer.correct = isOptionsCorrect(answer.options as string[], correctOptionIds);
 			answer.options = answer.options.map((option) => new ObjectId(option));
-		} else if ('text' in answer) {
+		} else if ('text' in answer || 'rating' in answer) {
 			answer.correct = true;
 		}
 

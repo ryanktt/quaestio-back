@@ -30,6 +30,11 @@ const AnswerTextInputValidator = Joi.object().keys({
 	text: Joi.string().trim(),
 });
 
+const AnswerRatingInputValidator = Joi.object().keys({
+	...baseAnswerInputValidatorKeys,
+	rating: Joi.number().min(1).max(5),
+});
+
 export const AnswerDiscriminatorInputValidator = Joi.object().keys({
 	type: Joi.string()
 		.valid(...Object.values(EAnswerType))
@@ -51,6 +56,11 @@ export const AnswerDiscriminatorInputValidator = Joi.object().keys({
 	}),
 	answerText: AnswerTextInputValidator.when('type', {
 		is: Joi.string().valid(EAnswerType.TEXT),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
+	answerRating: AnswerRatingInputValidator.when('type', {
+		is: Joi.string().valid(EAnswerType.RATING),
 		then: Joi.required(),
 		otherwise: Joi.optional(),
 	}),

@@ -22,10 +22,7 @@ import {
 	QuestionTypes,
 	Option,
 } from './schema';
-import {
-	QuestionMetricsTypes,
-	OptionMetrics,
-} from './schema/questionnaire-metrics';
+import { QuestionMetricsTypes, OptionMetrics } from './schema/questionnaire-metrics';
 
 import { UtilsPromise } from '@utils/utils.promise';
 import { AppError } from '@utils/utils.error';
@@ -101,14 +98,19 @@ export class QuestionnaireHelper {
 			});
 	}
 
-	getQuestionFromQuestionDiscriminatorInput({ questionId, questionDiscriminator }:
-		{ questionDiscriminator?: QuestionDiscriminatorInput; questionId?: string }
-	): QuestionTypes | undefined {
+	getQuestionFromQuestionDiscriminatorInput({
+		questionId,
+		questionDiscriminator,
+	}: {
+		questionDiscriminator?: QuestionDiscriminatorInput;
+		questionId?: string;
+	}): QuestionTypes | undefined {
 		if (!questionDiscriminator) return undefined;
 		const map: Record<EQuestionType, QuestionInputTypes | undefined> = {
 			[EQuestionType.MULTIPLE_CHOICE]: questionDiscriminator.questionMultipleChoice,
 			[EQuestionType.SINGLE_CHOICE]: questionDiscriminator.questionSingleChoice,
 			[EQuestionType.TRUE_OR_FALSE]: questionDiscriminator.questionTrueOrFalse,
+			[EQuestionType.RATING]: questionDiscriminator.questionRating,
 			[EQuestionType.TEXT]: questionDiscriminator.questionText,
 		};
 
@@ -132,7 +134,7 @@ export class QuestionnaireHelper {
 		questionOrder?: QuestionOrderInput[],
 	): QuestionTypes[] | undefined {
 		if (!questionMethods) return undefined;
-		const questions = [...questionnaire.toObject().questions as QuestionTypes[]];
+		const questions = [...(questionnaire.toObject().questions as QuestionTypes[])];
 		const updatedQuestions: QuestionTypes[] = [];
 
 		questionOrder?.forEach(({ index, questionId }) => {
@@ -143,7 +145,11 @@ export class QuestionnaireHelper {
 		questionMethods.forEach(({ questionDiscriminator, questionId, index, type }) => {
 			const question = this.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator, questionId });
 
-			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question && typeof index === 'number') {
+			if (
+				(type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) &&
+				question &&
+				typeof index === 'number'
+			) {
 				updatedQuestions[index] = question;
 			}
 		});
@@ -159,12 +165,17 @@ export class QuestionnaireHelper {
 	getQuestionnaireQuestionMetrics(
 		questionnaire: QuestionnaireTypes | QuestionnaireDocTypes,
 	): QuestionMetricsTypes[] {
-
 		return questionnaire.questions.map((question: QuestionTypes) => {
+			const byRating =
+				question.type === EQuestionType.RATING
+					? Array.from({ length: 5 }).map((_, i) => ({ rating: i + 1, selectedCount: 0 }))
+					: undefined;
 			return {
-				_id: question._id, type: question.type,
+				_id: question._id,
+				type: question.type,
 				options: this.getQuestionOptionMetrics(question),
-			} as QuestionMetricsTypes;
+				byRating,
+			} as unknown as QuestionMetricsTypes;
 		});
 	}
 }

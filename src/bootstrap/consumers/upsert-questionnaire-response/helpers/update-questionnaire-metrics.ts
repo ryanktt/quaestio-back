@@ -103,7 +103,7 @@ export function updateQuestionnaireMetrics({
 		if (questionMetrics.type === EQuestionType.RATING && rating && isAnswered) {
 			const { totalRating = 0, answerCount } = questionMetrics;
 			const newTotalRate = totalRating + rating;
-			questionMetrics.avgRating = Math.round(newTotalRate / answerCount);
+			questionMetrics.avgRating = newTotalRate / answerCount;
 			questionMetrics.totalRating = newTotalRate;
 
 			const ratingMetrics = questionMetrics.byRating.find((byRating) => byRating.rating === rating);

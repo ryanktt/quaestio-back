@@ -37,9 +37,12 @@ export function correctQuestionnaireAnswers({ answers, questionnaire }: ICorrect
 		} else if ('options' in answer && answer.options && answer.options.length > 0) {
 			answer.correct = isOptionsCorrect(answer.options as string[], correctOptionIds);
 			answer.options = answer.options.map((option) => new ObjectId(option));
-		} else if ('text' in answer || 'rating' in answer) {
+		} else if ('text' in answer && !!answer.text) {
+			answer.correct = true;
+		} else if ('rating' in answer && typeof answer.rating === 'number') {
 			answer.correct = true;
 		}
+
 
 		if (answer.correct === undefined) answer.answeredAt = undefined;
 	});

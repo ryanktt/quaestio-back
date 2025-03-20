@@ -172,7 +172,9 @@ export class ResponseHelper {
 				answer.correct = isOptionCorrect(answer.option, correctOptionIds);
 			} else if ('options' in answer && answer.options && answer.options.length > 0) {
 				answer.correct = isOptionsCorrect(answer.options, correctOptionIds);
-			} else if ('text' in answer || 'rating' in answer) {
+			} else if ('text' in answer && !!answer.text) {
+				answer.correct = true;
+			} else if ('rating' in answer && typeof answer.rating === 'number') {
 				answer.correct = true;
 			}
 

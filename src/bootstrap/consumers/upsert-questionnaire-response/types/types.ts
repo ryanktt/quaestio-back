@@ -267,6 +267,7 @@ export interface QuestionnaireMetrics extends SchemaBase {
 	totalAttemptCount: number;
 	totalAnswerTime: number;
 	avgAnswerTime: number;
+	avgScore: number;
 	avgAttemptCount: number;
 	questionMetrics: QuestionMetricsTypes[];
 	/** IMetricsByLocationMap */

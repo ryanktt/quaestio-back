@@ -10,9 +10,10 @@ export function correctQuestionnaireAnswers({ answers, questionnaire }: ICorrect
 	const isOptionCorrect = (optionId: string, correctOpIds: string[]): boolean =>
 		correctOpIds.includes(optionId);
 
-	const isOptionsCorrect = (optionIds: string[], correctOpIds: string[]): boolean =>
-		correctOpIds.every((correctOptionId) => optionIds.includes(correctOptionId));
-
+	const isOptionsCorrect = (optionIds: string[], correctOpIds: string[]): boolean => {
+		if (correctOpIds.length !== optionIds.length) return false;
+		return correctOpIds.every((correctOptionId) => optionIds.includes(correctOptionId));
+	};
 	const questionMap: Record<string, { correctOptionIds: string[] }> = {};
 	const { questions } = questionnaire;
 

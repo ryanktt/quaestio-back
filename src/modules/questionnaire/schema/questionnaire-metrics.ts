@@ -214,6 +214,10 @@ export class QuestionnaireMetrics extends SchemaBase {
 	@Prop({ default: 0 })
 	avgAttemptCount: number;
 
+	@Field(() => Number, { defaultValue: 0 })
+	@Prop({ default: 0 })
+	avgScore: number;
+
 	@Field(() => [QuestionMetrics])
 	@Prop({ type: [QuestionMetricsSchema], required: true })
 	questionMetrics: QuestionMetricsTypes[];

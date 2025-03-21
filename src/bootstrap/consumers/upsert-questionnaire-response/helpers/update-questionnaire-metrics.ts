@@ -121,6 +121,12 @@ export function updateQuestionnaireMetrics({
 	metrics.avgAttemptCount = metrics.totalAttemptCount / metrics.totalResponseCount;
 	metrics.avgAnswerTime = Math.round(metrics.totalAnswerTime / metrics.totalResponseCount);
 
+	const totalRightAnswerCount = metrics.questionMetrics.reduce((acc, questionMetrics) => {
+		if ('rightAnswerCount' in questionMetrics) return acc + questionMetrics.rightAnswerCount;
+		return acc;
+	}, 0);
+	metrics.avgScore = totalRightAnswerCount / metrics.totalResponseCount;
+
 	byLocation.totalAttemptCount++;
 	byLocation.totalAnswerTime += answerTime;
 	byLocation.avgAttemptCount = byLocation.totalAttemptCount / byLocation.totalResponseCount;

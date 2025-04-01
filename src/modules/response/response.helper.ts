@@ -17,7 +17,7 @@ import {
 
 import {
 	IInvokeUpsertQuestionnaireResponseLambda,
-	ISendQuestionnaireResponseToKinesis,
+	// ISendQuestionnaireResponseToKinesis,
 	ISendQuestionnaireResponseToSQS,
 } from '@modules/session/session.interface';
 import { QuestionTypes } from '@modules/questionnaire/schema/questionnaire.schema';
@@ -28,7 +28,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppError } from '@utils/utils.error';
 import { UtilsAWS } from '@utils/utils.aws';
 import { Injectable } from '@nestjs/common';
-import { nanoid } from 'nanoid';
+// import { nanoid } from 'nanoid';
 import Joi from 'joi';
 
 @Injectable()
@@ -183,20 +183,20 @@ export class ResponseHelper {
 		});
 	}
 
-	async sendQuestionnaireResponseToKinesis(payload: ISendQuestionnaireResponseToKinesis): Promise<void> {
-		const streamName = this.configService.get<string>(
-			'AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_KINESIS_STREAM_NAME',
-			'',
-		);
-		const region = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION', '');
+	// async sendQuestionnaireResponseToKinesis(payload: ISendQuestionnaireResponseToKinesis): Promise<void> {
+	// 	const streamName = this.configService.get<string>(
+	// 		'AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_KINESIS_STREAM_NAME',
+	// 		'',
+	// 	);
+	// 	const region = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_REGION', '');
 
-		await this.utilsAWS.sendToKineses({
-			key: nanoid(10),
-			streamName,
-			payload,
-			region,
-		});
-	}
+	// 	await this.utilsAWS.sendToKineses({
+	// 		key: nanoid(10),
+	// 		streamName,
+	// 		payload,
+	// 		region,
+	// 	});
+	// }
 
 	async sendQuestionnaireResponseToSQS(payload: ISendQuestionnaireResponseToSQS): Promise<void> {
 		const queueUrl = this.configService.get<string>('AWS_UPSERT_RESPONSE_LAMBDA_CONSUMER_QUEUE_URL', '');

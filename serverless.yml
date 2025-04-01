@@ -6,9 +6,12 @@ plugins:
   - serverless-webpack
   - serverless-offline
 
+build:
+  esbuild: false
+
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs18.x
   stage: ${opt:stage, "local"}
   region: ${opt:region, "us-east-1"}
   environment: ${file(./serverless-env.js):${self:provider.stage}}
@@ -31,7 +34,7 @@ custom:
 functions:
   main:
     handler: src/bootstrap/lambda.handler
-    timeout: 900
+    timeout: 30
     events:
       - http:
           path: 'graphql'

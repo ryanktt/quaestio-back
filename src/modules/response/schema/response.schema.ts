@@ -2,7 +2,7 @@ import { EAnswerType } from '../response.interface';
 
 import { DocumentType, SchemaBase } from '@utils/utils.schema';
 import { Respondent } from '@modules/user/respondent/respondent.schema';
-import { Field, InterfaceType, ObjectType } from '@nestjs/graphql';
+import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Model, Schema as MongooseSchema, SchemaTypes } from 'mongoose';
 import { ObjectId } from 'mongodb';
@@ -13,6 +13,7 @@ import { ObjectId } from 'mongodb';
 		if (value.type === EAnswerType.MULTIPLE_CHOICE) return 'AnswerMultipleChoice';
 		if (value.type === EAnswerType.SINGLE_CHOICE) return 'AnswerSingleChoice';
 		if (value.type === EAnswerType.TRUE_OR_FALSE) return 'AnswerTrueOrFalse';
+		if (value.type === EAnswerType.RATING) return 'AnswerRating';
 		if (value.type === EAnswerType.TEXT) return 'AnswerText';
 		return undefined;
 	},
@@ -128,7 +129,29 @@ class AnswerText implements Answer {
 
 export const AnswerTextSchema = SchemaFactory.createForClass(AnswerText);
 
-export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrueOrFalse | AnswerText;
+@ObjectType({ implements: Answer })
+@Schema()
+class AnswerRating implements Answer {
+	@Field(() => EAnswerType)
+	type: EAnswerType.RATING;
+
+	@Field(() => String)
+	question: string;
+
+	@Field(() => Date, { nullable: true })
+	answeredAt?: Date;
+
+	@Field({ nullable: true })
+	correct?: boolean;
+
+	@Field(() => Number, { nullable: true })
+	@Prop({ type: () => Number, max: 5, min: 0 })
+	rating?: number;
+}
+
+export const AnswerRatingSchema = SchemaFactory.createForClass(AnswerRating);
+
+export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrueOrFalse | AnswerText | AnswerRating;
 
 @ObjectType()
 @Schema()
@@ -156,6 +179,10 @@ export class Response extends SchemaBase {
 	@Prop({ required: true })
 	completedAt?: Date;
 
+	@Field(() => Int)
+	@Prop({ required: true })
+	answerTime: number;
+
 	@Field(() => Respondent)
 	@Prop({ ref: 'Respondent', type: SchemaTypes.ObjectId, required: true })
 	respondent: string;
@@ -177,4 +204,5 @@ const answers = ResponseSchema.path('answers') as unknown as MongooseSchema.Type
 answers.discriminator(EAnswerType.MULTIPLE_CHOICE, AnswerMultipleChoiceSchema);
 answers.discriminator(EAnswerType.SINGLE_CHOICE, AnswerSingleChoiceSchema);
 answers.discriminator(EAnswerType.TRUE_OR_FALSE, AnswerTrueOrFalseSchema);
+answers.discriminator(EAnswerType.RATING, AnswerRatingSchema);
 answers.discriminator(EAnswerType.TEXT, AnswerTextSchema);

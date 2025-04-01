@@ -14,6 +14,7 @@ export enum EAnswerType {
 	SINGLE_CHOICE = 'SINGLE_CHOICE',
 	TRUE_OR_FALSE = 'TRUE_OR_FALSE',
 	TEXT = 'TEXT',
+	RATING = 'RATING',
 }
 
 export interface Answer extends SchemaBase {
@@ -42,7 +43,17 @@ interface AnswerText extends Answer {
 	text?: string;
 }
 
-export type AnswerTypes = AnswerSingleChoice | AnswerMultipleChoice | AnswerTrueOrFalse | AnswerText;
+interface AnswerRating extends Answer {
+	type: EAnswerType.RATING;
+	rating?: number;
+}
+
+export type AnswerTypes =
+	| AnswerSingleChoice
+	| AnswerMultipleChoice
+	| AnswerTrueOrFalse
+	| AnswerText
+	| AnswerRating;
 
 export interface AnswerInput {
 	type: EAnswerType;
@@ -70,11 +81,17 @@ interface AnswerTextInput extends AnswerInput {
 	text?: string;
 }
 
+interface AnswerRatingInput extends AnswerInput {
+	type: EAnswerType.RATING;
+	rating?: number;
+}
+
 export type AnswerInputTypes =
 	| AnswerMultipleChoiceInput
 	| AnswerSingleChoiceInput
 	| AnswerTrueOrFalseInput
-	| AnswerTextInput;
+	| AnswerTextInput
+	| AnswerRatingInput;
 
 export interface AnswerDiscriminatorInput {
 	type: EAnswerType;
@@ -82,12 +99,14 @@ export interface AnswerDiscriminatorInput {
 	answerSingleChoice?: AnswerSingleChoiceInput;
 	answerTrueOrFalse?: AnswerTrueOrFalseInput;
 	answerText?: AnswerTextInput;
+	answerRating?: AnswerRatingInput;
 }
 
 export enum EQuestionType {
 	MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
 	SINGLE_CHOICE = 'SINGLE_CHOICE',
 	TRUE_OR_FALSE = 'TRUE_OR_FALSE',
+	RATING = 'RATING',
 	TEXT = 'TEXT',
 }
 
@@ -126,11 +145,19 @@ export interface QuestionTextMetrics extends QuestionMetrics {
 	type: EQuestionType.TEXT;
 }
 
+export interface QuestionRatingMetrics extends QuestionMetrics {
+	type: EQuestionType.RATING;
+	avgRating?: number;
+	totalRating?: number
+	byRating: { rating: number, selectedCount: number }[]
+}
+
 export type QuestionMetricsTypes =
 	| QuestionMultipleChoiceMetrics
 	| QuestionSingleChoiceMetrics
 	| QuestionTrueOrFalseMetrics
-	| QuestionTextMetrics;
+	| QuestionTextMetrics
+	| QuestionRatingMetrics;
 
 export interface Option extends SchemaBase {
 	title: string;
@@ -174,11 +201,17 @@ export interface QuestionText extends Question {
 	feedbackAfterSubmit?: string;
 }
 
+export interface QuestionRating extends Question {
+	type: EQuestionType.RATING;
+	feedbackAfterSubmit?: string;
+}
+
 export type QuestionTypes =
 	| QuestionMultipleChoice
 	| QuestionSingleChoice
 	| QuestionTrueOrFalse
-	| QuestionText;
+	| QuestionText
+	| QuestionRating;
 
 export enum EQuestionnaireType {
 	QuestionnaireSurvey = 'QuestionnaireSurvey',
@@ -234,6 +267,7 @@ export interface QuestionnaireMetrics extends SchemaBase {
 	totalAttemptCount: number;
 	totalAnswerTime: number;
 	avgAnswerTime: number;
+	avgScore: number;
 	avgAttemptCount: number;
 	questionMetrics: QuestionMetricsTypes[];
 	/** IMetricsByLocationMap */

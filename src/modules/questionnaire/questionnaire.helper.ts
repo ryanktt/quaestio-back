@@ -22,12 +22,7 @@ import {
 	QuestionTypes,
 	Option,
 } from './schema';
-import {
-	QuestionMetricsTypes,
-	QuestionnaireMetrics,
-	QuestionMetricsWithOptionsTypes,
-	OptionMetrics,
-} from './schema/questionnaire-metrics';
+import { QuestionMetricsTypes, OptionMetrics } from './schema/questionnaire-metrics';
 
 import { UtilsPromise } from '@utils/utils.promise';
 import { AppError } from '@utils/utils.error';
@@ -103,14 +98,19 @@ export class QuestionnaireHelper {
 			});
 	}
 
-	getQuestionFromQuestionDiscriminatorInput({ questionId, questionDiscriminator }:
-		{ questionDiscriminator?: QuestionDiscriminatorInput; questionId?: string }
-	): QuestionTypes | undefined {
+	getQuestionFromQuestionDiscriminatorInput({
+		questionId,
+		questionDiscriminator,
+	}: {
+		questionDiscriminator?: QuestionDiscriminatorInput;
+		questionId?: string;
+	}): QuestionTypes | undefined {
 		if (!questionDiscriminator) return undefined;
 		const map: Record<EQuestionType, QuestionInputTypes | undefined> = {
 			[EQuestionType.MULTIPLE_CHOICE]: questionDiscriminator.questionMultipleChoice,
 			[EQuestionType.SINGLE_CHOICE]: questionDiscriminator.questionSingleChoice,
 			[EQuestionType.TRUE_OR_FALSE]: questionDiscriminator.questionTrueOrFalse,
+			[EQuestionType.RATING]: questionDiscriminator.questionRating,
 			[EQuestionType.TEXT]: questionDiscriminator.questionText,
 		};
 
@@ -128,16 +128,13 @@ export class QuestionnaireHelper {
 		return { ...questionInput, _id: new ObjectId(questionId), options } as QuestionTypes;
 	}
 
-
-
-
 	getQuestionsFromQuestionMethodsInput(
 		questionnaire: QuestionnaireDocument,
 		questionMethods?: QuestionMethodInput[],
 		questionOrder?: QuestionOrderInput[],
 	): QuestionTypes[] | undefined {
 		if (!questionMethods) return undefined;
-		const questions = [...questionnaire.toObject().questions as QuestionTypes[]];
+		const questions = [...(questionnaire.toObject().questions as QuestionTypes[])];
 		const updatedQuestions: QuestionTypes[] = [];
 
 		questionOrder?.forEach(({ index, questionId }) => {
@@ -148,7 +145,11 @@ export class QuestionnaireHelper {
 		questionMethods.forEach(({ questionDiscriminator, questionId, index, type }) => {
 			const question = this.getQuestionFromQuestionDiscriminatorInput({ questionDiscriminator, questionId });
 
-			if ((type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) && question && typeof index === 'number') {
+			if (
+				(type === EQuestionMethodType.CREATE || type === EQuestionMethodType.UPDATE) &&
+				question &&
+				typeof index === 'number'
+			) {
 				updatedQuestions[index] = question;
 			}
 		});
@@ -156,42 +157,25 @@ export class QuestionnaireHelper {
 		return updatedQuestions;
 	}
 
-	getQuestionOptionMetrics(question: QuestionTypes, questionMetrics?: QuestionMetricsTypes): OptionMetrics[] {
-		const optionMetricsMap = new Map<string, OptionMetrics>();
-		if (questionMetrics && !('options' in questionMetrics) || !('options' in question)) return [];
-
-		questionMetrics?.options.forEach(option => {
-			optionMetricsMap.set(option._id.toString(), option);
-		});
-
-		return question.options.map((option) => {
-			const foundMetrics = optionMetricsMap.get(option._id.toString());
-			if (foundMetrics) return foundMetrics;
-			else return { _id: option._id, selectedCount: 0 } as OptionMetrics;
-		});
+	getQuestionOptionMetrics(question: QuestionTypes): OptionMetrics[] {
+		if (!('options' in question && question.options)) return [];
+		return question.options.map((option) => ({ _id: option._id, selectedCount: 0 })) as OptionMetrics[];
 	}
 
 	getQuestionnaireQuestionMetrics(
 		questionnaire: QuestionnaireTypes | QuestionnaireDocTypes,
-		metrics?: QuestionnaireMetrics,
 	): QuestionMetricsTypes[] {
-		const metricsMap = new Map<string, QuestionMetricsTypes>();
-
-		metrics?.questionMetrics.forEach((metrics) => {
-			metricsMap.set(metrics._id.toString(), metrics);
-		});
-
 		return questionnaire.questions.map((question: QuestionTypes) => {
-			const foundMetrics = metricsMap.get(question._id.toString());
-			let metrics = foundMetrics || { _id: question._id, type: question.type } as QuestionMetricsTypes;
-			if ('options' in question) {
-				metrics = {
-					...metrics,
-					options: this.getQuestionOptionMetrics(question, foundMetrics),
-				} as QuestionMetricsWithOptionsTypes;
-			}
-
-			return metrics;
+			const byRating =
+				question.type === EQuestionType.RATING
+					? Array.from({ length: 5 }).map((_, i) => ({ rating: i + 1, selectedCount: 0 }))
+					: undefined;
+			return {
+				_id: question._id,
+				type: question.type,
+				options: this.getQuestionOptionMetrics(question),
+				byRating,
+			} as unknown as QuestionMetricsTypes;
 		});
 	}
 }

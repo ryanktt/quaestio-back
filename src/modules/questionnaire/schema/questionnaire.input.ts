@@ -102,6 +102,15 @@ export class QuestionTextInput extends QuestionInput {
 }
 
 @InputType()
+export class QuestionRatingInput extends QuestionInput {
+	@Field(() => EQuestionType)
+	type: EQuestionType.RATING;
+
+	@Field({ nullable: true })
+	feedbackAfterSubmit?: string;
+}
+
+@InputType()
 export class QuestionDiscriminatorInput {
 	@Field(() => EQuestionType)
 	type: EQuestionType;
@@ -117,6 +126,9 @@ export class QuestionDiscriminatorInput {
 
 	@Field(() => QuestionTextInput, { nullable: true })
 	questionText?: QuestionTextInput;
+
+	@Field(() => QuestionRatingInput, { nullable: true })
+	questionRating?: QuestionRatingInput;
 }
 
 @InputType()

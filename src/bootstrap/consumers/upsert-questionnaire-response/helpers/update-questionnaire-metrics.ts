@@ -36,22 +36,20 @@ export function updateQuestionnaireMetrics({
 	const respondentLocationKey = getRespondentLocationKey(respondentIp);
 	const byLocationMap = initByLocationMap(metrics, respondentLocationKey) as IMetricsByLocationMap;
 	const byLocation = byLocationMap[respondentLocationKey];
-	console.log(respondentLocationKey);
-	console.log(byLocation.questionMetrics);
 	const byLocationQuestionMetricsMap = getQuestionMetricsMap(byLocation?.questionMetrics);
 	const questionMetricsMap = getQuestionMetricsMap(metrics.questionMetrics);
-	const questionCorrectionMap: Record<string, { isCorrect?: boolean; isAnswered: boolean }> = {};
+	const questionCorrectionMap: Record<string, { isCorrect?: boolean; isAnswered: boolean; rating?: number }> = {};
 
 	const answeredOptionIds: string[] = [];
 	const { questions } = questionnaire;
 
 	answers.forEach((answer: AnswerTypes) => {
 		const questionId = answer.question.toString();
-		if (answer.correct)
-			questionCorrectionMap[questionId] = {
-				isAnswered: answer.answeredAt ? true : false,
-				isCorrect: answer.correct,
-			};
+		questionCorrectionMap[questionId] = {
+			isAnswered: answer.answeredAt ? true : false,
+			isCorrect: answer.correct,
+			rating: 'rating' in answer ? answer.rating : undefined
+		};
 
 		if ('option' in answer && answer.option) {
 			answeredOptionIds.push(answer.option.toString());
@@ -65,37 +63,18 @@ export function updateQuestionnaireMetrics({
 		let questionMetricsByLocation = byLocationQuestionMetricsMap?.[questionId];
 		let questionMetrics = questionMetricsMap[questionId];
 
-		if (!questionMetricsByLocation) {
-			const qMetricsByLoc: Partial<QuestionMetricsTypes> = {
-				_id: questionMetrics._id,
-				type: questionMetrics.type,
-				unansweredCount: 0,
-				answerCount: 0,
-			};
-			if (
-				(qMetricsByLoc.type === EQuestionType.MULTIPLE_CHOICE ||
-					qMetricsByLoc.type === EQuestionType.SINGLE_CHOICE ||
-					qMetricsByLoc.type === EQuestionType.TRUE_OR_FALSE) &&
-				qMetricsByLoc.type === questionMetrics.type
-			) {
-				qMetricsByLoc.rightAnswerCount = 0;
-				qMetricsByLoc.wrongAnswerCount = 0;
-				qMetricsByLoc.options = questionMetrics.options.map(({ _id, selectedCount }) => ({ _id, selectedCount }));
-			}
-			byLocationQuestionMetricsMap[questionId] = qMetricsByLoc as QuestionMetricsTypes;
-			questionMetricsByLocation = qMetricsByLoc as QuestionMetricsTypes;
-		}
-
 		const isCorrect = questionCorrectionMap?.[questionId]?.isCorrect;
 		const isAnswered = questionCorrectionMap?.[questionId]?.isAnswered;
+		const rating = questionCorrectionMap?.[questionId]?.rating;
 
-		if (typeof isCorrect !== 'boolean' && !isAnswered) {
+		if (isAnswered) {
+			questionMetricsByLocation.answerCount++;
+			questionMetrics.answerCount++;
+		} else {
 			questionMetricsByLocation.unansweredCount++;
 			questionMetrics.unansweredCount++;
 		}
 
-		questionMetricsByLocation.answerCount++;
-		questionMetrics.answerCount++;
 		if ('options' in question) {
 			questionMetricsByLocation = questionMetricsByLocation as IMetricsHasOptions;
 			questionMetrics = questionMetrics as IMetricsHasOptions;
@@ -120,6 +99,17 @@ export function updateQuestionnaireMetrics({
 				}
 			});
 		}
+
+		if (questionMetrics.type === EQuestionType.RATING && rating && isAnswered) {
+			const { totalRating = 0, answerCount } = questionMetrics;
+			const newTotalRate = totalRating + rating;
+			questionMetrics.avgRating = newTotalRate / answerCount;
+			questionMetrics.totalRating = newTotalRate;
+
+			const ratingMetrics = questionMetrics.byRating.find((byRating) => byRating.rating === rating);
+			if (ratingMetrics) ratingMetrics.selectedCount++;
+
+		}
 	});
 
 	if (attemptCount === 1) {
@@ -130,6 +120,12 @@ export function updateQuestionnaireMetrics({
 	metrics.totalAnswerTime += answerTime;
 	metrics.avgAttemptCount = metrics.totalAttemptCount / metrics.totalResponseCount;
 	metrics.avgAnswerTime = Math.round(metrics.totalAnswerTime / metrics.totalResponseCount);
+
+	const totalRightAnswerCount = metrics.questionMetrics.reduce((acc, questionMetrics) => {
+		if ('rightAnswerCount' in questionMetrics) return acc + questionMetrics.rightAnswerCount;
+		return acc;
+	}, 0);
+	metrics.avgScore = totalRightAnswerCount / metrics.totalResponseCount;
 
 	byLocation.totalAttemptCount++;
 	byLocation.totalAnswerTime += answerTime;

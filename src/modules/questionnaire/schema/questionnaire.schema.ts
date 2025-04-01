@@ -36,6 +36,7 @@ export const OptionSchema = SchemaFactory.createForClass(Option);
 		if (value.type === EQuestionType.MULTIPLE_CHOICE) return 'QuestionMultipleChoice';
 		if (value.type === EQuestionType.TRUE_OR_FALSE) return 'QuestionTrueOrFalse';
 		if (value.type === EQuestionType.SINGLE_CHOICE) return 'QuestionSingleChoice';
+		if (value.type === EQuestionType.RATING) return 'QuestionRating';
 		if (value.type === EQuestionType.TEXT) return 'QuestionText';
 		return undefined;
 	},
@@ -62,7 +63,7 @@ export class Question extends SchemaBaseInterface {
 	@Prop()
 	description?: string;
 
-	@Field({ defaultValue: false })
+	@Field({ defaultValue: true })
 	@Prop({ required: true, default: false })
 	showCorrectAnswer: boolean;
 }
@@ -213,11 +214,40 @@ export class QuestionText extends SchemaBase implements Question {
 
 export const QuestionTextSchema = SchemaFactory.createForClass(QuestionText);
 
+@ObjectType({ implements: Question })
+@Schema()
+export class QuestionRating extends SchemaBase implements Question {
+	@Field(() => EQuestionType)
+	type: EQuestionType.RATING;
+
+	@Field({ nullable: true })
+	title?: string;
+
+	@Field(() => Int, { nullable: true })
+	weight?: number;
+
+	@Field({ defaultValue: false })
+	required: boolean;
+
+	@Field({ nullable: true })
+	description?: string;
+
+	@Field({ defaultValue: false })
+	showCorrectAnswer: boolean;
+
+	@Field({ nullable: true })
+	@Prop()
+	feedbackAfterSubmit?: string;
+}
+
+export const QuestionRatingSchema = SchemaFactory.createForClass(QuestionText);
+
 export type QuestionTypes =
 	| QuestionMultipleChoice
 	| QuestionSingleChoice
 	| QuestionTrueOrFalse
-	| QuestionText;
+	| QuestionText
+	| QuestionRating;
 
 @InterfaceType({
 	isAbstract: true,

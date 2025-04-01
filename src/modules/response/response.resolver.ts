@@ -1,4 +1,4 @@
-import { AnswerDiscriminatorInput, Response } from './schema';
+import { Answer, AnswerDiscriminatorInput, AnswerTypes, Response } from './schema';
 import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
 import { Questionnaire } from '@modules/questionnaire/schema/questionnaire.schema';
 import { ResponseService } from './response.service';
@@ -6,12 +6,46 @@ import { ResponseService } from './response.service';
 import { Resolver, ResolveField, Parent, Context, ObjectType, Field, Args, Mutation, Query } from '@nestjs/graphql';
 import { IAdminContext, IPublicContext } from '@modules/session/session.interface';
 import { Role } from '@utils/utils.decorators';
+import { defaultPaginationValues, PaginatedResponse, PaginationInput } from '@utils/utils.pagination';
+
+
+@ObjectType()
+class CorrectQuestionOption {
+	@Field()
+	questionId: string;
+
+	@Field(() => [String])
+	optionIds: string[];
+}
+
+@ObjectType()
+class ResponseCorrection {
+	@Field(() => [Answer])
+	correctedAnswers: AnswerTypes[];
+
+	@Field(() => [CorrectQuestionOption])
+	correctQuestionOptions: CorrectQuestionOption[];
+}
+
+export interface IResponseCorrection {
+	correctedAnswers: AnswerTypes[]
+	correctQuestionOptions: {
+		questionId: string;
+		optionIds: string[];
+	}[]
+}
 
 @ObjectType()
 class PublicUpsertResponse {
 	@Field()
 	respondentToken: string;
+
+	@Field(() => ResponseCorrection)
+	correction: ResponseCorrection;
 }
+
+@ObjectType()
+export class PaginatedResponseResponse extends PaginatedResponse(Response) { }
 
 @Resolver(() => Response)
 export class ResponseResolver {
@@ -55,18 +89,20 @@ export class ResponseResolver {
 	}
 
 	@Role('Admin')
-	@Query(() => [Response])
+	@Query(() => PaginatedResponseResponse)
 	async adminFetchResponses(
 		@Context() { user }: IAdminContext,
+		@Args('pagination', { type: () => PaginationInput, defaultValue: defaultPaginationValues }) pagination: PaginationInput,
 		@Args('questionnaireSharedIds', { type: () => [String], nullable: true })
 		questionnaireSharedIds?: string[],
 		@Args('questionnaireIds', { type: () => [String], nullable: true }) questionnaireIds?: string[],
 		@Args('textFilter', { nullable: true }) textFilter?: string,
-	): Promise<Response[]> {
+	): Promise<PaginatedResponseResponse> {
 		return this.responseService.adminFetchResponses({
 			questionnaireSharedIds,
 			questionnaireIds,
 			textFilter,
+			pagination,
 			user,
 		});
 	}

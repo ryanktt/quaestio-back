@@ -51,6 +51,15 @@ class AnswerTextInput extends AnswerInput {
 }
 
 @InputType()
+class AnswerRatingInput extends AnswerInput {
+	@Field(() => EAnswerType)
+	type: EAnswerType.RATING;
+
+	@Field(() => Number, { nullable: true })
+	rating?: number;
+}
+
+@InputType()
 export class AnswerDiscriminatorInput {
 	@Field(() => EAnswerType)
 	type: EAnswerType;
@@ -66,4 +75,7 @@ export class AnswerDiscriminatorInput {
 
 	@Field(() => AnswerTextInput, { nullable: true })
 	answerText?: AnswerTextInput;
+
+	@Field(() => AnswerRatingInput, { nullable: true })
+	answerRating?: AnswerRatingInput;
 }

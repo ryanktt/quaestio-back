@@ -17,6 +17,7 @@ import {
 	IRepositoryFetchQuestionnaireParams,
 	IRepositoryCreateQuestionnareParams,
 	EQuestionnaireErrorCode,
+	IRepositoryToggleActive,
 } from './questionnaire.interface';
 
 import {
@@ -38,6 +39,7 @@ import {
 	QuestionnaireTypes,
 } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
 import { ObjectId } from 'mongodb';
+import { ResponseQuestionnaireRepository } from '@modules/shared/response-questionnaire/response-questionnaire.repository';
 
 @Injectable()
 export class QuestionnaireRepository {
@@ -49,6 +51,7 @@ export class QuestionnaireRepository {
 		@InjectModel('QuestionnaireQuiz') private readonly questionnaireQuizSchema: QuestionnaireQuizModel,
 		@InjectModel('Questionnaire') private readonly questionnaireSchema: QuestionnaireModel,
 		private readonly questionnaireHelper: QuestionnaireHelper,
+		private readonly responseQuestionnaireRepo: ResponseQuestionnaireRepository,
 		private readonly utilsArray: UtilsArray,
 		private readonly utilsDoc: UtilsDoc,
 	) { }
@@ -122,7 +125,7 @@ export class QuestionnaireRepository {
 
 	async fetchBySharedId(questionnaireSharedId: string): Promise<QuestionnaireDocument | undefined> {
 		const questionnaire = (await this.questionnaireSchema
-			.findOne({ sharedId: questionnaireSharedId })
+			.findOne({ sharedId: questionnaireSharedId, latest: true })
 			.exec()
 			.catch((originalError: Error) => {
 				throw new AppError({
@@ -143,16 +146,19 @@ export class QuestionnaireRepository {
 	}
 
 	async deleteQuestionnaire({ questionnaireSharedId }: IRepositoryDeleteQuestionnaireParams): Promise<void> {
-		await this.questionnaireSchema
-			.deleteMany({ sharedId: questionnaireSharedId })
-			.exec()
-			.catch((originalError: Error) => {
+		await this.utilsDoc.startMongodbSession(async (session) => {
+			try {
+				await this.questionnaireSchema.deleteMany({ sharedId: questionnaireSharedId }).session(session).exec();
+				await this.questionnaireMetricsSchema.deleteMany({ sharedId: questionnaireSharedId }).session(session).exec();
+				await this.responseQuestionnaireRepo.deleteResponses({ questionnaireSharedId }, session);
+			} catch (originalError) {
 				throw new AppError({
 					code: EQuestionnaireErrorCode.DELETE_QUESTIONNAIRE_ERROR,
 					message: 'fail to delete questionnaire',
-					originalError,
+					originalError: originalError as Error,
 				});
-			});
+			}
+		});
 	}
 
 	async createQuestionnaireMetrics(
@@ -161,6 +167,7 @@ export class QuestionnaireRepository {
 	): Promise<QuestionnaireMetricsDocument> {
 		const questionMetrics = this.questionnaireHelper.getQuestionnaireQuestionMetrics(questionnaire);
 		const metrics = new this.questionnaireMetricsSchema({
+			sharedId: questionnaire.sharedId,
 			_id: questionnaire._id,
 			questionMetrics,
 		});
@@ -176,22 +183,15 @@ export class QuestionnaireRepository {
 	async updateQuestionnaireMetrics(
 		params: {
 			updatedQuestionnaire: QuestionnaireDocTypes | QuestionnaireTypes;
-			metrics: QuestionnaireMetrics;
 		},
 		session?: ClientSession,
 	): Promise<QuestionnaireMetricsDocument> {
 		const questionMetrics = this.questionnaireHelper.getQuestionnaireQuestionMetrics(
 			params.updatedQuestionnaire,
-			params.metrics,
 		);
 		const updatedMetrics = new this.questionnaireMetricsSchema({
 			_id: params.updatedQuestionnaire._id,
-			totalResponseCount: params.metrics.totalResponseCount,
-			totalAttemptCount: params.metrics.totalAttemptCount,
-			totalAnswerTime: params.metrics.totalAnswerTime,
-			avgAttemptCount: params.metrics.avgAttemptCount,
-			avgAnswerTime: params.metrics.avgAnswerTime,
-			byLocationMap: params.metrics.byLocationMap,
+			sharedId: params.updatedQuestionnaire.sharedId,
 			questionMetrics,
 		});
 		return updatedMetrics.save({ session }).catch((originalError: Error) => {
@@ -204,7 +204,16 @@ export class QuestionnaireRepository {
 	}
 
 	async createQuiz(
-		{ requireEmail, requireName, questions, userId, title, description, color, bgColor }: IRepositoryCreateQuestionnareParams,
+		{
+			requireEmail,
+			requireName,
+			questions,
+			userId,
+			title,
+			description,
+			color,
+			bgColor,
+		}: IRepositoryCreateQuestionnareParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const quiz = new this.questionnaireQuizSchema({
@@ -230,7 +239,16 @@ export class QuestionnaireRepository {
 	}
 
 	async createSurvey(
-		{ requireEmail, requireName, questions, userId, title, description, bgColor, color }: IRepositoryCreateQuestionnareParams,
+		{
+			requireEmail,
+			requireName,
+			questions,
+			userId,
+			title,
+			description,
+			bgColor,
+			color,
+		}: IRepositoryCreateQuestionnareParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireSurveyDocument> {
 		const survey = new this.questionnaireSurveySchema({
@@ -299,7 +317,17 @@ export class QuestionnaireRepository {
 	}
 
 	async updateQuiz(
-		{ requireEmail, active, requireName, metrics, questions, title, description, quiz, bgColor, color }: IRepositoryUpdateQuestionnareQuizParams,
+		{
+			requireEmail,
+			active,
+			requireName,
+			questions,
+			title,
+			description,
+			quiz,
+			bgColor,
+			color,
+		}: IRepositoryUpdateQuestionnareQuizParams,
 		session?: ClientSession,
 	): Promise<QuestionnaireQuizDocument> {
 		const updatedQuiz = new this.questionnaireQuizSchema({
@@ -339,7 +367,7 @@ export class QuestionnaireRepository {
 		return this.utilsDoc.startMongodbSession(async (session) => {
 			try {
 				await quiz.save({ session });
-				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedQuiz, metrics }, session);
+				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedQuiz }, session);
 				return updatedQuiz.save({ session }) as Promise<QuestionnaireQuizDocument>;
 			} catch (err) {
 				throw new AppError({
@@ -357,7 +385,6 @@ export class QuestionnaireRepository {
 			requireEmail,
 			requireName,
 			questions,
-			metrics,
 			bgColor,
 			color,
 			active,
@@ -403,7 +430,7 @@ export class QuestionnaireRepository {
 		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireSurveyDocument> => {
 			try {
 				await survey.save({ session });
-				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedSurvey, metrics }, session);
+				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedSurvey }, session);
 				return updatedSurvey.save({ session }) as Promise<QuestionnaireSurveyDocument>;
 			} catch (err) {
 				throw new AppError({
@@ -425,7 +452,6 @@ export class QuestionnaireRepository {
 			requireName,
 			questions,
 			timeLimit,
-			metrics,
 			bgColor,
 			color,
 			active,
@@ -485,7 +511,7 @@ export class QuestionnaireRepository {
 		return this.utilsDoc.startMongodbSession(async (session): Promise<QuestionnaireExamDocument> => {
 			try {
 				await exam.save({ session });
-				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedExam, metrics }, session);
+				await this.updateQuestionnaireMetrics({ updatedQuestionnaire: updatedExam }, session);
 				return updatedExam.save({ session }) as Promise<QuestionnaireExamDocument>;
 			} catch (err) {
 				throw new AppError({
@@ -495,5 +521,19 @@ export class QuestionnaireRepository {
 				});
 			}
 		}, session);
+	}
+
+	async toggleQuestionnaireActive({
+		questionnaire,
+		active,
+	}: IRepositoryToggleActive): Promise<QuestionnaireDocTypes> {
+		questionnaire.active = typeof active === 'boolean' ? active : !questionnaire.active;
+		return questionnaire.save().catch((err) => {
+			throw new AppError({
+				code: EQuestionnaireErrorCode.UPDATE_QUESTIONNAIRE_ERROR,
+				originalError: err instanceof Error ? err : undefined,
+				message: 'fail to toggle questionnaire active',
+			});
+		}) as Promise<QuestionnaireDocTypes>;
 	}
 }

@@ -71,6 +71,7 @@ export class ResponseHelper {
 			[EAnswerType.SINGLE_CHOICE]: answerDiscriminatorInput.answerSingleChoice,
 			[EAnswerType.TRUE_OR_FALSE]: answerDiscriminatorInput.answerTrueOrFalse,
 			[EAnswerType.TEXT]: answerDiscriminatorInput.answerText,
+			[EAnswerType.RATING]: answerDiscriminatorInput.answerRating,
 		};
 
 		const answerInput = map[answerDiscriminatorInput.type];
@@ -132,6 +133,9 @@ export class ResponseHelper {
 			if (answer.type === EAnswerType.TEXT) {
 				if (answer.text) isAnswered = true;
 			}
+			if (answer.type === EAnswerType.RATING) {
+				if (typeof answer.rating === 'number') isAnswered = true;
+			}
 
 			if (questionMap[questionId].required && !isAnswered) {
 				throw new Error('question is required but either no option was selected or no text was filled');
@@ -144,9 +148,10 @@ export class ResponseHelper {
 		const isOptionCorrect = (optionId: string, correctOpIds: string[]): boolean =>
 			correctOpIds.includes(optionId);
 
-		const isOptionsCorrect = (optionIds: string[], correctOpIds: string[]): boolean =>
-			correctOpIds.every((correctOptionId) => optionIds.includes(correctOptionId));
-
+		const isOptionsCorrect = (optionIds: string[], correctOpIds: string[]): boolean => {
+			if (correctOpIds.length !== optionIds.length) return false;
+			return correctOpIds.every((correctOptionId) => optionIds.includes(correctOptionId));
+		};
 		const questionMap: Record<string, { correctOptionIds: string[] }> = {};
 		const { questions } = questionnaire;
 
@@ -168,7 +173,9 @@ export class ResponseHelper {
 				answer.correct = isOptionCorrect(answer.option, correctOptionIds);
 			} else if ('options' in answer && answer.options && answer.options.length > 0) {
 				answer.correct = isOptionsCorrect(answer.options, correctOptionIds);
-			} else if ('text' in answer) {
+			} else if ('text' in answer && !!answer.text) {
+				answer.correct = true;
+			} else if ('rating' in answer && typeof answer.rating === 'number') {
 				answer.correct = true;
 			}
 

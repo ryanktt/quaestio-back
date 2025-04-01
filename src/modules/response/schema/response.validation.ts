@@ -30,6 +30,11 @@ const AnswerTextInputValidator = Joi.object().keys({
 	text: Joi.string().trim(),
 });
 
+const AnswerRatingInputValidator = Joi.object().keys({
+	...baseAnswerInputValidatorKeys,
+	rating: Joi.number().min(1).max(5),
+});
+
 export const AnswerDiscriminatorInputValidator = Joi.object().keys({
 	type: Joi.string()
 		.valid(...Object.values(EAnswerType))
@@ -54,6 +59,11 @@ export const AnswerDiscriminatorInputValidator = Joi.object().keys({
 		then: Joi.required(),
 		otherwise: Joi.optional(),
 	}),
+	answerRating: AnswerRatingInputValidator.when('type', {
+		is: Joi.string().valid(EAnswerType.RATING),
+		then: Joi.required(),
+		otherwise: Joi.optional(),
+	}),
 });
 
 export const PublicUpsertQuestResponseValidator = Joi.object().keys({
@@ -75,4 +85,8 @@ export const FetchResponsesValidator = Joi.object().keys({
 	questionnaireSharedIds: Joi.array().items(Joi.string()),
 	questionnaireIds: Joi.array().items(Joi.string()),
 	textFilter: Joi.string().allow(''),
+	pagination: Joi.object().keys({
+		page: Joi.number().integer().positive(),
+		limit: Joi.number().integer().positive(),
+	})
 });

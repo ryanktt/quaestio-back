@@ -10,12 +10,16 @@ import {
 	QuestionTrueOrFalseInput,
 	QuestionTextInput,
 	QuestionOrderInput,
+	QuestionnaireDocument,
+	QuestionRatingInput,
 } from './schema';
 
 import { AdminDocument } from '@modules/user/admin/admin.schema';
 import { registerEnumType } from '@nestjs/graphql';
 import { QuestionnaireMetricsDocument } from './schema/questionnaire-metrics';
 import { ObjectId } from 'mongodb';
+import { PaginationInput } from '@utils/utils.pagination';
+import { QuestionnaireDocTypes } from 'src/bootstrap/consumers/upsert-questionnaire-response/types/types';
 
 export enum EQuestionnaireErrorCode {
 	CREATE_QUESTIONNAIRE_INVALID_PARAMS = 'CREATE_QUESTIONNAIRE_INVALID_PARAMS',
@@ -29,9 +33,11 @@ export enum EQuestionnaireErrorCode {
 	UPDATE_QUESTIONNAIRE_SURVEY_ERROR = 'UPDATE_QUESTIONNAIRE_SURVEY_ERROR',
 	UPDATE_QUESTIONNAIRE_QUIZ_ERROR = 'UPDATE_QUESTIONNAIRE_QUIZ_ERROR',
 	UPDATE_QUESTIONNAIRE_EXAM_ERROR = 'UPDATE_QUESTIONNAIRE_EXAM_ERROR',
+	UPDATE_QUESTIONNAIRE_ERROR = 'UPDATE_QUESTIONNAIRE_ERROR',
 	DELETE_QUESTIONNAIRE_INVALID_PARAMS = 'DELETE_QUESTIONNAIRE_INVALID_PARAMS',
 	FETCH_QUESTIONNAIRE_METRICS_ERROR = 'FETCH_QUESTIONNAIRE_METRICS_ERROR',
 	FETCH_QUESTIONNAIRES_ERROR = 'FETCH_QUESTIONNAIRES_ERROR',
+	COUNT_QUESTIONNAIRES_ERROR = 'COUNT_QUESTIONNAIRES_ERROR',
 	FETCH_QUESTIONNAIRE_ERROR = 'FETCH_QUESTIONNAIRE_ERROR',
 	DELETE_QUESTIONNAIRE_ERROR = 'DELETE_QUESTIONNAIRE_ERROR',
 	QUESTIONNAIRE_METRICS_NOT_FOUND = 'QUESTIONNAIRE_METRICS_NOT_FOUND',
@@ -44,6 +50,7 @@ export enum EQuestionType {
 	MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
 	SINGLE_CHOICE = 'SINGLE_CHOICE',
 	TRUE_OR_FALSE = 'TRUE_OR_FALSE',
+	RATING = 'RATING',
 	TEXT = 'TEXT',
 }
 export enum EQuestionMethodType {
@@ -69,8 +76,8 @@ export interface IRepositoryCreateQuestionnareParams {
 	requireEmail?: boolean;
 	requireName?: boolean;
 	description?: string;
-	bgColor?: string
-	color?: string
+	bgColor?: string;
+	color?: string;
 }
 
 export interface IRepositoryCreateQuestionnaireExamParams extends IRepositoryCreateQuestionnareParams {
@@ -87,8 +94,8 @@ export interface IRepositoryUpdateQuestionnareParams {
 	title?: string;
 	requireEmail?: boolean | null;
 	requireName?: boolean | null;
-	bgColor?: string | null
-	color?: string | null
+	bgColor?: string | null;
+	color?: string | null;
 }
 
 export interface IRepositoryUpdateQuestionnareQuizParams extends IRepositoryUpdateQuestionnareParams {
@@ -120,6 +127,7 @@ export interface IRepositoryFetchQuestionnairesParams {
 	userIds?: string[];
 	textFilter?: string;
 	latest?: boolean;
+	pagination?: PaginationInput;
 }
 
 export interface IRepositoryDeleteQuestionnaireParams {
@@ -173,6 +181,7 @@ export interface IFetchQuestionnairesParams {
 	questionnaireIds?: string[];
 	textFilter?: string;
 	latest?: boolean;
+	pagination: PaginationInput;
 	user: AdminDocument;
 }
 
@@ -180,4 +189,19 @@ export interface IDeleteQuestionnaireParams {
 	questionnaireSharedId: string;
 }
 
-export type QuestionInputTypes = QuestionSingleChoiceInput | QuestionMultipleChoiceInput | QuestionTrueOrFalseInput | QuestionTextInput;
+export interface IToggleQuestionnaireActiveParams {
+	questionnaireSharedId: string;
+	active?: boolean;
+}
+
+export interface IRepositoryToggleActive {
+	questionnaire: QuestionnaireDocTypes | QuestionnaireDocument;
+	active?: boolean;
+}
+
+export type QuestionInputTypes =
+	| QuestionSingleChoiceInput
+	| QuestionMultipleChoiceInput
+	| QuestionTrueOrFalseInput
+	| QuestionTextInput
+	| QuestionRatingInput;

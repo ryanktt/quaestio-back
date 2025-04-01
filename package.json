@@ -1,8 +1,8 @@
 {
-	"name": "questionnaire-nest",
-	"version": "0.0.1",
-	"description": "",
-	"author": "",
+	"name": "quaestio",
+	"version": "1.0.0",
+	"description": "A questionnaire platform",
+	"author": "Ryan Kayro Tavares Teles",
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {

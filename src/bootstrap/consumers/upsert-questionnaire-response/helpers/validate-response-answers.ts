@@ -61,6 +61,9 @@ export function validateResponseAnswers(params: IValidateAnswers): void {
 		if (answer.type === EAnswerType.TEXT) {
 			if (answer.text) isAnswered = true;
 		}
+		if (answer.type === EAnswerType.RATING) {
+			if (typeof answer.rating === 'number') isAnswered = true;
+		}
 
 		if (questionMap[questionId].required && !isAnswered) {
 			throw new Error('question is required but either no option was selected or no text was filled');
